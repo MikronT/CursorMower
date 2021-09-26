@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include "string.hpp"
 
@@ -31,5 +32,20 @@ int main(const int arg_count, char** arg_list) {
     if (arg_count == 1 ||
         arg_count == 2 && string(arg_list[1]) == "/help")
         return help();
+
+    if (arg_count != 4 && arg_count != 6) {
+        cerr << "Wrong number of arguments: " << to_string(arg_count - 1) << endl;
+        return 1;
+    }
+
+    for (int i = 1; i < arg_count - 2; ++i) {
+        if (const auto temp_arg = string(arg_list[i]);
+            !ranges::all_of(temp_arg, isdigit)) {
+            cerr << "Illegal argument: " << temp_arg << endl;
+            return 2;
+        }
+    }
+
+
     return 0;
 }
