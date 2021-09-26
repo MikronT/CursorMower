@@ -67,6 +67,8 @@ int main(const int arg_count, char** arg_list) {
           arg_final = {-1, -1};
     vector<Line> arg_lines;
 
+
+    //Parse input from the file
     ifstream layout;
     layout.open(arg_file);
     if (!layout.is_open()) {
@@ -82,10 +84,10 @@ int main(const int arg_count, char** arg_list) {
         if (cell.empty()) continue;
 
         if (cell.size() < 3 ||
-            !ranges::all_of(cell.at(1), ::isdigit) ||
-            !ranges::all_of(cell.at(2), ::isdigit)) {
-            cerr << "Illegal line format in line " << to_string(i) << ": " << sourceLine << endl;
-            for (auto& cs : cell) { cout << cs << endl; }
+            !ranges::all_of(cell.at(1), isdigit) ||
+            !ranges::all_of(cell.at(2), isdigit)) {
+            cerr << "Illegal line format in line "
+                << to_string(i) << ": " << sourceLine << endl;
             return 2;
         }
 
@@ -99,8 +101,8 @@ int main(const int arg_count, char** arg_list) {
         else if (cell.at(0) == "final") arg_final = coords;
         else if (cell.at(0) == "line") {
             if (cell.size() < 4) {
-                cerr << "Illegal line format in line " << to_string(i) << endl;
-                for (auto cs : cell) { cout << cs << endl; }
+                cerr << "Illegal line format in line "
+                    << to_string(i) << ": " << sourceLine << endl;
                 return 2;
             }
 
@@ -110,11 +112,13 @@ int main(const int arg_count, char** arg_list) {
     layout.close();
 
 
+    //Get/set screen dimensions
     HANDLE console_out = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFOEX console_info = getConInfo(console_out);
 
     if (arg_dims.X == 0 || arg_dims.Y == 0) {
         auto& [left, top, right, bottom] = console_info.srWindow;
+
         arg_dims.X = right - left + 1 - arg_margins.X * 2;
         arg_dims.Y = bottom - top + 1 - arg_margins.Y * 2;
     } else {
@@ -131,6 +135,7 @@ int main(const int arg_count, char** arg_list) {
     }
 
 
+    //Write text to screen
     for (auto& [coords, text] : arg_lines) {
         coords = {
             static_cast<short>(coords.X + arg_margins.X),
@@ -140,18 +145,22 @@ int main(const int arg_count, char** arg_list) {
         if (coords.X < 0 || coords.X >= arg_dims.X ||
             coords.Y < 0 || coords.Y >= arg_dims.Y) {
             cerr << "Argument out of bounds: "
-                << to_string(coords.X) << ";" << to_string(coords.Y)
+                << to_string(coords.X) << ";"
+                << to_string(coords.Y)
                 << " with bounds of "
-                << to_string(arg_dims.X) << ":" << to_string(arg_dims.Y) << endl;
+                << to_string(arg_dims.X) << ":"
+                << to_string(arg_dims.Y) << endl;
             return 3;
         }
 
 
         if (coords.X + string_getSize(text) >= arg_dims.X) {
             cerr << "Text out of bounds: "
-                << to_string(coords.X) << ";" << to_string(coords.Y)
+                << to_string(coords.X) << ";"
+                << to_string(coords.Y)
                 << " with bounds of "
-                << to_string(arg_dims.X) << ":" << to_string(arg_dims.Y)
+                << to_string(arg_dims.X) << ":"
+                << to_string(arg_dims.Y)
                 << " with text \"" << text << "\"" << endl;
             return 3;
         }
@@ -160,13 +169,16 @@ int main(const int arg_count, char** arg_list) {
         cout << string_cut(text, arg_dims.X - coords.X);
     }
 
-    arg_final = {
-        static_cast<short>(arg_final.X + arg_margins.X),
-        static_cast<short>(arg_final.Y + arg_margins.Y)
-    };
 
+    //Move cursor to the final point
     if (arg_final.X != -1 &&
-        arg_final.Y != -1)
+        arg_final.Y != -1) {
+        arg_final = {
+            static_cast<short>(arg_final.X + arg_margins.X),
+            static_cast<short>(arg_final.Y + arg_margins.Y)
+        };
+
         SetConsoleCursorPosition(console_out, arg_final);
+    }
     return 0;
 }
