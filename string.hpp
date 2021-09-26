@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include <iomanip>
-#include <random>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -25,4 +24,7 @@ namespace nsStringLib {
 
     [[nodiscard]] int string_getSize(const string& of);
     [[nodiscard]] int string_getSize(const char* of);
+
+    [[nodiscard]] vector<string> string_split(vector<char>& source, char delim, int maxTokens = -1);
+    [[nodiscard]] vector<string> string_split(const string& source, char delim, int maxTokens = -1);
 }
