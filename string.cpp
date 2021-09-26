@@ -13,6 +13,7 @@ int nsStringLib::string_getSize(const char* of) {
 vector<string> nsStringLib::string_split(vector<char>& source, const char delim, const int maxTokens) {
     return string_split(string(source.begin(), source.end()), delim, maxTokens);
 }
+#pragma optimize("", off)
 vector<string> nsStringLib::string_split(const string& source, const char delim, int maxTokens) {
     vector<string> output;
     auto input(source);
@@ -37,3 +38,4 @@ vector<string> nsStringLib::string_split(const string& source, const char delim,
     } while (token != nullptr && maxTokens != 0);
     return output;
 }
+#pragma optimize("", on)

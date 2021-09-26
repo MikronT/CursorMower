@@ -157,7 +157,7 @@ int main(const int arg_count, char** arg_list) {
         }
 
         SetConsoleCursorPosition(console_out, coords);
-        cout << string_cut(text, arg_dims.X);
+        cout << string_cut(text, arg_dims.X - coords.X);
     }
 
     arg_final = {
