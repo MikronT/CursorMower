@@ -1,9 +1,11 @@
 #include <algorithm>
 #include <iostream>
 #include <Windows.h>
+#include "commandLine.hpp"
 #include "string.hpp"
 
 using namespace std;
+using namespace nsCommandLineLib;
 using namespace nsStringLib;
 
 
@@ -48,8 +50,8 @@ int main(const int arg_count, char** arg_list) {
     }
 
 
-    CONSOLE_SCREEN_BUFFER_INFO console_buffer;
-    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &console_buffer);
+    HANDLE console_out = GetStdHandle(STD_OUTPUT_HANDLE);
+    CONSOLE_SCREEN_BUFFER_INFOEX console_info = getConInfo(console_out);
 
     auto& [left, top, right, bottom] = console_buffer.srWindow;
     const int console_cols = right - left + 1,
