@@ -66,6 +66,24 @@ int main(const int arg_count, char** arg_list) {
                y = arg_margin_top + arg_y;
 
 
+    if (x < 0 || x >= console_cols ||
+        y < 0 || y >= console_lines) {
+        cerr << "Argument out of bounds: "
+            << to_string(x) << ";" << to_string(y)
+            << " with bounds "
+            << to_string(console_cols) << ":" << to_string(console_lines) << endl;
+        return 3;
+    }
+
+    if (x + string_getSize(arg_text) >= console_cols) {
+        cerr << "Text out of bounds: "
+            << to_string(x) << ";" << to_string(y)
+            << " with bounds "
+            << to_string(console_cols) << ":" << to_string(console_lines)
+            << " with text \"" << arg_text << "\"" << endl;
+        return 3;
+    }
+
     SetConsoleCursorPosition(
         GetStdHandle(STD_OUTPUT_HANDLE),
         COORD{
