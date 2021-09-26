@@ -6,7 +6,8 @@ setlocal EnableExtensions EnableDelayedExpansion
 pushd "%~dp0"
 
 set module_cursor=Debug\CursorMower.exe
-cls
+
+
 
 
 
@@ -31,6 +32,7 @@ cls
 
 
 :loop
+cls
 %module_cursor% "layout.conf"
 set /p input="> "
 goto :loop
