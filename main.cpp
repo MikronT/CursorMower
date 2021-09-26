@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <fstream>
 #include <iostream>
 #include <Windows.h>
 #include "commandLine.hpp"
@@ -9,25 +10,43 @@ using namespace nsCommandLineLib;
 using namespace nsStringLib;
 
 
+struct Line {
+    COORD point;
+    string text;
+};
+
+
 int help() {
-    cout << "Cursor Mover v1.0 [MikronT]" << endl
+    cout << "Cursor Mower v2.0 [github.com/MikronT]"
         << endl
-        << "Usage" << endl
-        << "  cursor {x} {y} \"text\"" << endl
-        << "  cursor {left&right margin} {top&bottom margin} {x} {y} \"text\"" << endl
+        << endl << "Usage"
+        << endl << "  cursor \"file\""
         << endl
-        << "Notes" << endl
-        << "  - Coords are starting from (0,0) at the top left corner" << endl
-        << "  - Margins are applied to all the coords" << endl
-        << "    For example: 1st(0) line with top margin 2 will result in 3rd(2) line" << endl
+        << endl << "Layout file syntax"
+        << endl << "  dims`{columns}`{lines}"
+        << endl << "    - lets you set console window dimensions"
+        << endl << "    - can be only one"
+        << endl << "  margins`{left&right margin}`{top&bottom margin}"
+        << endl << "    - to set window margins"
+        << endl << "    - margins are applied via changing console window size"
+        << endl << "    - can be only one"
+        << endl << "  line`{x}`{y}`text"
+        << endl << "    - lets you set what and where should be printed"
+        << endl << "    - coords are starting from (0,0) at the top left corner"
+        << endl << "    - margins are applied to all the coords automatically"
+        << endl << "  finally`{x}`{y}"
+        << endl << "    - sets the point to move cursor to at the end of printing"
+        << endl << "    - can be only one"
         << endl
-        << "Returns" << endl
-        << "  0 if all is OK" << endl
-        << "  1 if there are not enough or too many args" << endl
-        << "  2 when illegal argument specified (text instead of number)" << endl
-        << "  3 if the text is out of screen buffer bounds" << endl
-        << "  4 if help is shown" << endl;
-    return 4;
+        << endl << "Returns"
+        << endl << "  0 - all is OK"
+        << endl << "  1 - not enough or too many args"
+        << endl << "  2 - illegal line format"
+        << endl << "  3 - the text is out of screen buffer bounds"
+        << endl << "  4 - error reading a file"
+        << endl << "  5 - help is shown"
+        << endl;
+    return 5;
 }
 
 
@@ -36,63 +55,113 @@ int main(const int arg_count, char** arg_list) {
         arg_count == 2 && string(arg_list[1]) == "/help")
         return help();
 
-    if (arg_count != 4 && arg_count != 6) {
+    if (arg_count != 2) {
         cerr << "Wrong number of arguments: " << to_string(arg_count - 1) << endl;
         return 1;
     }
 
-    for (int i = 1; i < arg_count - 2; ++i) {
-        if (const auto temp_arg = string(arg_list[i]);
-            !ranges::all_of(temp_arg, isdigit)) {
-            cerr << "Illegal argument: " << temp_arg << endl;
+
+    const string arg_file = arg_list[1];
+    COORD arg_dims = {0, 0},
+          arg_margins = {0, 0},
+          arg_finally = {-1, -1};
+    vector<Line> arg_lines;
+
+    ifstream layout;
+    layout.open(arg_file);
+    if (!layout.is_open()) {
+        cerr << "Error reading the file " << arg_file << endl;
+        return 4;
+    }
+
+    string sourceLine;
+    int i = 0;
+    while (getline(layout, sourceLine)) {
+        i++;
+        vector<string> cell = string_split(sourceLine, '`', 4);
+        if (cell.empty()) continue;
+
+        if (cell.size() < 3 ||
+            !ranges::all_of(cell.at(1), ::isdigit) ||
+            !ranges::all_of(cell.at(2), ::isdigit)) {
+            cerr << "Illegal line format in line " << to_string(i) << ": " << sourceLine << endl;
+            for (auto& cs : cell) { cout << cs << endl; }
             return 2;
         }
+
+        auto coords = COORD{
+            static_cast<short>(stoi(cell.at(1))),
+            static_cast<short>(stoi(cell.at(2)))
+        };
+
+        if (cell.at(0) == "dims") arg_dims = coords;
+        else if (cell.at(0) == "margins") arg_margins = coords;
+        else if (cell.at(0) == "finally") arg_finally = coords;
+        else if (cell.at(0) == "line") {
+            if (cell.size() < 4) {
+                cerr << "Illegal line format in line " << to_string(i) << endl;
+                for (auto cs : cell) { cout << cs << endl; }
+                return 2;
+            }
+
+            arg_lines.emplace_back(Line{coords, cell.at(3)});
+        }
     }
+    layout.close();
 
 
     HANDLE console_out = GetStdHandle(STD_OUTPUT_HANDLE);
     CONSOLE_SCREEN_BUFFER_INFOEX console_info = getConInfo(console_out);
 
-    auto& [left, top, right, bottom] = console_buffer.srWindow;
-    const int console_cols = right - left + 1,
-              console_lines = bottom - top + 1;
+    if (arg_dims.X == 0 || arg_dims.Y == 0) {
+        auto& [left, top, right, bottom] = console_info.srWindow;
+        arg_dims.X = right - left + 1 - arg_margins.X * 2;
+        arg_dims.Y = bottom - top + 1 - arg_margins.Y * 2;
+    } else {
+        arg_dims.X = arg_dims.X + arg_margins.X * 2;
+        arg_dims.Y = arg_dims.Y + arg_margins.Y * 2;
 
+        console_info.dwSize = arg_dims;
+        console_info.srWindow = {0, 0, arg_dims.X, arg_dims.Y};
+        setConInfo(console_out, console_info);
 
-    const short arg_margin_left = arg_count == 4 ? 0 : stoi(arg_list[1]),
-                arg_margin_top = arg_count == 4 ? 0 : stoi(arg_list[2]),
-                arg_x = stoi(arg_list[arg_count == 4 ? 1 : 3]),
-                arg_y = stoi(arg_list[arg_count == 4 ? 2 : 4]);
-    const string arg_text = arg_list[arg_count == 4 ? 3 : 5];
-
-    const auto x = arg_margin_left + arg_x,
-               y = arg_margin_top + arg_y;
-
-
-    if (x < 0 || x >= console_cols ||
-        y < 0 || y >= console_lines) {
-        cerr << "Argument out of bounds: "
-            << to_string(x) << ";" << to_string(y)
-            << " with bounds "
-            << to_string(console_cols) << ":" << to_string(console_lines) << endl;
-        return 3;
+        console_info = getConInfo(console_out);
+        console_info.srWindow = {0, 0, arg_dims.X, arg_dims.Y};
+        setConInfo(console_out, console_info);
     }
 
-    if (x + string_getSize(arg_text) >= console_cols) {
-        cerr << "Text out of bounds: "
-            << to_string(x) << ";" << to_string(y)
-            << " with bounds "
-            << to_string(console_cols) << ":" << to_string(console_lines)
-            << " with text \"" << arg_text << "\"" << endl;
-        return 3;
+
+    for (auto& [coords, text] : arg_lines) {
+        coords = {
+            static_cast<short>(coords.X + arg_margins.X),
+            static_cast<short>(coords.Y + arg_margins.Y)
+        };
+
+        if (coords.X < 0 || coords.X >= arg_dims.X ||
+            coords.Y < 0 || coords.Y >= arg_dims.Y) {
+            cerr << "Argument out of bounds: "
+                << to_string(coords.X) << ";" << to_string(coords.Y)
+                << " with bounds of "
+                << to_string(arg_dims.X) << ":" << to_string(arg_dims.Y) << endl;
+            return 3;
+        }
+
+
+        if (coords.X + string_getSize(text) >= arg_dims.X) {
+            cerr << "Text out of bounds: "
+                << to_string(coords.X) << ";" << to_string(coords.Y)
+                << " with bounds of "
+                << to_string(arg_dims.X) << ":" << to_string(arg_dims.Y)
+                << " with text \"" << text << "\"" << endl;
+            return 3;
+        }
+
+        SetConsoleCursorPosition(console_out, coords);
+        cout << string_cut(text, arg_dims.X);
     }
 
-    SetConsoleCursorPosition(
-        GetStdHandle(STD_OUTPUT_HANDLE),
-        COORD{
-            static_cast<short>(x),
-            static_cast<short>(y)
-        });
-
-    cout << string_cut(arg_text, console_cols - arg_margin_left);
+    if (arg_finally.X != -1 &&
+        arg_finally.Y != -1)
+        SetConsoleCursorPosition(console_out, arg_finally);
     return 0;
 }
