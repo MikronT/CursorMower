@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <Windows.h>
 #include "string.hpp"
 
 using namespace std;
@@ -47,5 +48,31 @@ int main(const int arg_count, char** arg_list) {
     }
 
 
+    CONSOLE_SCREEN_BUFFER_INFO console_buffer;
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &console_buffer);
+
+    auto& [left, top, right, bottom] = console_buffer.srWindow;
+    const int console_cols = right - left + 1,
+              console_lines = bottom - top + 1;
+
+
+    const short arg_margin_left = arg_count == 4 ? 0 : stoi(arg_list[1]),
+                arg_margin_top = arg_count == 4 ? 0 : stoi(arg_list[2]),
+                arg_x = stoi(arg_list[arg_count == 4 ? 1 : 3]),
+                arg_y = stoi(arg_list[arg_count == 4 ? 2 : 4]);
+    const string arg_text = arg_list[arg_count == 4 ? 3 : 5];
+
+    const auto x = arg_margin_left + arg_x,
+               y = arg_margin_top + arg_y;
+
+
+    SetConsoleCursorPosition(
+        GetStdHandle(STD_OUTPUT_HANDLE),
+        COORD{
+            static_cast<short>(x),
+            static_cast<short>(y)
+        });
+
+    cout << string_cut(arg_text, console_cols - arg_margin_left);
     return 0;
 }
