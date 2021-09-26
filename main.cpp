@@ -34,7 +34,7 @@ int help() {
         << endl << "    - lets you set what and where should be printed"
         << endl << "    - coords are starting from (0,0) at the top left corner"
         << endl << "    - margins are applied to all the coords automatically"
-        << endl << "  finally`{x}`{y}"
+        << endl << "  final`{x}`{y}"
         << endl << "    - sets the point to move cursor to at the end of printing"
         << endl << "    - can be only one"
         << endl
@@ -64,7 +64,7 @@ int main(const int arg_count, char** arg_list) {
     const string arg_file = arg_list[1];
     COORD arg_dims = {0, 0},
           arg_margins = {0, 0},
-          arg_finally = {-1, -1};
+          arg_final = {-1, -1};
     vector<Line> arg_lines;
 
     ifstream layout;
@@ -96,7 +96,7 @@ int main(const int arg_count, char** arg_list) {
 
         if (cell.at(0) == "dims") arg_dims = coords;
         else if (cell.at(0) == "margins") arg_margins = coords;
-        else if (cell.at(0) == "finally") arg_finally = coords;
+        else if (cell.at(0) == "final") arg_final = coords;
         else if (cell.at(0) == "line") {
             if (cell.size() < 4) {
                 cerr << "Illegal line format in line " << to_string(i) << endl;
@@ -160,8 +160,13 @@ int main(const int arg_count, char** arg_list) {
         cout << string_cut(text, arg_dims.X);
     }
 
-    if (arg_finally.X != -1 &&
-        arg_finally.Y != -1)
-        SetConsoleCursorPosition(console_out, arg_finally);
+    arg_final = {
+        static_cast<short>(arg_final.X + arg_margins.X),
+        static_cast<short>(arg_final.Y + arg_margins.Y)
+    };
+
+    if (arg_final.X != -1 &&
+        arg_final.Y != -1)
+        SetConsoleCursorPosition(console_out, arg_final);
     return 0;
 }

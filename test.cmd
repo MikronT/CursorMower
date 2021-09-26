@@ -11,6 +11,8 @@ set module_cursor=Debug\CursorMower.exe
 
 
 
+:loop
+cls
 (
   echo.dims`120`40
   echo.margins`2`1
@@ -26,13 +28,11 @@ set module_cursor=Debug\CursorMower.exe
     )
   )
 
-  echo.finally`1`39
+  echo.final`51`23
 )>"layout.conf"
 
 
 
-:loop
-cls
 %module_cursor% "layout.conf"
 set /p input="> "
 goto :loop
