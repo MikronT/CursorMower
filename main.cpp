@@ -24,34 +24,31 @@ struct Block {
 
 
 int help() {
-    cout << "Cursor Mower v2.1 [github.com/MikronT]"
+    cout << "CursorMower v3.0 -> github.com/MikronT/CursorMower"
         << endl
         << endl << "Usage"
         << endl << "  cursor \"file\""
         << endl
         << endl << "Layout file syntax"
         << endl << "  dims`{columns}`{lines}"
-        << endl << "    - lets you set console window dimensions"
-        << endl << "    - can be only one"
+        << endl << "    - To set command line window dimensions"
         << endl << "  margins`{left&right margin}`{top&bottom margin}"
-        << endl << "    - to set window margins"
-        << endl << "    - margins are applied via changing console window size"
-        << endl << "    - can be only one"
-        << endl << "  text`{x}`{y}`text"
-        << endl << "    - lets you set what and where should be printed"
-        << endl << "    - coords are starting from (0,0) at the top left corner"
-        << endl << "    - margins are applied to all the coords automatically"
-        << endl << "  end`{x}`{y}"
-        << endl << "    - sets the point to move cursor to at the end of printing"
-        << endl << "    - can be only one"
+        << endl << "    - To set window margins"
+        << endl << "    - Margins are applied via changing console window size"
+        << endl << "  goto`{x}`{y}"
+        << endl << "    - To set the point to move cursor to"
+        << endl << "    - Coords are starting from (0,0) at the top left corner"
+        << endl << "    - Margins are applied to all the coords automatically"
+        << endl << "  text`{any text with spaces}"
+        << endl << "    - To set what should be printed"
         << endl
         << endl << "Returns"
-        << endl << "  0 - all is OK"
-        << endl << "  " << ERROR_ARGS_COUNT << " - not enough or too many args"
-        << endl << "  " << ERROR_FILE << " - error reading a file"
-        << endl << "  " << ERROR_FORMAT << " - illegal line format"
-        << endl << "  " << ERROR_OUT_OF_BOUNDS << " - the text is out of screen buffer bounds"
-        << endl << "  5 - help is shown"
+        << endl << "  0 - All is OK"
+        << endl << "  " << ERROR_ARGS_COUNT << " - Not enough/too many arguments (no file specified)"
+        << endl << "  " << ERROR_FILE << " - Error reading a file (file not found or is inaccessible)"
+        << endl << "  " << ERROR_FORMAT << " - Illegal line syntax (the syntax is wrong, check cursor /help)"
+        << endl << "  " << ERROR_OUT_OF_BOUNDS << " - Out of screen buffer bounds (text or coords exceed window dims)"
+        << endl << "  5 - Help message is shown"
         << endl;
     return 5;
 }
