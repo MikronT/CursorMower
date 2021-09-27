@@ -104,43 +104,44 @@ int main(const int arg_count, char** arg_list) {
 
     {
         vector<string> block;
-        auto block_coords = COORD{0, 0};
+        auto block_coords = COORD{0, 0},
+             line_coords = COORD{0, 0};
 
-        string sourceLine;
+        string line;
         int i = 0;
 
-        while (getline(layout, sourceLine)) {
+        while (getline(layout, line)) {
             i++;
-            vector<string> cell = string_split(sourceLine, '`', 4);
+            vector<string> cell = string_split(line, '`', 3);
             if (cell.empty())
                 continue;
-
-            auto coords = COORD{
-                static_cast<short>(stoi(cell.at(1))),
-                static_cast<short>(stoi(cell.at(2)))
-            };
 
             if (cell.at(0) == "dims" ||
                 cell.at(0) == "margins" ||
                 cell.at(0) == "goto") {
                 if (cell.size() < 3)
-                    error(ERROR_FORMAT, to_string(i) + ": " + sourceLine);
+                    error(ERROR_FORMAT, to_string(i) + ": " + line);
                 checkNumber({cell.at(1), cell.at(2)}, i);
+
+                line_coords = COORD{
+                    static_cast<short>(stoi(cell.at(1))),
+                    static_cast<short>(stoi(cell.at(2)))
+                };
             }
 
             if (cell.at(0) == "dims")
-                arg_dims = coords;
+                arg_dims = line_coords;
             else if (cell.at(0) == "margins")
-                arg_margins = coords;
+                arg_margins = line_coords;
             else if (cell.at(0) == "goto") {
                 if (!block.empty())
                     arg_blocks.emplace_back(Block{block_coords, block});
 
                 block.clear();
-                block_coords = coords;
+                block_coords = line_coords;
             } else if (cell.at(0) == "text") {
                 if (cell.size() < 2)
-                    error(ERROR_FORMAT, to_string(i) + ": " + sourceLine);
+                    error(ERROR_FORMAT, to_string(i) + ": " + line);
 
                 block.emplace_back(cell.at(1));
             }
