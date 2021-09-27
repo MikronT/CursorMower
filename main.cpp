@@ -175,11 +175,16 @@ int main(const int arg_count, char** arg_list) {
 
 
     //Write text to screen
-    for (auto& [coords, strings] : arg_blocks)
+    for (auto& [coords, strings] : arg_blocks) {
+        coords = {
+            static_cast<short>(coords.X + arg_margins.X),
+            static_cast<short>(coords.Y + arg_margins.Y)
+        };
+
         for (size_t i = 0; i < strings.size(); i++) {
             coords = {
-                static_cast<short>(coords.X + arg_margins.X),
-                static_cast<short>(coords.Y + arg_margins.Y + i)
+                coords.X,
+                static_cast<short>(coords.Y + i)
             };
 
             if (coords.X < 0 || coords.X >= arg_dims.X ||
@@ -195,5 +200,6 @@ int main(const int arg_count, char** arg_list) {
 
             cout << string_cut(strings.at(i), arg_dims.X - coords.X);
         }
+    }
     return 0;
 }
