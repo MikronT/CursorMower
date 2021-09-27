@@ -30,11 +30,11 @@ int help() {
         << endl << "    - to set window margins"
         << endl << "    - margins are applied via changing console window size"
         << endl << "    - can be only one"
-        << endl << "  line`{x}`{y}`text"
+        << endl << "  text`{x}`{y}`text"
         << endl << "    - lets you set what and where should be printed"
         << endl << "    - coords are starting from (0,0) at the top left corner"
         << endl << "    - margins are applied to all the coords automatically"
-        << endl << "  final`{x}`{y}"
+        << endl << "  end`{x}`{y}"
         << endl << "    - sets the point to move cursor to at the end of printing"
         << endl << "    - can be only one"
         << endl
@@ -64,7 +64,7 @@ int main(const int arg_count, char** arg_list) {
     const string arg_file = arg_list[1];
     COORD arg_dims = {0, 0},
           arg_margins = {0, 0},
-          arg_final = {-1, -1};
+          arg_end = {-1, -1};
     vector<Line> arg_lines;
 
 
@@ -86,7 +86,7 @@ int main(const int arg_count, char** arg_list) {
         if (cell.size() < 3 ||
             !ranges::all_of(cell.at(1), isdigit) ||
             !ranges::all_of(cell.at(2), isdigit)) {
-            cerr << "Illegal line format in line "
+            cerr << "Illegal formatting in line "
                 << to_string(i) << ": " << sourceLine << endl;
             return 2;
         }
@@ -98,10 +98,10 @@ int main(const int arg_count, char** arg_list) {
 
         if (cell.at(0) == "dims") arg_dims = coords;
         else if (cell.at(0) == "margins") arg_margins = coords;
-        else if (cell.at(0) == "final") arg_final = coords;
-        else if (cell.at(0) == "line") {
+        else if (cell.at(0) == "end") arg_end = coords;
+        else if (cell.at(0) == "text") {
             if (cell.size() < 4) {
-                cerr << "Illegal line format in line "
+                cerr << "Illegal formatting in line "
                     << to_string(i) << ": " << sourceLine << endl;
                 return 2;
             }
@@ -170,15 +170,15 @@ int main(const int arg_count, char** arg_list) {
     }
 
 
-    //Move cursor to the final point
-    if (arg_final.X != -1 &&
-        arg_final.Y != -1) {
-        arg_final = {
-            static_cast<short>(arg_final.X + arg_margins.X),
-            static_cast<short>(arg_final.Y + arg_margins.Y)
+    //Move cursor to the end point
+    if (arg_end.X != -1 &&
+        arg_end.Y != -1) {
+        arg_end = {
+            static_cast<short>(arg_end.X + arg_margins.X),
+            static_cast<short>(arg_end.Y + arg_margins.Y)
         };
 
-        SetConsoleCursorPosition(console_out, arg_final);
+        SetConsoleCursorPosition(console_out, arg_end);
     }
     return 0;
 }

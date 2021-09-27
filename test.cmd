@@ -41,7 +41,7 @@ cls
   echo.line`53`20`1  Debug
   echo.line`53`21`2  Release
 
-  echo.final`51`23
+  echo.end`51`23
 )>"layout.conf"
 
 
