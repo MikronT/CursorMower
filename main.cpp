@@ -44,6 +44,8 @@ int help() {
         << endl << "      To set the point to move cursor to"
         << endl << "      Margins are applied to all the coords automatically"
         << endl << "      Applies to all the commands below"
+        << endl << "  > clear"
+        << endl << "      To clear everything"
         << endl << "  > clear`{length}"
         << endl << "      To clear line with the specified length"
         << endl << "  > clear`{x}`{y}"
@@ -115,10 +117,9 @@ int main(const int arg_count, char** arg_list) {
         error(ERROR_FILE, arg_file);
 
     {
-        auto line_coords = COORD{0, 0};
-
         string line;
         int line_i = 0;
+        auto line_coords = COORD{0, 0};
 
         while (getline(layout, line)) {
             line_i++;
@@ -148,12 +149,20 @@ int main(const int arg_count, char** arg_list) {
                 arg_blocks.emplace_back(Block{line_coords, {}});
 
             else if (cell.at(0) == "clear") {
-                if (cell.size() < 2)
-                    error(ERROR_FORMAT, to_string(line_i) + ": " + line);
-
-                auto lines = cell.size() == 2 ? 1 : stoi(cell.at(2)) - arg_blocks.at(arg_blocks.size() - 1).point.Y;
-                auto length = toShort(cell.at(1), line_i);
+                auto lines =
+                    cell.size() == 1 ?
+                        arg_dims.Y :
+                        cell.size() == 2 ?
+                            1 :
+                            stoi(cell.at(2)) - arg_blocks.at(arg_blocks.size() - 1).point.Y;
+                auto length =
+                    cell.size() == 1 ?
+                        arg_dims.X :
+                        toShort(cell.at(1), line_i);
                 auto text = string(length, ' ');
+
+                if (cell.size() == 1)
+                    arg_blocks.emplace_back(Block{COORD{0, 0}, {}});
 
                 for (int i = 0; i < lines; i++)
                     arg_blocks
