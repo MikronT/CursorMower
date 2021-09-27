@@ -28,20 +28,23 @@ cls
     )
   )
 
-  echo.text`39`17`                                        
-  echo.text`39`18`                                        
-  echo.text`39`19`                                        
-  echo.text`39`20`                                        
-  echo.text`39`21`                                        
-  echo.text`39`22`                                        
-  echo.text`39`23`                                        
-  echo.text`39`24`                                        
+  echo.goto`39`17
+  echo.text`                                        
+  echo.text`                                        
+  echo.text`                                        
+  echo.text`                                        
+  echo.text`                                        
+  echo.text`                                        
+  echo.text`                                        
+  echo.text`                                        
 
-  echo.text`51`18`CursorMower v2.1
-  echo.text`53`20`1  Debug
-  echo.text`53`21`2  Release
+  echo.goto`51`18
+  echo.text`CursorMower v2.1
+  echo.goto`53`20
+  echo.text`1  Debug
+  echo.text`2  Release
 
-  echo.end`51`23
+  echo.goto`51`23
 )>"layout.conf"
 
 

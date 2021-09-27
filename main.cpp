@@ -10,7 +10,6 @@ using namespace nsCommandLineLib;
 using namespace nsStringLib;
 
 
-struct Line {
 const int
     ERROR_ARGS_COUNT = 1,
     ERROR_FILE = 2,
@@ -18,8 +17,9 @@ const int
     ERROR_OUT_OF_BOUNDS = 4;
 
 
+struct Block {
     COORD point;
-    string text;
+    vector<string> strings;
 };
 
 
