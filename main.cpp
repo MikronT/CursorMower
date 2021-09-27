@@ -104,9 +104,11 @@ int main(const int arg_count, char** arg_list) {
 
     {
         vector<string> block;
-        COORD block_coords;
+        auto block_coords = COORD{0, 0};
+
         string sourceLine;
         int i = 0;
+
         while (getline(layout, sourceLine)) {
             i++;
             vector<string> cell = string_split(sourceLine, '`', 4);
