@@ -16,7 +16,7 @@ namespace nsStringLib {
         const auto str = output.c_str();
         auto size = 0;
 
-        for (size_t i = 0; i < output.size(); ++i)
+        for (size_t i = 0; i < output.size(); i++)
             if (size < to) size += (str[i] & 0xc0) != 0x80;
             else return output.substr(0, i);
         return output;

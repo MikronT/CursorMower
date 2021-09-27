@@ -4,7 +4,7 @@
 
 This C++ based tool intends to provide fast and convenient command line interface building experience
 
-**Version:** 3.0
+**Version:** 3.1
 
 *Developed for Windows 10*
 *Not tested on other versions yet*
@@ -54,11 +54,28 @@ Notes
 - Coordinates are starting from (0,0) at the top left corner
 - Margins are applied to all the coordinates automatically
 
+#### Clear lines
+
+To clear one line only
+
+```text
+goto`{x}`{y}
+clear`{length}
+```
+
+To clear an area
+
+```text
+goto`{x}`{y}
+clear`{x2}`{y2}
+```
+
 #### Print the text
 
 Lets you set what should be printed
 
 ```text
+goto`{x}`{y}
 text`{any text with spaces}
 ```
 

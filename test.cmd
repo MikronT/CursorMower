@@ -42,17 +42,17 @@ cls
   )
 
   echo.goto`39`17
-  echo.text`                                        
-  echo.text`                                        
-  echo.text`                                        
-  echo.text`                                        
-  echo.text`                                        
-  echo.text`                                        
-  echo.text`                                        
-  echo.text`                                        
+  echo.clear`40
+  echo.clear`40
+  echo.clear`40
+  echo.clear`40
+  echo.clear`40
+  echo.clear`40
+  echo.clear`40
+  echo.clear`40
 
   echo.goto`51`18
-  echo.text`CursorMower v2.1
+  echo.text`CursorMower v3.1
   echo.goto`53`20
   echo.text`1  Debug
   echo.text`2  Release
