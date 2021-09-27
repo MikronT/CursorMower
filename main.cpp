@@ -49,15 +49,14 @@ int help() {
     return 5;
 }
 
-int checkNumber(const vector<string>& cells, const int line) {
+
+void checkNumber(const vector<string>& cells, const int line) {
     for (string cell : cells) {
         if (!ranges::all_of(cell, isdigit)) {
             cerr << "Illegal formatting at line " << to_string(line) << endl;
-            return 2;
+            exit(2);
         }
     }
-
-    return 0;
 }
 
 
@@ -100,19 +99,13 @@ int main(const int arg_count, char** arg_list) {
         };
 
         if (cell.at(0) == "dims") {
-            if (int out = checkNumber({cell.at(1), cell.at(2)}, i);
-                out != 0)
-                return out;
+            checkNumber({cell.at(1), cell.at(2)}, i);
             arg_dims = coords;
         } else if (cell.at(0) == "margins") {
-            if (int out = checkNumber({cell.at(1), cell.at(2)}, i);
-                out != 0)
-                return out;
+            checkNumber({cell.at(1), cell.at(2)}, i);
             arg_margins = coords;
         } else if (cell.at(0) == "end") {
-            if (int out = checkNumber({cell.at(1), cell.at(2)}, i);
-                out != 0)
-                return out;
+            checkNumber({cell.at(1), cell.at(2)}, i);
             arg_end = coords;
         } else if (cell.at(0) == "text") {
             if (cell.size() < 4) {
