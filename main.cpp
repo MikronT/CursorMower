@@ -11,6 +11,13 @@ using namespace nsStringLib;
 
 
 struct Line {
+const int
+    ERROR_ARGS_COUNT = 1,
+    ERROR_FILE = 2,
+    ERROR_FORMAT = 3,
+    ERROR_OUT_OF_BOUNDS = 4;
+
+
     COORD point;
     string text;
 };
@@ -40,23 +47,35 @@ int help() {
         << endl
         << endl << "Returns"
         << endl << "  0 - all is OK"
-        << endl << "  1 - not enough or too many args"
-        << endl << "  2 - illegal line format"
-        << endl << "  3 - the text is out of screen buffer bounds"
-        << endl << "  4 - error reading a file"
+        << endl << "  " << ERROR_ARGS_COUNT << " - not enough or too many args"
+        << endl << "  " << ERROR_FILE << " - error reading a file"
+        << endl << "  " << ERROR_FORMAT << " - illegal line format"
+        << endl << "  " << ERROR_OUT_OF_BOUNDS << " - the text is out of screen buffer bounds"
         << endl << "  5 - help is shown"
         << endl;
     return 5;
 }
 
+void error(const int error, const string& msg) {
+    switch (error) {
+    case ERROR_ARGS_COUNT:
+        cerr << "Wrong number of arguments: " << msg << endl;
+        exit(error);
+    case ERROR_FILE:
+        cerr << "Error reading the file " << msg << endl;
+        exit(error);
+    case ERROR_FORMAT:
+        cerr << "Illegal formatting at line " << msg << endl;
+        exit(error);
+    case ERROR_OUT_OF_BOUNDS:
+        cerr << "Argument out of bounds: " << msg << endl;
+        exit(error);
+    }
+}
+
 
 void checkNumber(const vector<string>& cells, const int line) {
-    for (string cell : cells) {
-        if (!ranges::all_of(cell, isdigit)) {
-            cerr << "Illegal formatting at line " << to_string(line) << endl;
-            exit(2);
-        }
-    }
+    for (string cell : cells) if (!ranges::all_of(cell, isdigit)) error(ERROR_FORMAT, to_string(line));
 }
 
 
@@ -65,10 +84,7 @@ int main(const int arg_count, char** arg_list) {
         arg_count == 2 && string(arg_list[1]) == "/help")
         return help();
 
-    if (arg_count != 2) {
-        cerr << "Wrong number of arguments: " << to_string(arg_count - 1) << endl;
-        return 1;
-    }
+    if (arg_count != 2) error(ERROR_ARGS_COUNT, to_string(arg_count - 1));
 
 
     const string arg_file = arg_list[1];
@@ -81,10 +97,7 @@ int main(const int arg_count, char** arg_list) {
     //Parse input from the file
     ifstream layout;
     layout.open(arg_file);
-    if (!layout.is_open()) {
-        cerr << "Error reading the file " << arg_file << endl;
-        return 4;
-    }
+    if (!layout.is_open()) error(ERROR_FILE, arg_file);
 
     string sourceLine;
     int i = 0;
@@ -98,23 +111,19 @@ int main(const int arg_count, char** arg_list) {
             static_cast<short>(stoi(cell.at(2)))
         };
 
-        if (cell.at(0) == "dims") {
+        if (cell.at(0) == "dims" ||
+            cell.at(0) == "margins" ||
+            cell.at(0) == "goto") {
+            if (cell.size() < 3) error(ERROR_FORMAT, to_string(i) + ": " + sourceLine);
             checkNumber({cell.at(1), cell.at(2)}, i);
-            arg_dims = coords;
-        } else if (cell.at(0) == "margins") {
-            checkNumber({cell.at(1), cell.at(2)}, i);
-            arg_margins = coords;
-        } else if (cell.at(0) == "end") {
-            checkNumber({cell.at(1), cell.at(2)}, i);
-            arg_end = coords;
-        } else if (cell.at(0) == "text") {
-            if (cell.size() < 4) {
-                cerr << "Illegal formatting in line "
-                    << to_string(i) << ": " << sourceLine << endl;
-                return 2;
-            }
+        }
 
-            arg_lines.emplace_back(Line{coords, cell.at(3)});
+        if (cell.at(0) == "dims") arg_dims = coords;
+        else if (cell.at(0) == "margins") arg_margins = coords;
+        else if (cell.at(0) == "goto") arg_end = coords;
+        else if (cell.at(0) == "text") {
+            if (cell.size() < 2) error(ERROR_FORMAT, to_string(i) + ": " + sourceLine);
+            arg_lines.emplace_back(Line{coords, cell.at(1)});
         }
     }
     layout.close();
@@ -151,27 +160,23 @@ int main(const int arg_count, char** arg_list) {
         };
 
         if (coords.X < 0 || coords.X >= arg_dims.X ||
-            coords.Y < 0 || coords.Y >= arg_dims.Y) {
-            cerr << "Argument out of bounds: "
-                << to_string(coords.X) << ";"
-                << to_string(coords.Y)
-                << " with bounds of "
-                << to_string(arg_dims.X) << ":"
-                << to_string(arg_dims.Y) << endl;
-            return 3;
-        }
+            coords.Y < 0 || coords.Y >= arg_dims.Y)
+            error(ERROR_OUT_OF_BOUNDS,
+                  to_string(coords.X) + ";" +
+                  to_string(coords.Y) +
+                  " with bounds of " +
+                  to_string(arg_dims.X) + ":" +
+                  to_string(arg_dims.Y));
 
 
-        if (coords.X + string_getSize(text) >= arg_dims.X) {
-            cerr << "Text out of bounds: "
-                << to_string(coords.X) << ";"
-                << to_string(coords.Y)
-                << " with bounds of "
-                << to_string(arg_dims.X) << ":"
-                << to_string(arg_dims.Y)
-                << " with text \"" << text << "\"" << endl;
-            return 3;
-        }
+        if (coords.X + string_getSize(text) >= arg_dims.X)
+            error(ERROR_OUT_OF_BOUNDS,
+                  to_string(coords.X) + ";"
+                  + to_string(coords.Y)
+                  + " with bounds of "
+                  + to_string(arg_dims.X) + ":"
+                  + to_string(arg_dims.Y)
+                  + " with text \"" + text + "\"");
 
         SetConsoleCursorPosition(console_out, coords);
         cout << string_cut(text, arg_dims.X - coords.X);
