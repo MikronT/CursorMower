@@ -75,7 +75,9 @@ void error(const int error, const string& msg) {
 
 
 void checkNumber(const vector<string>& cells, const int line) {
-    for (string cell : cells) if (!ranges::all_of(cell, isdigit)) error(ERROR_FORMAT, to_string(line));
+    for (string cell : cells)
+        if (!ranges::all_of(cell, isdigit))
+            error(ERROR_FORMAT, to_string(line));
 }
 
 
@@ -84,48 +86,65 @@ int main(const int arg_count, char** arg_list) {
         arg_count == 2 && string(arg_list[1]) == "/help")
         return help();
 
-    if (arg_count != 2) error(ERROR_ARGS_COUNT, to_string(arg_count - 1));
+    if (arg_count != 2)
+        error(ERROR_ARGS_COUNT, to_string(arg_count - 1));
 
 
     const string arg_file = arg_list[1];
     COORD arg_dims = {0, 0},
-          arg_margins = {0, 0},
-          arg_end = {-1, -1};
-    vector<Line> arg_lines;
+          arg_margins = {0, 0};
+    vector<Block> arg_blocks;
 
 
     //Parse input from the file
     ifstream layout;
     layout.open(arg_file);
-    if (!layout.is_open()) error(ERROR_FILE, arg_file);
+    if (!layout.is_open())
+        error(ERROR_FILE, arg_file);
 
-    string sourceLine;
-    int i = 0;
-    while (getline(layout, sourceLine)) {
-        i++;
-        vector<string> cell = string_split(sourceLine, '`', 4);
-        if (cell.empty()) continue;
+    {
+        vector<string> block;
+        COORD block_coords;
+        string sourceLine;
+        int i = 0;
+        while (getline(layout, sourceLine)) {
+            i++;
+            vector<string> cell = string_split(sourceLine, '`', 4);
+            if (cell.empty())
+                continue;
 
-        auto coords = COORD{
-            static_cast<short>(stoi(cell.at(1))),
-            static_cast<short>(stoi(cell.at(2)))
-        };
+            auto coords = COORD{
+                static_cast<short>(stoi(cell.at(1))),
+                static_cast<short>(stoi(cell.at(2)))
+            };
 
-        if (cell.at(0) == "dims" ||
-            cell.at(0) == "margins" ||
-            cell.at(0) == "goto") {
-            if (cell.size() < 3) error(ERROR_FORMAT, to_string(i) + ": " + sourceLine);
-            checkNumber({cell.at(1), cell.at(2)}, i);
-        }
+            if (cell.at(0) == "dims" ||
+                cell.at(0) == "margins" ||
+                cell.at(0) == "goto") {
+                if (cell.size() < 3)
+                    error(ERROR_FORMAT, to_string(i) + ": " + sourceLine);
+                checkNumber({cell.at(1), cell.at(2)}, i);
+            }
 
-        if (cell.at(0) == "dims") arg_dims = coords;
-        else if (cell.at(0) == "margins") arg_margins = coords;
-        else if (cell.at(0) == "goto") arg_end = coords;
-        else if (cell.at(0) == "text") {
-            if (cell.size() < 2) error(ERROR_FORMAT, to_string(i) + ": " + sourceLine);
-            arg_lines.emplace_back(Line{coords, cell.at(1)});
+            if (cell.at(0) == "dims")
+                arg_dims = coords;
+            else if (cell.at(0) == "margins")
+                arg_margins = coords;
+            else if (cell.at(0) == "goto") {
+                if (!block.empty())
+                    arg_blocks.emplace_back(Block{block_coords, block});
+
+                block.clear();
+                block_coords = coords;
+            } else if (cell.at(0) == "text") {
+                if (cell.size() < 2)
+                    error(ERROR_FORMAT, to_string(i) + ": " + sourceLine);
+
+                block.emplace_back(cell.at(1));
+            }
         }
     }
+
     layout.close();
 
 
@@ -153,45 +172,25 @@ int main(const int arg_count, char** arg_list) {
 
 
     //Write text to screen
-    for (auto& [coords, text] : arg_lines) {
-        coords = {
-            static_cast<short>(coords.X + arg_margins.X),
-            static_cast<short>(coords.Y + arg_margins.Y)
-        };
+    for (auto& [coords, strings] : arg_blocks)
+        for (size_t i = 0; i < strings.size(); i++) {
+            coords = {
+                static_cast<short>(coords.X + arg_margins.X),
+                static_cast<short>(coords.Y + arg_margins.Y + i)
+            };
 
-        if (coords.X < 0 || coords.X >= arg_dims.X ||
-            coords.Y < 0 || coords.Y >= arg_dims.Y)
-            error(ERROR_OUT_OF_BOUNDS,
-                  to_string(coords.X) + ";" +
-                  to_string(coords.Y) +
-                  " with bounds of " +
-                  to_string(arg_dims.X) + ":" +
-                  to_string(arg_dims.Y));
+            if (coords.X < 0 || coords.X >= arg_dims.X ||
+                coords.Y < 0 || coords.Y >= arg_dims.Y)
+                error(ERROR_OUT_OF_BOUNDS,
+                      to_string(coords.X) + ";" +
+                      to_string(coords.Y) +
+                      " with bounds of " +
+                      to_string(arg_dims.X) + ":" +
+                      to_string(arg_dims.Y));
 
+            SetConsoleCursorPosition(console_out, coords);
 
-        if (coords.X + string_getSize(text) >= arg_dims.X)
-            error(ERROR_OUT_OF_BOUNDS,
-                  to_string(coords.X) + ";"
-                  + to_string(coords.Y)
-                  + " with bounds of "
-                  + to_string(arg_dims.X) + ":"
-                  + to_string(arg_dims.Y)
-                  + " with text \"" + text + "\"");
-
-        SetConsoleCursorPosition(console_out, coords);
-        cout << string_cut(text, arg_dims.X - coords.X);
-    }
-
-
-    //Move cursor to the end point
-    if (arg_end.X != -1 &&
-        arg_end.Y != -1) {
-        arg_end = {
-            static_cast<short>(arg_end.X + arg_margins.X),
-            static_cast<short>(arg_end.Y + arg_margins.Y)
-        };
-
-        SetConsoleCursorPosition(console_out, arg_end);
-    }
+            cout << string_cut(strings.at(i), arg_dims.X - coords.X);
+        }
     return 0;
 }
