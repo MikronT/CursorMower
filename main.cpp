@@ -103,7 +103,6 @@ int main(const int arg_count, char** arg_list) {
         error(ERROR_FILE, arg_file);
 
     {
-        vector<string> block;
         auto block_coords = COORD{0, 0},
              line_coords = COORD{0, 0};
 
@@ -134,16 +133,13 @@ int main(const int arg_count, char** arg_list) {
             else if (cell.at(0) == "margins")
                 arg_margins = line_coords;
             else if (cell.at(0) == "goto") {
-                if (!block.empty())
-                    arg_blocks.emplace_back(Block{block_coords, block});
-
-                block.clear();
                 block_coords = line_coords;
+                arg_blocks.emplace_back(Block{block_coords});
             } else if (cell.at(0) == "text") {
                 if (cell.size() < 2)
                     error(ERROR_FORMAT, to_string(i) + ": " + line);
 
-                block.emplace_back(cell.at(1));
+                arg_blocks.at(arg_blocks.size() - 1).strings.emplace_back(cell.at(1));
             }
         }
     }
@@ -181,25 +177,28 @@ int main(const int arg_count, char** arg_list) {
             static_cast<short>(coords.Y + arg_margins.Y)
         };
 
-        for (size_t i = 0; i < strings.size(); i++) {
-            coords = {
-                coords.X,
-                static_cast<short>(coords.Y + 1)
-            };
-
-            if (coords.X < 0 || coords.X >= arg_dims.X ||
-                coords.Y < 0 || coords.Y >= arg_dims.Y)
-                error(ERROR_OUT_OF_BOUNDS,
-                      to_string(coords.X) + ";" +
-                      to_string(coords.Y) +
-                      " with bounds of " +
-                      to_string(arg_dims.X) + ":" +
-                      to_string(arg_dims.Y));
-
+        if (strings.empty())
             SetConsoleCursorPosition(console_out, coords);
+        else
+            for (auto& i : strings) {
+                if (coords.X < 0 || coords.X >= arg_dims.X ||
+                    coords.Y < 0 || coords.Y >= arg_dims.Y)
+                    error(ERROR_OUT_OF_BOUNDS,
+                          to_string(coords.X) + ";" +
+                          to_string(coords.Y) +
+                          " with bounds of " +
+                          to_string(arg_dims.X) + ":" +
+                          to_string(arg_dims.Y));
 
-            cout << string_cut(strings.at(i), arg_dims.X - coords.X);
-        }
+                SetConsoleCursorPosition(console_out, coords);
+
+                cout << string_cut(i, arg_dims.X - coords.X);
+
+                coords = {
+                    coords.X,
+                    static_cast<short>(coords.Y + 1)
+                };
+            }
     }
     return 0;
 }
