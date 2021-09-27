@@ -184,7 +184,7 @@ int main(const int arg_count, char** arg_list) {
         for (size_t i = 0; i < strings.size(); i++) {
             coords = {
                 coords.X,
-                static_cast<short>(coords.Y + i)
+                static_cast<short>(coords.Y + 1)
             };
 
             if (coords.X < 0 || coords.X >= arg_dims.X ||
