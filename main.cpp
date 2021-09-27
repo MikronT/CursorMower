@@ -17,7 +17,7 @@ struct Line {
 
 
 int help() {
-    cout << "Cursor Mower v2.0 [github.com/MikronT]"
+    cout << "Cursor Mower v2.1 [github.com/MikronT]"
         << endl
         << endl << "Usage"
         << endl << "  cursor \"file\""
@@ -47,6 +47,17 @@ int help() {
         << endl << "  5 - help is shown"
         << endl;
     return 5;
+}
+
+int checkNumber(const vector<string>& cells, const int line) {
+    for (string cell : cells) {
+        if (!ranges::all_of(cell, isdigit)) {
+            cerr << "Illegal formatting at line " << to_string(line) << endl;
+            return 2;
+        }
+    }
+
+    return 0;
 }
 
 
@@ -83,23 +94,27 @@ int main(const int arg_count, char** arg_list) {
         vector<string> cell = string_split(sourceLine, '`', 4);
         if (cell.empty()) continue;
 
-        if (cell.size() < 3 ||
-            !ranges::all_of(cell.at(1), isdigit) ||
-            !ranges::all_of(cell.at(2), isdigit)) {
-            cerr << "Illegal formatting in line "
-                << to_string(i) << ": " << sourceLine << endl;
-            return 2;
-        }
-
         auto coords = COORD{
             static_cast<short>(stoi(cell.at(1))),
             static_cast<short>(stoi(cell.at(2)))
         };
 
-        if (cell.at(0) == "dims") arg_dims = coords;
-        else if (cell.at(0) == "margins") arg_margins = coords;
-        else if (cell.at(0) == "end") arg_end = coords;
-        else if (cell.at(0) == "text") {
+        if (cell.at(0) == "dims") {
+            if (int out = checkNumber({cell.at(1), cell.at(2)}, i);
+                out != 0)
+                return out;
+            arg_dims = coords;
+        } else if (cell.at(0) == "margins") {
+            if (int out = checkNumber({cell.at(1), cell.at(2)}, i);
+                out != 0)
+                return out;
+            arg_margins = coords;
+        } else if (cell.at(0) == "end") {
+            if (int out = checkNumber({cell.at(1), cell.at(2)}, i);
+                out != 0)
+                return out;
+            arg_end = coords;
+        } else if (cell.at(0) == "text") {
             if (cell.size() < 4) {
                 cerr << "Illegal formatting in line "
                     << to_string(i) << ": " << sourceLine << endl;
