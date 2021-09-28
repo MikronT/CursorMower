@@ -7,7 +7,7 @@
 using std::ostringstream, std::string, std::vector, std::wstring;
 
 
-namespace nsStringLib {
+namespace nsString {
     template <typename T> [[nodiscard]] string string_cut(T what, const int to) {
         ostringstream format;
         format << std::setprecision(2) << what;

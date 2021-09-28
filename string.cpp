@@ -1,20 +1,20 @@
 ﻿#include "string.hpp"
 
-using namespace nsStringLib;
+using namespace nsString;
 
 
-int nsStringLib::string_getSize(const string& of) { return string_getSize(of.c_str()); }
-int nsStringLib::string_getSize(const char* of) {
+int nsString::string_getSize(const string& of) { return string_getSize(of.c_str()); }
+int nsString::string_getSize(const char* of) {
     auto size = 0;
     while (*of) size += (*of++ & 0xc0) != 0x80;
     return size;
 }
 
-vector<string> nsStringLib::string_split(vector<char>& source, const char delim, const int maxTokens) {
+vector<string> nsString::string_split(vector<char>& source, const char delim, const int maxTokens) {
     return string_split(string(source.begin(), source.end()), delim, maxTokens);
 }
 #pragma optimize("", off)
-vector<string> nsStringLib::string_split(const string& source, const char delim, int maxTokens) {
+vector<string> nsString::string_split(const string& source, const char delim, int maxTokens) {
     vector<string> output;
     auto input(source);
 
