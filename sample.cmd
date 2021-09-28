@@ -17,64 +17,46 @@ cls
   echo.dims`120`40
   echo.margins`2`1
 
-  for /l %%i in (3,1,116) do (
-    for /l %%j in (2,1,37) do (
-      echo.goto`%%i`%%j
-      echo.text`=
-    )
-  )
-
-  echo.clear
-
-  for /l %%i in (3,1,116) do (
-    for /l %%j in (2,1,37) do (
-      echo.goto`%%i`%%j
-      echo.text`/
-    )
-  )
-
-  echo.clear
-
-  for /l %%i in (3,1,116) do (
-    for /l %%j in (2,1,37) do (
-      echo.goto`%%i`%%j
-      echo.text`\
-    )
-  )
-
-  echo.clear
-
-  for /l %%i in (3,1,116) do (
-    for /l %%j in (2,1,37) do (
-      echo.goto`%%i`%%j
-      echo.text`^|
-    )
-  )
-
-  echo.clear
-
-  for /l %%i in (0,1, 39) do (
+  for /l %%i in (1,1, 38) do (
     echo.goto`0`%%i
-    echo.text`^|
+    echo.text`│
   )
-  for /l %%i in (0,1, 39) do (
+  for /l %%i in (1,1, 38) do (
     echo.goto`119`%%i
-    echo.text`^|
+    echo.text`│
   )
-  for /l %%i in (0,1,119) do (
+  for /l %%i in (1,1,118) do (
     echo.goto`%%i`0
-    echo.text`-
+    echo.text`─
   )
-  for /l %%i in (0,1,119) do (
+  for /l %%i in (1,1,118) do (
     echo.goto`%%i`39
-    echo.text`-
+    echo.text`─
   )
+  echo.goto`0`0
+  echo.text`┌
+  echo.goto`119`0
+  echo.text`┐
+  echo.goto`0`39
+  echo.text`└
+  echo.goto`119`39
+  echo.text`┘
 
-  for /l %%i in (3,1,116) do (
-    for /l %%j in (2,1,37) do (
-      echo.goto`%%i`%%j
-      echo.text`+
-    )
+  for /l %%i in (1,1, 38) do (
+    echo.goto`3`%%i
+    echo.text`▪
+  )
+  for /l %%i in (1,1, 38) do (
+    echo.goto`116`%%i
+    echo.text`▪
+  )
+  for /l %%i in (1,1,118) do (
+    echo.goto`%%i`2
+    echo.text`▪
+  )
+  for /l %%i in (1,1,118) do (
+    echo.goto`%%i`37
+    echo.text`▪
   )
 
   echo.goto`39`14
@@ -91,8 +73,8 @@ cls
   echo.clear`40
   echo.clear`40
 
-  echo.goto`51`16
-  echo.text`CursorMower v3.2
+  echo.goto`48`16
+  echo.text`CursorMower Alpha v3.2
   echo.goto`53`18
   echo.text`1  Debug
   echo.text`2  Release
