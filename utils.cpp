@@ -45,7 +45,7 @@ int nsUtils::help() {
         << endl << "  0 | All is OK"
         << endl << "  " << ERROR_ARGS_COUNT << " | Not enough/too many arguments (no file specified)"
         << endl << "  " << ERROR_FILE << " | Error reading a file (file not found or is inaccessible)"
-        << endl << "  " << ERROR_FORMAT << " | Illegal line syntax (the syntax is wrong, check cursor /help)"
+        << endl << "  " << ERROR_SYNTAX << " | Illegal line syntax (the syntax is wrong, check cursor /help)"
         << endl << "  " << ERROR_OUT_OF_BOUNDS << " | Out of screen buffer bounds (text or coords exceed window dims)"
         << endl << "  5 | Help message is shown"
         << endl;
@@ -59,7 +59,7 @@ void nsUtils::error(const int error, const string& msg) {
     case ERROR_FILE:
         cerr << "Error reading the file " << msg << endl;
         exit(error);
-    case ERROR_FORMAT:
+    case ERROR_SYNTAX:
         cerr << "Illegal formatting at line " << msg << endl;
         exit(error);
     case ERROR_OUT_OF_BOUNDS:
@@ -71,7 +71,30 @@ void nsUtils::error(const int error, const string& msg) {
 short nsUtils::to_short(const int number) { return static_cast<short>(number); }
 short nsUtils::to_short(const string& text, const int fromLine) {
     if (!ranges::all_of(text, isdigit))
-        error(ERROR_FORMAT, to_string(fromLine));
+        error(ERROR_SYNTAX, to_string(fromLine));
 
     return static_cast<short>(stoi(text));
+}
+
+void nsUtils::rearrangeCoords(COORD& point1, COORD& point2) {
+    if (point1.X <= point2.X) {
+        if (point1.Y > point2.Y) {
+            //Swap by OY
+            const auto cursor1_y = point1.Y;
+            point1.Y = point2.Y;
+            point2.Y = cursor1_y;
+        }
+    } else {
+        if (point1.Y <= point2.Y) {
+            //Swap by OX
+            const auto cursor1_x = point1.X;
+            point1.X = point2.X;
+            point2.X = cursor1_x;
+        } else {
+            //Swap places
+            const COORD cursor1_temp = point1;
+            point1 = point2;
+            point2 = cursor1_temp;
+        }
+    }
 }

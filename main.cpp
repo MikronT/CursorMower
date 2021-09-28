@@ -1,6 +1,4 @@
-#include <algorithm>
 #include <fstream>
-#include <functional>
 #include <iostream>
 #include "commandLine.hpp"
 #include "string.hpp"
@@ -23,12 +21,17 @@ int main(const int arg_count, char** arg_list) {
         return help();
 
     if (arg_count != 2)
-        error(ERROR_ARGS_COUNT,
-              to_string(arg_count - 1));
+        error(ERROR_ARGS_COUNT, to_string(arg_count - 1));
 
+
+    auto cmd = CommandLine();
+
+    auto cursor1 = COORD{1, 1},
+         cursor2 = COORD{1, 1};
+    bool cursor_changed = true;
 
     const string arg_file = arg_list[1];
-    COORD param_dims = {0, 0};
+    COORD param_dims = cmd.getScreenDims();
     short param_margin = 0;
     vector<Block> param_actions;
 
@@ -37,18 +40,15 @@ int main(const int arg_count, char** arg_list) {
     ifstream layout;
     layout.open(arg_file);
     if (!layout.is_open())
-        error(ERROR_FILE,
-              arg_file);
+        error(ERROR_FILE, arg_file);
 
     string line_read;
-    bool cursor_moved = true;
-    auto cursor1 = COORD{1, 1},
-         cursor2 = COORD{1, 1};
     int line_i = 0;
 
     while (getline(layout, line_read)) {
         line_i++;
         vector<string> cells = string_split(line_read, '=', 2);
+
         if (cells.empty())
             continue;
 
@@ -62,7 +62,10 @@ int main(const int arg_count, char** arg_list) {
             },
             cells.at(0))) {
             if (cells.size() != 2)
-                error(ERROR_FORMAT, to_string(line_i) + ": " + line_read);
+                error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
+        } else if (!contains(
+            vector<string>{"cursor1", "cursor2", "skip", "clear"}, cells.at(0))) {
+            error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
         }
 
 
@@ -80,52 +83,59 @@ int main(const int arg_count, char** arg_list) {
             vector<string> values = string_split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
-                error(ERROR_FORMAT, to_string(line_i) + ": " + line_read);
+                error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 
-            cursor_moved = true;
             cursor1 = COORD{
                 to_short(values.at(0), line_i),
                 to_short(values.at(1), line_i)
             };
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor2") {
             vector<string> values = string_split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
-                error(ERROR_FORMAT, to_string(line_i) + ": " + line_read);
+                error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 
-            cursor_moved = true;
             cursor2 = COORD{
                 to_short(values.at(0), line_i),
                 to_short(values.at(1), line_i)
             };
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor1_up") {
-            cursor_moved = true;
             cursor1.Y--;
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor1_down" || cells.at(0) == "skip") {
-            cursor_moved = true;
             cursor1.Y++;
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor1_left") {
-            cursor_moved = true;
             cursor1.X--;
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor1_right") {
-            cursor_moved = true;
             cursor1.X++;
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor2_up") {
-            cursor_moved = true;
             cursor2.Y--;
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor2_down") {
-            cursor_moved = true;
             cursor2.Y++;
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor2_left") {
-            cursor_moved = true;
             cursor2.X--;
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor2_right") {
-            cursor_moved = true;
             cursor2.X++;
+            cursor_changed = true;
         } else if (cells.at(0) == "text") {
-            if (cursor_moved) {
-                cursor_moved = false;
-                param_actions.emplace_back(Block{cursor1, {}});
+            if (cursor_changed) {
+                cursor_changed = false;
+                param_actions.emplace_back(Block{
+                    COORD{
+                        //Add margins
+                        to_short(cursor1.X + param_margin * 2),
+                        to_short(cursor1.Y + param_margin)
+                    },
+                    {}
+                });
             }
 
             param_actions
@@ -133,21 +143,29 @@ int main(const int arg_count, char** arg_list) {
                     .lines
                     .emplace_back(cells.at(1));
         } else if (cells.at(0) == "clear") {
-            int lines, length;
+            rearrangeCoords(cursor1, cursor2);
+
+            int lines = 0, length = 0;
 
             if (cells.size() == 1) {
                 lines = abs(cursor2.Y - cursor1.Y);
                 length = abs(cursor2.X - cursor1.X);
+                param_actions.emplace_back(Block{
+                    COORD{
+                        //Add margins there
+                        to_short(cursor1.X + param_margin * 2),
+                        to_short(cursor1.Y + param_margin)
+                    },
+                    {}
+                });
             } else if (cells.at(1) == "screen") {
-                lines = param_dims.Y;
-                length = param_dims.X;
+                lines = param_dims.Y + param_margin * 2;
+                length = param_dims.X + param_margin * 2 * 2;
+                param_actions.emplace_back(Block{COORD{1, 1}, {}});
             } else
-                error(ERROR_FORMAT, to_string(line_i) + ": " + line_read);
+                error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 
             auto text = string(length, ' ');
-
-            if (cells.size() == 1)
-                param_actions.emplace_back(Block{COORD{1, 1}, {}});
 
             for (int i = 0; i < lines; i++)
                 param_actions
@@ -161,11 +179,10 @@ int main(const int arg_count, char** arg_list) {
 
 
     //Get/set screen dimensions
-    auto cmd = CommandLine();
-
     if (param_dims.X == 0 || param_dims.Y == 0) {
         auto [X, Y] = cmd.getScreenDims();
 
+        //Double margin for X-axis
         param_dims.X = X - param_margin * 2 * 2;
         param_dims.Y = Y - param_margin * 2;
     } else {
@@ -179,16 +196,17 @@ int main(const int arg_count, char** arg_list) {
     //Write text to screen
     for (auto& [coord, lines] : param_actions) {
         coord = {
-            to_short(coord.X + 1 + param_margin * 2),
-            to_short(coord.Y + 1 + param_margin)
+            //-1 means user coord style correction
+            to_short(coord.X - 1),
+            to_short(coord.Y - 1)
         };
 
         if (lines.empty())
             cmd.goTo(coord);
         else
             for (auto& text : lines) {
-                if (coord.X < 1 || coord.X > param_dims.X ||
-                    coord.Y < 1 || coord.Y > param_dims.Y)
+                if (coord.X < 0 || coord.X >= param_dims.X ||
+                    coord.Y < 0 || coord.Y >= param_dims.Y)
                     error(ERROR_OUT_OF_BOUNDS,
                           to_string(coord.X) + ";" +
                           to_string(coord.Y) +
