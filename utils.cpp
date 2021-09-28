@@ -70,7 +70,7 @@ void nsUtils::error(const int error, const string& msg) {
 
 short nsUtils::to_short(const int number) { return static_cast<short>(number); }
 short nsUtils::to_short(const string& text, const int fromLine) {
-    if (!std::ranges::all_of(text, isdigit))
+    if (!ranges::all_of(text, isdigit))
         error(ERROR_FORMAT, to_string(fromLine));
 
     return static_cast<short>(stoi(text));

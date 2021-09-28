@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
+#include <vector>
 
-using std::string;
+using std::string, std::vector;
 
 
 namespace nsUtils {
@@ -17,4 +18,9 @@ namespace nsUtils {
 
     short to_short(int number);
     short to_short(const string& text, int fromLine);
+
+    
+    template <typename T> [[nodiscard]] bool contains(const vector<T>& vector, T entry) {
+        return std::find(vector.begin(), vector.end(), entry) != vector.end();
+    }
 };
