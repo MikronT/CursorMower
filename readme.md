@@ -71,44 +71,45 @@ Notes
 
 #### Move the cursor
 
-Cursor `to` is the main cursor. All the inline elements are printed at these coordinates
-
-Cursor `from` is required to draw block elements
-
 ```batch
-cursor_from={x} {y}
-cursor_to={x} {y}
+cursor1={x} {y}
+cursor2={x} {y}
 ```
+
+`cursor1` is the main cursor. All the inline elements are printed at these coordinates
+
+`cursor2` is required to draw block elements
 
 Examples below
 
-You can also move the cursor relatively not to calculate the coordinates every time
+You can also move every cursor relatively not to calculate the coordinates by hand
 
 ```batch
-cursor_up={lines}
-cursor_down={lines}
-cursor_left={columns}
-cursor_right={columns}
+cursor1_up={lines}
+cursor1_down={lines}
+cursor1_left={columns}
+cursor1_right={columns}
+
+cursor2_up={lines}
+cursor2_down={lines}
+cursor2_left={columns}
+cursor2_right={columns}
 ```
 
 #### Clear screen
 
-```batch
-clear
-```
-
-Is used to clear a specific area
-
-```batch
-cursor_from=40 15
-cursor_to=60 27
-clear
-```
-
 The following parameter clears the whole screen
 
 ```batch
-clear_screen
+clear=screen
+```
+
+Can be used without parameters to clear a specific area
+
+```batch
+cursor1=40 15
+cursor2=60 27
+clear
 ```
 
 #### Print the text
@@ -116,28 +117,28 @@ clear_screen
 Lets you set what should be printed
 
 ```batch
-cursor_to={x} {y}
+cursor1={x} {y}
 text={any text with spaces, Unicode characters, etc.}
 ```
 
 If you want to write text line by line, you can use the following syntax
 
 ```batch
-cursor_to=5 5
+cursor1=5 5
 text=Line 1
 text=This line is below
 skip
 text=An empty line was printed above
 ```
 
-`skip` parameter lets you skip 1 line not to move the cursor by hand (a shorter form of `cursor_down=1`)
+`skip` parameter lets you skip 1 line not to move the cursor by hand (a shorter form of `cursor1_down=1`)
 
 ### Run
 
 To process the layout file written execute the following
 
 ```batch
-cursor "file"
+cursorMower "file"
 ```
 
 And you will see the result
@@ -148,29 +149,28 @@ You can write the file by yourself but if you want more access to the layout (to
 
 ```batch
 set program_name=CursorMower
-set program_version=Alpha v4.0
 
 (
   echo.screen_width=120
   echo.screen_height=40
   echo.screen_margin=1
 
-  echo.cursor_to=49 17
-  echo.text=%program_name% %program_version%
-
-  echo.cursor_to=54 19
+  echo.cursor1=49 17
+  echo.text=%program_name%
+  echo.cursor1=54 19
   echo.text=1  Check debug build
   echo.text=2  Check release build
   echo.skip
   echo.text=0  Exit
 
   rem Move the cursor for user input
-  echo.cursor_to=52 24
+  echo.cursor1=52 24
+  echo.text=^> 
 )>"layout.tmp"
 
-cursor "layout.tmp"
+cursorMower "layout.tmp"
 
-set /p input="> "
+set /p input=
 ```
 
 ---

@@ -5,55 +5,43 @@ setlocal EnableExtensions EnableDelayedExpansion
 
 pushd "%~dp0"
 
+
+
+set program_name=CursorMower
+set program_version=Alpha v4.0
+
 set module_cursor=Debug\CursorMower.exe
-
-
 
 
 
 if not exist "%module_cursor%" (
   echo.^(i^) CursorMower module not found
   echo.    Compile the project at first
-  pause>nul
-  exit
+  exit /b
 )
 
 
 
 
 
+
+
 :loop
-call :prepareMainLayout
+call :prepareLayout_main
 
 set counter=9
 for /f "delims=" %%i in ('type "layout.conf" 2^>nul') do set /a counter+=1
 
 %module_cursor% "layout.conf"
 
-(
-  echo.screen_width=120
-  echo.screen_height=40
-  echo.screen_margin=1
-
-  echo.cursor_to=4 38
-  echo.text=!counter! operations. That's a lot^!
-)>"layout.conf"
+call :prepareLayout_info !counter!
 %module_cursor% "layout.conf"
 
-
-
-(
-  echo.screen_width=120
-  echo.screen_height=40
-  echo.screen_margin=1
-
-  echo.cursor_to=52 24
-)>"layout.conf"
+call :prepareLayout_input
 %module_cursor% "layout.conf"
+set /p input=
 
-set /p input="> "
-
-       if "!input!" == "0" ( exit
+       if "!input!" == "0" ( exit /b
 ) else if "!input!" == "1" ( set module_cursor=Debug\CursorMower.exe
 ) else if "!input!" == "2"   set module_cursor=Release\CursorMower.exe
 goto :loop
@@ -62,7 +50,9 @@ goto :loop
 
 
 
-:prepareMainLayout
+
+
+:prepareLayout_main
 (
   echo.screen_width=120
   echo.screen_height=40
@@ -118,20 +108,20 @@ goto :loop
 
     if !y1! GTR 4 if !y1! LSS 40 (
       echo.cursor1=%%x !y1!
-      echo.text=█
+      echo.text=♦
 
       set /a y1-=1
       echo.cursor1=%%x !y1!
-      echo.text=█
+      echo.text=♦
     )
 
     if !y2! GTR 4 if !y2! LSS 40 (
       echo.cursor1=%%x !y2!
-      echo.text=█
+      echo.text=♦
 
       set /a y2+=1
       echo.cursor1=%%x !y2!
-      echo.text=█
+      echo.text=♦
     )
   )
 
@@ -140,12 +130,38 @@ goto :loop
   echo.clear
 
   echo.cursor1=49 17
-  echo.text=CursorMower Alpha v4.0
-
-  rem echo.cursor2=54 19
+  echo.text=%program_name% %program_version%
+  echo.skip
+  echo.skip
   echo.text=1  Check debug build
   echo.text=2  Check release build
-  rem echo.skip
+  echo.skip
   echo.text=0  Exit
+)>"layout.conf"
+exit /b
+
+
+
+:prepareLayout_info
+(
+  echo.screen_width=120
+  echo.screen_height=40
+  echo.screen_margin=1
+
+  echo.cursor1=6 39
+  echo.text=Layout rendered with %1 operations^^^! That's a lot^^^!
+)>"layout.conf"
+exit /b
+
+
+
+:prepareLayout_input
+(
+  echo.screen_width=120
+  echo.screen_height=40
+  echo.screen_margin=1
+
+  echo.cursor1=49 24
+  echo.text=^> 
 )>"layout.conf"
 exit /b

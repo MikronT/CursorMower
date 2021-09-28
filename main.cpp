@@ -105,6 +105,9 @@ int main(const int arg_count, char** arg_list) {
             cursor1.Y--;
             cursor_changed = true;
         } else if (cells.at(0) == "cursor1_down" || cells.at(0) == "skip") {
+            if (!cursor_changed)
+                //To shift down twice after text (aka double enter)
+                cursor1.Y++;
             cursor1.Y++;
             cursor_changed = true;
         } else if (cells.at(0) == "cursor1_left") {
