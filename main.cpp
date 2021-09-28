@@ -24,7 +24,7 @@ struct Block {
 
 
 int help() {
-    cout << "CursorMower Alpha v3.2 -> github.com/MikronT/CursorMower"
+    cout << "CursorMower Alpha v4.0 -> github.com/MikronT/CursorMower"
         << endl
         << endl << "Usage"
         << endl << "  cursor \"file\""

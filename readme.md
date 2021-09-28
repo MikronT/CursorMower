@@ -4,7 +4,7 @@
 
 This C++ based tool intends to provide fast and convenient command line interface building experience
 
-**Version:** Alpha 3.2
+**Version:** Alpha 4.0
 
 *Developed for Windows 10*
 *Not tested on other versions yet*
@@ -18,73 +18,119 @@ This C++ based tool intends to provide fast and convenient command line interfac
 This tool uses layout files to render the screen
 The syntax is very simple
 
+Notes
+
+- Coordinates are starting from (1,1) at the top left corner and go to the window dimensions
+- All the parameters are optional (exceptions below)
+
 #### Set window dimensions
 
-*This parameter can be only one*
+Should be placed at the beginning of the layout file
 
-```text
-dims`{columns}`{lines}
+```batch
+screen_width={columns}
+screen_height={lines}
+```
+
+Example
+
+```batch
+screen_width=120
+screen_height=40
 ```
 
 Notes
 
-- For the default dimensions current command line window dimensions are used
+- Current command line window dimensions are used as default dimensions
+- Each of them can be the one only for the whole layout file (otherwise previous parameter is omitted)
+- You can change only one of them if you need
 
 #### Set window margins
 
-*This parameter can be only one*
+```batch
+screen_margin={lines}
+```
 
-```text
-margins`{left&right margin}`{top&bottom margin}
+Example
+
+The window width and height will be automatically extended by the margin but all the coordinates will work in the coordinate system of the old window: (1;1) will point to (3;3) automatically
+
+```batch
+screen_width=120
+screen_height=40
+screen_margin=1
 ```
 
 Notes
 
-- The default margins are 0
-- Margins are applied via changing the window size
+- Margins are applied to all the coordinates automatically
+- Margins from left and right sides are applied automatically by multiplying the value specified by 2 (because 1 line = 2 columns) to make an accurate box
+- There are no default margins
+- Can be the one only for the whole layout file (otherwise previous parameter is omitted)
+- Margins are applied via extending the window size
 
 #### Move the cursor
 
-```text
-goto`{x}`{y}
+Cursor `to` is the main cursor. All the inline elements are printed at these coordinates
+
+Cursor `from` is required to draw block elements
+
+```batch
+cursor_from={x} {y}
+cursor_to={x} {y}
 ```
 
-Notes
+Examples below
 
-- Coordinates are starting from (0,0) at the top left corner
-- Margins are applied to all the coordinates automatically
+You can also move the cursor relatively not to calculate the coordinates every time
+
+```batch
+cursor_up={lines}
+cursor_down={lines}
+cursor_left={columns}
+cursor_right={columns}
+```
 
 #### Clear screen
 
-To clear 1 line only
-
-```text
-goto`{x}`{y}
-clear`{length}
-```
-
-To clear a specific area
-
-```text
-goto`{x}`{y}
-clear`{x2}`{y2}
-```
-
-`clear` without arguments clears the whole screen
-Ignores `goto`
-
-```text
+```batch
 clear
+```
+
+Is used to clear a specific area
+
+```batch
+cursor_from=40 15
+cursor_to=60 27
+clear
+```
+
+The following parameter clears the whole screen
+
+```batch
+clear_screen
 ```
 
 #### Print the text
 
 Lets you set what should be printed
 
-```text
-goto`{x}`{y}
-text`{any text with spaces}
+```batch
+cursor_to={x} {y}
+text={any text with spaces, Unicode characters, etc.}
 ```
+
+If you want to write text line by line, you can use the following syntax
+
+```batch
+cursor_to=5 5
+text=Line 1
+text=This line is below
+skip
+text=An empty line was printed above
+```
+
+`skip` parameter lets you skip 1 line not to move the cursor by hand (a shorter form of `cursor_down=1`)
 
 ### Run
 
@@ -95,6 +141,37 @@ cursor "file"
 ```
 
 And you will see the result
+
+### Example
+
+You can write the file by yourself but if you want more access to the layout (to make it more dynamic), you can generate the one on the go. All the Batch features are available inside the brackets
+
+```batch
+set program_name=CursorMower
+set program_version=Alpha v4.0
+
+(
+  echo.screen_width=120
+  echo.screen_height=40
+  echo.screen_margin=1
+
+  echo.cursor_to=49 17
+  echo.text=%program_name% %program_version%
+
+  echo.cursor_to=54 19
+  echo.text=1  Check debug build
+  echo.text=2  Check release build
+  echo.skip
+  echo.text=0  Exit
+
+  rem Move the cursor for user input
+  echo.cursor_to=52 24
+)>"layout.tmp"
+
+cursor "layout.tmp"
+
+set /p input="> "
+```
 
 ---
 

@@ -11,99 +11,95 @@ set module_cursor=Debug\CursorMower.exe
 
 
 
+if not exist "%module_cursor%" (
+  echo.^(i^) CursorMower module not found
+  echo.    Compile the project at first
+  pause>nul
+  exit
+)
+
+
+
+
+
 :loop
 cls
 (
-  echo.dims`120`40
-  echo.margins`2`1
+  echo.screen_width=120
+  echo.screen_height=40
+  echo.screen_margin=1
 
-  for /l %%i in (1,1, 38) do (
-    echo.goto`0`%%i
-    echo.text`│
+  for %%i in (1 120) do (
+    for /l %%j in (2,1,39) do (
+      echo.cursor_to=%%i %%j
+      echo.text=│
+    )
   )
-  for /l %%i in (1,1, 38) do (
-    echo.goto`119`%%i
-    echo.text`│
+  for %%i in (1 40) do (
+    for /l %%j in (2,1,119) do (
+      echo.cursor_to=%%j %%i
+      echo.text=─
+    )
   )
-  for /l %%i in (1,1,118) do (
-    echo.goto`%%i`0
-    echo.text`─
-  )
-  for /l %%i in (1,1,118) do (
-    echo.goto`%%i`39
-    echo.text`─
-  )
-  echo.goto`0`0
-  echo.text`┌
-  echo.goto`119`0
-  echo.text`┐
-  echo.goto`0`39
-  echo.text`└
-  echo.goto`119`39
-  echo.text`┘
+  echo.cursor_to=1 1
+  echo.text=┌
+  echo.cursor_to=120 1
+  echo.text=┐
+  echo.cursor_to=1 40
+  echo.text=└
+  echo.cursor_to=120 40
+  echo.text=┘
 
-  for /l %%i in (1,1, 38) do (
-    echo.goto`3`%%i
-    echo.text`▪
+  for %%i in (4 117) do (
+    for /l %%j in (2,1,39) do (
+      echo.cursor_to=%%i %%j
+      echo.text=▪
+    )
   )
-  for /l %%i in (1,1, 38) do (
-    echo.goto`116`%%i
-    echo.text`▪
-  )
-  for /l %%i in (1,1,118) do (
-    echo.goto`%%i`2
-    echo.text`▪
-  )
-  for /l %%i in (1,1,118) do (
-    echo.goto`%%i`37
-    echo.text`▪
+  for %%i in (3 38) do (
+    for /l %%j in (2,1,119) do (
+      echo.cursor_to=%%j %%i
+      echo.text=▪
+    )
   )
 
-  echo.goto`39`14
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
-  echo.clear`40
+  echo.cursor_from=40 15
+  echo.cursor_to=60 27
+  echo.clear
 
-  echo.goto`48`16
-  echo.text`CursorMower Alpha v3.2
-  echo.goto`53`18
-  echo.text`1  Debug
-  echo.text`2  Release
-  echo.goto`53`21
-  echo.text`0  Exit
+  echo.cursor_to=49 17
+  echo.text=CursorMower Alpha v4.0
+  echo.cursor_to=54 19
+  echo.text=1  Check debug build
+  echo.text=2  Check release build
+  echo.skip
+  echo.text=0  Exit
 )>"layout.conf"
 
 set counter=0
 for /f "delims=" %%i in ('type "layout.conf" 2^>nul') do set /a counter+=1
-set /a counter+=7
+set /a counter+=9
 
 %module_cursor% "layout.conf"
 
 (
-  echo.dims`120`40
-  echo.margins`2`1
+  echo.screen_width=120
+  echo.screen_height=40
+  echo.screen_margin=1
 
-  echo.goto`3`37
-  echo.text`!counter! operations. That's a lot^!
+  echo.cursor_to=4 38
+  echo.text=!counter! operations. That's a lot^!
 )>"layout.conf"
 %module_cursor% "layout.conf"
 
 
 
 (
-  echo.dims`120`40
-  echo.margins`2`1
+  echo.screen_width=120
+  echo.screen_height=40
+  echo.screen_margin=1
 
-  echo.goto`51`23
+  echo.cursor_to=52 24
 )>"layout.conf"
 %module_cursor% "layout.conf"
 
