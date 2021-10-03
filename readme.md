@@ -4,7 +4,7 @@
 
 This C++ based tool intends to provide fast and convenient command line interface building experience
 
-**Version:** Alpha 4.0
+**Version:** Beta v4.1
 
 *Developed for Windows 10*
 *Not tested on other versions yet*

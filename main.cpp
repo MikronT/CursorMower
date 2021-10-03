@@ -9,9 +9,14 @@ using namespace nsString;
 using namespace nsUtils;
 
 
+struct Line {
+    short color;
+    string text;
+};
+
 struct Block {
     COORD coord;
-    vector<string> lines;
+    vector<Line> lines;
 };
 
 
@@ -31,6 +36,7 @@ int main(const int arg_count, char** arg_list) {
     short param_margin = 0;
     vector<Block> param_actions;
     
+    stringstream color_stream;
     short color_last = CommandLine::COLOR_DEFAULT;
     auto cursor1 = COORD{1, 1},
          cursor2 = COORD{1, 1};
@@ -129,6 +135,12 @@ int main(const int arg_count, char** arg_list) {
         } else if (cells.at(0) == "cursor2_right") {
             cursor2.X++;
             cursor_changed = true;
+        } else if (cells.at(0) == "color") {
+            if (cells.size() > 1) {
+                color_stream << cells.at(1);
+                color_stream >> hex >> color_last;
+                color_stream.clear();
+            } else color_last = CommandLine::COLOR_DEFAULT;
         } else if (cells.at(0) == "text") {
             if (cursor_changed) {
                 cursor_changed = false;
@@ -145,7 +157,10 @@ int main(const int arg_count, char** arg_list) {
             param_actions
                     .at(param_actions.size() - 1)
                     .lines
-                    .emplace_back(cells.at(1));
+                    .emplace_back(Line{
+                        color_last,
+                        cells.at(1)
+                    });
         } else if (cells.at(0) == "clear") {
             rearrangeCoords(cursor1, cursor2);
 
@@ -178,7 +193,10 @@ int main(const int arg_count, char** arg_list) {
                 param_actions
                         .at(param_actions.size() - 1)
                         .lines
-                        .emplace_back(text);
+                        .emplace_back(Line{
+                            color_last,
+                            text
+                        });
         }
     }
 
@@ -211,7 +229,7 @@ int main(const int arg_count, char** arg_list) {
         if (lines.empty())
             cmd.goTo(coord);
         else
-            for (auto& text : lines) {
+            for (auto& [color, text] : lines) {
                 if (coord.X < 0 || coord.X >= param_dims.X ||
                     coord.Y < 0 || coord.Y >= param_dims.Y)
                     error(ERROR_OUT_OF_BOUNDS,
@@ -222,7 +240,7 @@ int main(const int arg_count, char** arg_list) {
                           to_string(param_dims.Y));
 
                 cmd.goTo(coord);
-
+                cmd.setColor(color);
                 cout << string_cut(text, param_dims.X - coord.X);
 
                 coord = {coord.X, to_short(coord.Y + 1)};
