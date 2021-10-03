@@ -7,7 +7,7 @@ using namespace nsUtils;
 
 
 int nsUtils::help() {
-    cout << "CursorMower Alpha v4.0 -> github.com/MikronT/CursorMower"
+    cout << "CursorMower Beta v4.1 -> github.com/MikronT/CursorMower"
             << endl
             << endl << "Usage"
             << endl << "  cursorMower \"file\""
@@ -32,6 +32,8 @@ int nsUtils::help() {
             << endl << "        To move any cursor relatively"
             << endl << "    > clear[=screen]"
             << endl << "        To clear area"
+            << endl << "    > color[={0-f}{0-f}]"
+            << endl << "        To change color"
             << endl << "    > text={any text with spaces}"
             << endl << "        To set what should be printed"
             << endl

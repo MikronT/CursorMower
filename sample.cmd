@@ -8,7 +8,7 @@ pushd "%~dp0"
 
 
 set program_name=CursorMower
-set program_version=Alpha v4.0
+set program_version=Beta v4.1
 
 set module_cursor=Debug\CursorMower.exe
 
@@ -29,7 +29,7 @@ if not exist "%module_cursor%" (
 :loop
 call :prepareLayout_main
 
-set counter=9
+set counter=10
 for /f "delims=" %%i in ('type "layout.conf" 2^>nul') do set /a counter+=1
 
 %module_cursor% "layout.conf"
@@ -57,11 +57,12 @@ goto :loop
   echo.screen_width=120
   echo.screen_height=40
   echo.screen_margin=1
-
   echo.clear=screen
 
 
   rem Draw window frame
+  echo.color
+
   for %%x in (1 120) do (
     for /l %%y in (2,1,39) do (
       echo.cursor1=%%x %%y
@@ -85,6 +86,8 @@ goto :loop
 
 
   rem Draw another frame
+  echo.color=c
+
   for %%x in (4 117) do (
     for /l %%y in (2,1,39) do (
       echo.cursor1=%%x %%y
@@ -100,6 +103,8 @@ goto :loop
 
 
   rem Draw net
+  echo.color=7
+
   for /l %%x in (7,2,113) do (
     for /l %%y in (5,1,36) do (
       echo.cursor1=%%x %%y
@@ -109,6 +114,8 @@ goto :loop
 
 
   rem Draw 2 parabolas
+  echo.color=c
+
   for /l %%x in (9,1,111) do (
     set /a x=%%x-60
     set /a y1=35-!x!*!x!/120
@@ -137,6 +144,7 @@ goto :loop
   rem Write some text
   echo.cursor1=40 15
   echo.cursor2=80 27
+  echo.color=70
   echo.clear
 
   echo.cursor1=49 17
@@ -172,6 +180,7 @@ exit /b
   echo.screen_margin=1
 
   echo.cursor1=49 24
+  echo.color=70
   echo.text=^> 
 )>"layout.conf"
 exit /b

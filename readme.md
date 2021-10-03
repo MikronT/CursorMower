@@ -112,6 +112,34 @@ cursor2=60 27
 clear
 ```
 
+#### Set colors
+
+Uses the same syntax as the default `color` command does to change some color
+
+```batch
+color={0-f}{0-f}
+```
+
+The only difference is that you change color attributes only for the text you print instead of the whole window
+
+```batch
+color=0b
+text=Hello
+
+cursor1_right=1
+color
+text=is written with a different color
+```
+
+You can also combine this command with `clear` to draw empty rectangular areas
+
+```batch
+cursor1=40 15
+cursor2=80 27
+color=70
+clear
+```
+
 #### Print the text
 
 Lets you set what should be printed
@@ -155,6 +183,7 @@ set program_name=CursorMower
   echo.screen_height=40
   echo.screen_margin=1
 
+  echo.color=0b
   echo.cursor1=49 17
   echo.text=%program_name%
   echo.cursor1=54 19
