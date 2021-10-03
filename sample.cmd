@@ -10,7 +10,7 @@ pushd "%~dp0"
 set program_name=CursorMower
 set program_version=Beta v4.1
 
-set module_cursor=Debug\CursorMower.exe
+set module_cursor=Release\CursorMower.exe
 
 
 
@@ -143,16 +143,16 @@ goto :loop
 
   rem Write some text
   echo.cursor1=40 15
-  echo.cursor2=80 27
+  echo.cursor2=80 28
   echo.color=70
   echo.clear
 
   echo.cursor1=49 17
   echo.text=%program_name% %program_version%
   echo.skip
-  echo.skip
   echo.text=1  Check debug build
-  echo.text=2  Check release build
+  echo.text=2  Check min-size build
+  echo.text=3  Check release build
   echo.skip
   echo.text=0  Exit
 )>"layout.conf"
@@ -179,7 +179,7 @@ exit /b
   echo.screen_height=40
   echo.screen_margin=1
 
-  echo.cursor1=49 24
+  echo.cursor1=49 26
   echo.color=70
   echo.text=^> 
 )>"layout.conf"

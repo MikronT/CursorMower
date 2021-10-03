@@ -35,7 +35,7 @@ int main(const int arg_count, char** arg_list) {
     COORD param_dims = cmd.getScreenDims();
     short param_margin = 0;
     vector<Block> param_actions;
-    
+
     stringstream color_stream;
     short color_last = CommandLine::COLOR_DEFAULT;
     auto cursor1 = COORD{1, 1},
@@ -112,9 +112,6 @@ int main(const int arg_count, char** arg_list) {
             cursor1.Y--;
             cursor_changed = true;
         } else if (cells.at(0) == "cursor1_down" || cells.at(0) == "skip") {
-            if (!cursor_changed)
-                //To shift down twice after text is being printed (aka double enter)
-                cursor1.Y++;
             cursor1.Y++;
             cursor_changed = true;
         } else if (cells.at(0) == "cursor1_left") {
@@ -140,7 +137,8 @@ int main(const int arg_count, char** arg_list) {
                 color_stream << cells.at(1);
                 color_stream >> hex >> color_last;
                 color_stream.clear();
-            } else color_last = CommandLine::COLOR_DEFAULT;
+            } else
+                color_last = CommandLine::COLOR_DEFAULT;
         } else if (cells.at(0) == "text") {
             if (cursor_changed) {
                 cursor_changed = false;
@@ -153,6 +151,7 @@ int main(const int arg_count, char** arg_list) {
                     {}
                 });
             }
+            cursor1.Y++;
 
             param_actions
                     .at(param_actions.size() - 1)
