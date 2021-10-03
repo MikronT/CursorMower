@@ -108,29 +108,32 @@ int main(const int arg_count, char** arg_list) {
                 to_short(values.at(1), line_i)
             };
             cursor_changed = true;
-        } else if (cells.at(0) == "cursor1_up") {
-            cursor1.Y--;
-            cursor_changed = true;
-        } else if (cells.at(0) == "cursor1_down" || cells.at(0) == "skip") {
+        } else if (cells.at(0) == "skip") {
             cursor1.Y++;
             cursor_changed = true;
+        } else if (cells.at(0) == "cursor1_up") {
+            cursor1.Y -= to_short(cells.at(1), line_i);
+            cursor_changed = true;
+        } else if (cells.at(0) == "cursor1_down") {
+            cursor1.Y += to_short(cells.at(1), line_i);
+            cursor_changed = true;
         } else if (cells.at(0) == "cursor1_left") {
-            cursor1.X--;
+            cursor1.X -= to_short(cells.at(1), line_i);
             cursor_changed = true;
         } else if (cells.at(0) == "cursor1_right") {
-            cursor1.X++;
+            cursor1.X += to_short(cells.at(1), line_i);
             cursor_changed = true;
         } else if (cells.at(0) == "cursor2_up") {
-            cursor2.Y--;
+            cursor2.Y -= to_short(cells.at(1), line_i);
             cursor_changed = true;
         } else if (cells.at(0) == "cursor2_down") {
-            cursor2.Y++;
+            cursor2.Y += to_short(cells.at(1), line_i);
             cursor_changed = true;
         } else if (cells.at(0) == "cursor2_left") {
-            cursor2.X--;
+            cursor2.X -= to_short(cells.at(1), line_i);
             cursor_changed = true;
         } else if (cells.at(0) == "cursor2_right") {
-            cursor2.X++;
+            cursor2.X += to_short(cells.at(1), line_i);
             cursor_changed = true;
         } else if (cells.at(0) == "color") {
             if (cells.size() > 1) {
