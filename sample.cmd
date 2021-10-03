@@ -43,7 +43,8 @@ set /p input=
 
        if "!input!" == "0" ( exit /b
 ) else if "!input!" == "1" ( set module_cursor=Debug\CursorMower.exe
-) else if "!input!" == "2"   set module_cursor=Release\CursorMower.exe
+) else if "!input!" == "2" ( set module_cursor=MinSizeRelease\CursorMower.exe
+) else if "!input!" == "3"   set module_cursor=Release\CursorMower.exe
 goto :loop
 
 
