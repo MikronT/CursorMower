@@ -31,6 +31,7 @@ int main(const int arg_count, char** arg_list) {
     short param_margin = 0;
     vector<Block> param_actions;
     
+    short color_last = CommandLine::COLOR_DEFAULT;
     auto cursor1 = COORD{1, 1},
          cursor2 = COORD{1, 1};
     bool cursor_changed = true;
@@ -64,7 +65,7 @@ int main(const int arg_count, char** arg_list) {
             if (cells.size() != 2)
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
         } else if (!contains(
-            vector<string>{"cursor1", "cursor2", "skip", "clear"}, cells.at(0))) {
+            vector<string>{"cursor1", "cursor2", "color", "skip", "clear"}, cells.at(0))) {
             error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
         }
 

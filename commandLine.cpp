@@ -3,6 +3,9 @@
 using namespace std;
 
 
+void CommandLine::setColor(const short color) const {
+    SetConsoleTextAttribute(console_handle_out, color);
+}
 void CommandLine::setConInfo(CONSOLE_SCREEN_BUFFER_INFOEX& info) const {
     SetConsoleScreenBufferInfoEx(console_handle_out, &info);
 }

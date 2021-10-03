@@ -5,8 +5,11 @@
 class CommandLine {
     HANDLE console_handle_out;
 public:
+    static const short COLOR_DEFAULT = 7;
+
     CommandLine() { console_handle_out = GetStdHandle(STD_OUTPUT_HANDLE); }
 
+    void setColor(short color = 7) const;
     void setConInfo(CONSOLE_SCREEN_BUFFER_INFOEX& info) const;
     void setScreenDims(COORD& dims) const;
 
