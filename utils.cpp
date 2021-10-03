@@ -8,47 +8,46 @@ using namespace nsUtils;
 
 int nsUtils::help() {
     cout << "CursorMower Alpha v4.0 -> github.com/MikronT/CursorMower"
-        << endl
-        << endl << "Usage"
-        << endl << "  cursor \"file\""
-        << endl
-        << endl
-        << endl << "Layout file syntax"
-        << endl
-        << endl << "  Window configuration"
-        << endl << "  > dims`{columns}`{lines}"
-        << endl << "      To set command line window dimensions"
-        << endl << "  > margins`{left&right margin}`{top&bottom margin}"
-        << endl << "      To set window margins"
-        << endl << "      Margins are applied via changing console window size"
-        << endl
-        << endl << "  UI building"
-        << endl << "  > goto`{x}`{y}"
-        << endl << "      To set the point to move cursor to"
-        << endl << "      Margins are applied to all the coords automatically"
-        << endl << "      Applies to all the commands below"
-        << endl << "  > clear"
-        << endl << "      To clear everything"
-        << endl << "  > clear`{length}"
-        << endl << "      To clear line with the specified length"
-        << endl << "  > clear`{x}`{y}"
-        << endl << "      To clear the whole block to the point specified"
-        << endl << "  > text`{any text with spaces}"
-        << endl << "      To set what should be printed"
-        << endl
-        << endl
-        << endl << "Notes"
-        << endl << "  Coords are starting from (0,0) at the top left corner"
-        << endl
-        << endl
-        << endl << "Returns"
-        << endl << "  0 | All is OK"
-        << endl << "  " << ERROR_ARGS_COUNT << " | Not enough/too many arguments (no file specified)"
-        << endl << "  " << ERROR_FILE << " | Error reading a file (file not found or is inaccessible)"
-        << endl << "  " << ERROR_SYNTAX << " | Illegal line syntax (the syntax is wrong, check cursor /help)"
-        << endl << "  " << ERROR_OUT_OF_BOUNDS << " | Out of screen buffer bounds (text or coords exceed window dims)"
-        << endl << "  5 | Help message is shown"
-        << endl;
+            << endl
+            << endl << "Usage"
+            << endl << "  cursorMower \"file\""
+            << endl
+            << endl
+            << endl << "Layout file syntax"
+            << endl << "  Window configuration"
+            << endl << "    > screen_width={columns}"
+            << endl << "    > screen_height={lines}"
+            << endl << "        To set command line window dimensions"
+            << endl << "    > screen_margin={lines}"
+            << endl << "        To set window margins"
+            << endl << "  UI building"
+            << endl << "    > cursor1={x} {y}"
+            << endl << "    > cursor2={x} {y}"
+            << endl << "        To set the point to move cursor 1 or 2 to"
+            << endl << "        Margins are applied to all the coords automatically"
+            << endl << "    > cursor{1/2}_up={lines}"
+            << endl << "    > cursor{1/2}_down={lines}"
+            << endl << "    > cursor{1/2}_left={columns}"
+            << endl << "    > cursor{1/2}_right={columns}"
+            << endl << "        To move any cursor relatively"
+            << endl << "    > clear[=screen]"
+            << endl << "        To clear area"
+            << endl << "    > text={any text with spaces}"
+            << endl << "        To set what should be printed"
+            << endl
+            << endl
+            << endl << "Returns"
+            << endl << "  0 | All is OK"
+            << endl << "  " << ERROR_ARGS_COUNT
+            << " | Not enough/too many arguments (no file specified)"
+            << endl << "  " << ERROR_FILE
+            << " | Error reading a file (file not found or is inaccessible)"
+            << endl << "  " << ERROR_SYNTAX
+            << " | Illegal line syntax (the syntax is wrong, check cursor /help)"
+            << endl << "  " << ERROR_OUT_OF_BOUNDS
+            << " | Out of screen buffer bounds (text or coords exceed window dims)"
+            << endl << "  5 | Help message is shown"
+            << endl;
     return 5;
 }
 void nsUtils::error(const int error, const string& msg) {

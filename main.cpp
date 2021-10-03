@@ -26,14 +26,14 @@ int main(const int arg_count, char** arg_list) {
 
     auto cmd = CommandLine();
 
-    auto cursor1 = COORD{1, 1},
-         cursor2 = COORD{1, 1};
-    bool cursor_changed = true;
-
     const string arg_file = arg_list[1];
     COORD param_dims = cmd.getScreenDims();
     short param_margin = 0;
     vector<Block> param_actions;
+    
+    auto cursor1 = COORD{1, 1},
+         cursor2 = COORD{1, 1};
+    bool cursor_changed = true;
 
 
     //Parse input from the file
@@ -106,7 +106,7 @@ int main(const int arg_count, char** arg_list) {
             cursor_changed = true;
         } else if (cells.at(0) == "cursor1_down" || cells.at(0) == "skip") {
             if (!cursor_changed)
-                //To shift down twice after text (aka double enter)
+                //To shift down twice after text is being printed (aka double enter)
                 cursor1.Y++;
             cursor1.Y++;
             cursor_changed = true;
@@ -164,7 +164,10 @@ int main(const int arg_count, char** arg_list) {
             } else if (cells.at(1) == "screen") {
                 lines = param_dims.Y + param_margin * 2;
                 length = param_dims.X + param_margin * 2 * 2;
-                param_actions.emplace_back(Block{COORD{1, 1}, {}});
+                param_actions.emplace_back(Block{
+                    COORD{1, 1},
+                    {}
+                });
             } else
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 

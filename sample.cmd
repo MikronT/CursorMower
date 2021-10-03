@@ -60,6 +60,8 @@ goto :loop
 
   echo.clear=screen
 
+
+  rem Draw window frame
   for %%x in (1 120) do (
     for /l %%y in (2,1,39) do (
       echo.cursor1=%%x %%y
@@ -81,6 +83,8 @@ goto :loop
   echo.cursor1=120 40
   echo.text=┘
 
+
+  rem Draw another frame
   for %%x in (4 117) do (
     for /l %%y in (2,1,39) do (
       echo.cursor1=%%x %%y
@@ -94,6 +98,8 @@ goto :loop
     )
   )
 
+
+  rem Draw net
   for /l %%x in (7,2,113) do (
     for /l %%y in (5,1,36) do (
       echo.cursor1=%%x %%y
@@ -101,6 +107,8 @@ goto :loop
     )
   )
 
+
+  rem Draw 2 parabolas
   for /l %%x in (9,1,111) do (
     set /a x=%%x-60
     set /a y1=35-!x!*!x!/120
@@ -125,6 +133,8 @@ goto :loop
     )
   )
 
+
+  rem Write some text
   echo.cursor1=40 15
   echo.cursor2=80 27
   echo.clear
