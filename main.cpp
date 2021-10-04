@@ -92,49 +92,62 @@ int main(const int arg_count, char** arg_list) {
             if (values.size() < 2)
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 
+            cursor_changed = true;
             cursor1 = COORD{
                 to_short(values.at(0), line_i),
                 to_short(values.at(1), line_i)
             };
-            cursor_changed = true;
         } else if (cells.at(0) == "cursor2") {
             vector<string> values = string_split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 
+            cursor_changed = true;
             cursor2 = COORD{
                 to_short(values.at(0), line_i),
                 to_short(values.at(1), line_i)
             };
+        } else if (cells.at(0) == "cursor1_up" || cells.at(0) == "up") {
             cursor_changed = true;
-        } else if (cells.at(0) == "skip") {
-            cursor1.Y++;
+            cursor1.Y -= cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        } else if (cells.at(0) == "cursor1_down" || cells.at(0) == "down") {
             cursor_changed = true;
-        } else if (cells.at(0) == "cursor1_up") {
-            cursor1.Y -= to_short(cells.at(1), line_i);
+            cursor1.Y += cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        } else if (cells.at(0) == "cursor1_left" || cells.at(0) == "left") {
             cursor_changed = true;
-        } else if (cells.at(0) == "cursor1_down") {
-            cursor1.Y += to_short(cells.at(1), line_i);
+            cursor1.X -= cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        } else if (cells.at(0) == "cursor1_right" || cells.at(0) == "right") {
             cursor_changed = true;
-        } else if (cells.at(0) == "cursor1_left") {
-            cursor1.X -= to_short(cells.at(1), line_i);
+            cursor1.X += cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        } else if (cells.at(0) == "cursor2_up" || cells.at(0) == "up2") {
             cursor_changed = true;
-        } else if (cells.at(0) == "cursor1_right") {
-            cursor1.X += to_short(cells.at(1), line_i);
+            cursor2.Y -= cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        } else if (cells.at(0) == "cursor2_down" || cells.at(0) == "down2") {
             cursor_changed = true;
-        } else if (cells.at(0) == "cursor2_up") {
-            cursor2.Y -= to_short(cells.at(1), line_i);
+            cursor2.Y += cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        } else if (cells.at(0) == "cursor2_left" || cells.at(0) == "left2") {
             cursor_changed = true;
-        } else if (cells.at(0) == "cursor2_down") {
-            cursor2.Y += to_short(cells.at(1), line_i);
+            cursor2.X -= cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        } else if (cells.at(0) == "cursor2_right" || cells.at(0) == "right2") {
             cursor_changed = true;
-        } else if (cells.at(0) == "cursor2_left") {
-            cursor2.X -= to_short(cells.at(1), line_i);
-            cursor_changed = true;
-        } else if (cells.at(0) == "cursor2_right") {
-            cursor2.X += to_short(cells.at(1), line_i);
-            cursor_changed = true;
+            cursor2.X += cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
         } else if (cells.at(0) == "color") {
             if (cells.size() > 1) {
                 color_stream << cells.at(1);
