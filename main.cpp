@@ -59,21 +59,27 @@ int main(const int arg_count, char** arg_list) {
         if (cells.empty())
             continue;
 
-        //Check syntax of 1-value parameters
-        if (contains(
-            vector<string>{
-                "screen_width", "screen_height", "screen_margin",
-                "cursor1_up", "cursor1_down", "cursor1_left", "cursor1_right",
-                "cursor2_up", "cursor2_down", "cursor2_left", "cursor2_right",
-                "text"
-            },
-            cells.at(0))) {
+        //Check syntax
+        if (
+            contains(
+                vector<string>{
+                    "screen_width", "screen_height", "screen_margin",
+                    "text"
+                }, cells.at(0))) {
             if (cells.size() != 2)
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
-        } else if (!contains(
-            vector<string>{"cursor1", "cursor2", "color", "skip", "clear"}, cells.at(0))) {
+        } else if (
+            !contains(
+                vector<string>{
+                    "cursor1", "cursor2",
+                    "cursor1_up", "cursor1_down", "cursor1_left", "cursor1_right",
+                    "up", "down", "left", "right",
+                    "cursor2_up", "cursor2_down", "cursor2_left", "cursor2_right",
+                    "up2", "down2", "left2", "right2",
+                    "color",
+                    "clear"
+                }, cells.at(0)))
             error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
-        }
 
 
         //Parse parameters
