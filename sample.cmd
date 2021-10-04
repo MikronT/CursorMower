@@ -150,11 +150,11 @@ goto :loop
 
   echo.cursor1=49 17
   echo.text=%program_name% %program_version%
-  echo.skip
+  echo.down
   echo.text=1  Check debug build
   echo.text=2  Check min-size build
   echo.text=3  Check release build
-  echo.skip
+  echo.down
   echo.text=0  Exit
 )>"layout.conf"
 exit /b

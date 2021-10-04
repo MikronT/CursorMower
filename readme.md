@@ -155,11 +155,11 @@ If you want to write text line by line, you can use the following syntax
 cursor1=5 5
 text=Line 1
 text=This line is below
-skip
+down
 text=An empty line was printed above
 ```
 
-`skip` parameter lets you skip 1 line not to move the cursor by hand (a shorter form of `cursor1_down=1`)
+`down` lets you skip 1 line not to move the cursor by hand (a shorter form of `cursor1_down=1`)
 
 ### Run
 
@@ -189,7 +189,7 @@ set program_name=CursorMower
   echo.cursor1=54 19
   echo.text=1  Check debug build
   echo.text=2  Check release build
-  echo.skip
+  echo.down
   echo.text=0  Exit
 
   rem Move the cursor for user input
