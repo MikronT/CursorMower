@@ -26,6 +26,6 @@ namespace nsUtils {
     }
 
 
-    //To rearrange points
+    void normallizeCoords(COORD& dims, COORD& point1, COORD& point2);
     void rearrangeCoords(COORD& point1, COORD& point2);
 };

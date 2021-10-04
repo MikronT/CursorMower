@@ -29,7 +29,7 @@ if not exist "%module_cursor%" (
 :loop
 call :prepareLayout_main
 
-set counter=10
+set counter=13
 for /f "delims=" %%i in ('type "layout.conf" 2^>nul') do set /a counter+=1
 
 %module_cursor% "layout.conf"
@@ -167,7 +167,10 @@ exit /b
   echo.screen_height=40
   echo.screen_margin=1
 
-  echo.cursor1=6 39
+  echo.cursor1=0 39
+  rem Wrong movements are omitted
+  echo.left=300
+  echo.right=6
   echo.text=Layout rendered with %1 operations^^^! That's a lot^^^!
 )>"layout.conf"
 exit /b

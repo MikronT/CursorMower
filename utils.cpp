@@ -76,6 +76,27 @@ short nsUtils::to_short(const string& text, const int fromLine) {
     return static_cast<short>(stoi(text));
 }
 
+void nsUtils::normallizeCoords(COORD& dims, COORD& point1, COORD& point2) {
+    if (point1.X < 1)
+        point1.X = 1;
+    if (point1.Y < 1)
+        point1.Y = 1;
+
+    if (point2.X < 1)
+        point2.X = 1;
+    if (point2.Y < 1)
+        point2.Y = 1;
+
+    if (point1.X > dims.X)
+        point1.X = dims.X;
+    if (point1.Y > dims.Y)
+        point1.Y = dims.Y;
+
+    if (point2.X > dims.X)
+        point2.X = dims.X;
+    if (point2.Y > dims.Y)
+        point2.Y = dims.Y;
+}
 void nsUtils::rearrangeCoords(COORD& point1, COORD& point2) {
     if (point1.X <= point2.X) {
         if (point1.Y > point2.Y) {

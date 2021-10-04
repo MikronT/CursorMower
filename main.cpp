@@ -219,6 +219,9 @@ int main(const int arg_count, char** arg_list) {
                             text
                         });
         }
+
+        if (cursor_changed)
+            normallizeCoords(param_dims, cursor1, cursor2);
     }
 
     layout.close();
