@@ -2,9 +2,9 @@
 
 *Render Batch Faster & Smarter*
 
-This C++ based tool intends to provide fast and convenient command line interface building experience
+The C++ based tool that intends to provide fast and convenient command line interface building experience
 
-**Version:** Beta v4.1
+**Version:** Beta v4.2
 
 *Developed for Windows 10*
 *Not tested on other versions yet*
@@ -94,6 +94,51 @@ cursor2_up={lines}
 cursor2_down={lines}
 cursor2_left={columns}
 cursor2_right={columns}
+```
+
+There is a shorter syntax if you want
+
+```batch
+rem Move cursor1
+up={lines}
+down={lines}
+left={columns}
+right={columns}
+
+rem Move cursor2
+up2={lines}
+down2={lines}
+left2={columns}
+right2={columns}
+```
+
+To move a cursor by 1 step you can omit specifying values
+
+```batch
+rem Move cursor1
+up
+down
+left
+right
+
+rem Move cursor2
+up2
+down2
+left2
+right2
+```
+
+Example
+
+```batch
+rem These short commands
+up
+up
+left
+
+rem Are equivalent to the following long ones
+cursor1_up=2
+cursor1_left=1
 ```
 
 #### Clear screen

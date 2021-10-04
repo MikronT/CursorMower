@@ -7,7 +7,7 @@ using namespace nsUtils;
 
 
 int nsUtils::help() {
-    cout << "CursorMower Beta v4.1 -> github.com/MikronT/CursorMower"
+    cout << "CursorMower Beta v4.2 -> github.com/MikronT/CursorMower"
             << endl
             << endl << "Usage"
             << endl << "  cursorMower \"file\""
