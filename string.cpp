@@ -1,7 +1,5 @@
 ﻿#include "string.hpp"
 
-using namespace nsString;
-
 
 int nsString::string_getSize(const string& of) { return string_getSize(of.c_str()); }
 int nsString::string_getSize(const char* of) {

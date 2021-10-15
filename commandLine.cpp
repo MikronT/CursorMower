@@ -1,7 +1,5 @@
 #include "commandLine.hpp"
 
-using namespace std;
-
 
 void CommandLine::setColor(const short color) const {
     SetConsoleTextAttribute(console_handle_out, color);

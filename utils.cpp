@@ -2,8 +2,7 @@
 #include <iostream>
 #include "utils.hpp"
 
-using namespace std;
-using namespace nsUtils;
+using std::cerr, std::cout, std::endl, std::to_string;
 
 
 int nsUtils::help() {
@@ -70,7 +69,7 @@ void nsUtils::error(const int error, const string& msg) {
 
 short nsUtils::to_short(const int number) { return static_cast<short>(number); }
 short nsUtils::to_short(const string& text, const int fromLine) {
-    if (!ranges::all_of(text, isdigit))
+    if (!std::ranges::all_of(text, isdigit))
         error(ERROR_SYNTAX, to_string(fromLine));
 
     return static_cast<short>(stoi(text));

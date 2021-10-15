@@ -4,8 +4,8 @@
 #include "string.hpp"
 #include "utils.hpp"
 
-using namespace std;
-using namespace nsString;
+using std::cout, std::ifstream, std::to_string, std::stringstream;
+using nsString::string_cut, nsString::string_split;
 using namespace nsUtils;
 
 
@@ -157,7 +157,7 @@ int main(const int arg_count, char** arg_list) {
         } else if (cells.at(0) == "color") {
             if (cells.size() > 1) {
                 color_stream << cells.at(1);
-                color_stream >> hex >> color_last;
+                color_stream >> std::hex >> color_last;
                 color_stream.clear();
             } else
                 color_last = CommandLine::COLOR_DEFAULT;
