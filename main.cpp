@@ -4,7 +4,7 @@
 #include "string.hpp"
 #include "utils.hpp"
 
-using std::cout, std::ifstream, std::to_string, std::stringstream;
+using std::to_string;
 using nsString::string_cut, nsString::string_split;
 using namespace nsUtils;
 
@@ -36,7 +36,7 @@ int main(const int arg_count, char** arg_list) {
     short param_margin = 0;
     vector<Block> param_actions;
 
-    stringstream color_stream;
+    std::stringstream color_stream;
     short color_last = CommandLine::COLOR_DEFAULT;
     auto cursor1 = COORD{1, 1},
          cursor2 = COORD{1, 1};
@@ -44,7 +44,7 @@ int main(const int arg_count, char** arg_list) {
 
 
     //Parse input from the file
-    ifstream layout;
+    std::ifstream layout;
     layout.open(arg_file);
     if (!layout.is_open())
         error(ERROR_FILE, arg_file);
@@ -265,7 +265,7 @@ int main(const int arg_count, char** arg_list) {
 
                 cmd.goTo(coord);
                 cmd.setColor(color);
-                cout << string_cut(text, param_dims.X - coord.X);
+                std::cout << string_cut(text, param_dims.X - coord.X);
 
                 coord = {coord.X, to_short(coord.Y + 1)};
             }

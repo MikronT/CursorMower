@@ -7,7 +7,7 @@ using std::string, std::vector;
 
 
 namespace nsUtils {
-    const int
+    constexpr int
             ERROR_ARGS_COUNT = 1,
             ERROR_FILE = 2,
             ERROR_SYNTAX = 3,
@@ -26,6 +26,6 @@ namespace nsUtils {
     }
 
 
-    void normallizeCoords(COORD& dims, COORD& point1, COORD& point2);
+    void normallizeCoords(const COORD& dims, COORD& point1, COORD& point2);
     void rearrangeCoords(COORD& point1, COORD& point2);
 };

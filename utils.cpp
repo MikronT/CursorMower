@@ -2,11 +2,11 @@
 #include <iostream>
 #include "utils.hpp"
 
-using std::cerr, std::cout, std::endl, std::to_string;
+using std::cerr, std::endl;
 
 
 int nsUtils::help() {
-    cout << "CursorMower Beta v4.2 -> github.com/MikronT/CursorMower"
+    std::cout << "CursorMower Beta v4.2.1 -> github.com/MikronT/CursorMower"
             << endl
             << endl << "Usage"
             << endl << "  cursorMower \"file\""
@@ -38,14 +38,10 @@ int nsUtils::help() {
             << endl
             << endl << "Returns"
             << endl << "  0 | All is OK"
-            << endl << "  " << ERROR_ARGS_COUNT
-            << " | Not enough/too many arguments (no file specified)"
-            << endl << "  " << ERROR_FILE
-            << " | Error reading a file (file not found or is inaccessible)"
-            << endl << "  " << ERROR_SYNTAX
-            << " | Illegal line syntax (the syntax is wrong, check cursor /help)"
-            << endl << "  " << ERROR_OUT_OF_BOUNDS
-            << " | Out of screen buffer bounds (text or coords exceed window dims)"
+            << endl << "  " << ERROR_ARGS_COUNT << " | Not enough/too many arguments (no file specified)"
+            << endl << "  " << ERROR_FILE << " | Error reading a file (file not found or is inaccessible)"
+            << endl << "  " << ERROR_SYNTAX << " | Illegal line syntax (the syntax is wrong, check cursor /help)"
+            << endl << "  " << ERROR_OUT_OF_BOUNDS << " | Out of screen buffer bounds (text or coords exceed window dims)"
             << endl << "  5 | Help message is shown"
             << endl;
     return 5;
@@ -54,28 +50,29 @@ void nsUtils::error(const int error, const string& msg) {
     switch (error) {
     case ERROR_ARGS_COUNT:
         cerr << "Wrong number of arguments: " << msg << endl;
-        exit(error);
+        break;
     case ERROR_FILE:
         cerr << "Error reading the file " << msg << endl;
-        exit(error);
+        break;
     case ERROR_SYNTAX:
         cerr << "Illegal formatting at line " << msg << endl;
-        exit(error);
+        break;
     case ERROR_OUT_OF_BOUNDS:
         cerr << "Argument out of bounds: " << msg << endl;
-        exit(error);
+        break;
     }
+    std::quick_exit(error);
 }
 
 short nsUtils::to_short(const int number) { return static_cast<short>(number); }
 short nsUtils::to_short(const string& text, const int fromLine) {
     if (!std::ranges::all_of(text, isdigit))
-        error(ERROR_SYNTAX, to_string(fromLine));
+        error(ERROR_SYNTAX, std::to_string(fromLine));
 
     return static_cast<short>(stoi(text));
 }
 
-void nsUtils::normallizeCoords(COORD& dims, COORD& point1, COORD& point2) {
+void nsUtils::normallizeCoords(const COORD& dims, COORD& point1, COORD& point2) {
     if (point1.X < 1)
         point1.X = 1;
     if (point1.Y < 1)
