@@ -2,12 +2,12 @@
 
 *Render Batch Faster & Smarter*
 
-The C++ based tool that intends to provide fast and convenient command line interface building experience
+A C++ based tool that intends to provide fast and convenient command line interface building experience
 
-**Version:** Beta v4.2
+Version: **Beta v4.2**
 
 *Developed for Windows 10*
-*Not tested on other versions yet*
+*Not tested on any other versions yet*
 
 ---
 
@@ -27,14 +27,14 @@ Notes
 
 Should be placed at the beginning of the layout file
 
-```batch
+```ini
 screen_width={columns}
 screen_height={lines}
 ```
 
 Example
 
-```batch
+```ini
 screen_width=120
 screen_height=40
 ```
@@ -47,7 +47,7 @@ Notes
 
 #### Set window margins
 
-```batch
+```ini
 screen_margin={lines}
 ```
 
@@ -55,7 +55,7 @@ Example
 
 The window width and height will be automatically extended by the margin but all the coordinates will work in the coordinate system of the old window: (1;1) will point to (3;3) automatically
 
-```batch
+```ini
 screen_width=120
 screen_height=40
 screen_margin=1
@@ -71,7 +71,7 @@ Notes
 
 #### Move the cursor
 
-```batch
+```ini
 cursor1={x} {y}
 cursor2={x} {y}
 ```
@@ -84,7 +84,7 @@ Examples below
 
 You can also move every cursor relatively not to calculate the coordinates by hand
 
-```batch
+```ini
 cursor1_up={lines}
 cursor1_down={lines}
 cursor1_left={columns}
@@ -98,14 +98,14 @@ cursor2_right={columns}
 
 There is a shorter syntax if you want
 
-```batch
-rem Move cursor1
+```ini
+; Move cursor1
 up={lines}
 down={lines}
 left={columns}
 right={columns}
 
-rem Move cursor2
+; Move cursor2
 up2={lines}
 down2={lines}
 left2={columns}
@@ -114,14 +114,14 @@ right2={columns}
 
 To move a cursor by 1 step you can omit specifying values
 
-```batch
-rem Move cursor1
+```ini
+; Move cursor1
 up
 down
 left
 right
 
-rem Move cursor2
+; Move cursor2
 up2
 down2
 left2
@@ -130,13 +130,13 @@ right2
 
 Example
 
-```batch
-rem These short commands
+```ini
+; These short commands
 up
 up
 left
 
-rem Are equivalent to the following long ones
+; Are equivalent to the following long ones
 cursor1_up=2
 cursor1_left=1
 ```
@@ -145,13 +145,13 @@ cursor1_left=1
 
 The following parameter clears the whole screen
 
-```batch
+```ini
 clear=screen
 ```
 
 Can be used without parameters to clear a specific area
 
-```batch
+```ini
 cursor1=40 15
 cursor2=60 27
 clear
@@ -161,13 +161,13 @@ clear
 
 Uses the same syntax as the default `color` command does to change some color
 
-```batch
+```ini
 color={0-f}{0-f}
 ```
 
 The only difference is that you change color attributes only for the text you print instead of the whole window
 
-```batch
+```ini
 color=0b
 text=Hello
 
@@ -178,7 +178,7 @@ text=is written with a different color
 
 You can also combine this command with `clear` to draw empty rectangular areas
 
-```batch
+```ini
 cursor1=40 15
 cursor2=80 27
 color=70
@@ -189,14 +189,14 @@ clear
 
 Lets you set what should be printed
 
-```batch
+```ini
 cursor1={x} {y}
 text={any text with spaces, Unicode characters, etc.}
 ```
 
 If you want to write text line by line, you can use the following syntax
 
-```batch
+```ini
 cursor1=5 5
 text=Line 1
 text=This line is below
@@ -224,22 +224,22 @@ You can write the file by yourself but if you want more access to the layout (to
 set program_name=CursorMower
 
 (
-  echo.screen_width=120
-  echo.screen_height=40
-  echo.screen_margin=1
+    echo.screen_width=120
+    echo.screen_height=40
+    echo.screen_margin=1
 
-  echo.color=0b
-  echo.cursor1=49 17
-  echo.text=%program_name%
-  echo.cursor1=54 19
-  echo.text=1  Check debug build
-  echo.text=2  Check release build
-  echo.down
-  echo.text=0  Exit
+    echo.color=0b
+    echo.cursor1=49 17
+    echo.text=%program_name%
+    echo.cursor1=54 19
+    echo.text=1  Check debug build
+    echo.text=2  Check release build
+    echo.down
+    echo.text=0  Exit
 
-  rem Move the cursor for user input
-  echo.cursor1=52 24
-  echo.text=^> 
+    rem Move the cursor for user input
+    echo.cursor1=52 24
+    echo.text=^> 
 )>"layout.tmp"
 
 cursorMower "layout.tmp"
