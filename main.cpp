@@ -29,10 +29,10 @@ int main(const int arg_count, char** arg_list) {
         error(ERROR_ARGS_COUNT, to_string(arg_count - 1));
 
 
-    auto cmd = CommandLine();
+    auto cmd = make_unique<CommandLine>();
 
     const string arg_file = arg_list[1];
-    COORD param_dims = cmd.getScreenDims();
+    auto param_dims = cmd->getScreenDims();
     short param_margin = 0;
     vector<Block> param_actions;
 
@@ -84,10 +84,10 @@ int main(const int arg_count, char** arg_list) {
 
         //Parse parameters
         if (cells.at(0) == "screen_width")
-            param_dims.X = to_short(cells.at(1), line_i);
+            param_dims->X = to_short(cells.at(1), line_i);
 
         else if (cells.at(0) == "screen_height")
-            param_dims.Y = to_short(cells.at(1), line_i);
+            param_dims->Y = to_short(cells.at(1), line_i);
 
         else if (cells.at(0) == "screen_margin")
             param_margin = to_short(cells.at(1), line_i);
@@ -199,8 +199,8 @@ int main(const int arg_count, char** arg_list) {
                     {}
                 });
             } else if (cells.at(1) == "screen") {
-                lines = param_dims.Y + param_margin * 2;
-                length = param_dims.X + param_margin * 2 * 2;
+                lines = param_dims->Y + param_margin * 2;
+                length = param_dims->X + param_margin * 2 * 2;
                 param_actions.emplace_back(Block{
                     COORD{1, 1},
                     {}
@@ -221,24 +221,24 @@ int main(const int arg_count, char** arg_list) {
         }
 
         if (cursor_changed)
-            normallizeCoords(param_dims, cursor1, cursor2);
+            normallizeCoords(*param_dims, cursor1, cursor2);
     }
 
     layout.close();
 
 
     //Get/set screen dimensions
-    if (param_dims.X == 0 || param_dims.Y == 0) {
-        auto [X, Y] = cmd.getScreenDims();
+    if (param_dims->X == 0 || param_dims->Y == 0) {
+        auto windowDims = cmd->getScreenDims();
 
         //Double margin for X-axis
-        param_dims.X = X - param_margin * 2 * 2;
-        param_dims.Y = Y - param_margin * 2;
+        param_dims->X = windowDims->X - param_margin * 2 * 2;
+        param_dims->Y = windowDims->Y - param_margin * 2;
     } else {
-        param_dims.X = param_dims.X + param_margin * 2 * 2;
-        param_dims.Y = param_dims.Y + param_margin * 2;
+        param_dims->X += param_margin * 2 * 2;
+        param_dims->Y += param_margin * 2;
 
-        cmd.setScreenDims(param_dims);
+        cmd->setScreenDims(*param_dims);
     }
 
 
@@ -251,21 +251,21 @@ int main(const int arg_count, char** arg_list) {
         };
 
         if (lines.empty())
-            cmd.goTo(coord);
+            cmd->goTo(coord);
         else
             for (auto& [color, text] : lines) {
-                if (coord.X < 0 || coord.X >= param_dims.X ||
-                    coord.Y < 0 || coord.Y >= param_dims.Y)
+                if (coord.X < 0 || coord.X >= param_dims->X ||
+                    coord.Y < 0 || coord.Y >= param_dims->Y)
                     error(ERROR_OUT_OF_BOUNDS,
                           to_string(coord.X) + ";" +
                           to_string(coord.Y) +
                           " with bounds of " +
-                          to_string(param_dims.X) + ":" +
-                          to_string(param_dims.Y));
+                          to_string(param_dims->X) + ":" +
+                          to_string(param_dims->Y));
 
-                cmd.goTo(coord);
-                cmd.setColor(color);
-                std::cout << string_cut(text, param_dims.X - coord.X);
+                cmd->goTo(coord);
+                cmd->setColor(color);
+                std::cout << string_cut(text, param_dims->X - coord.X);
 
                 coord = {coord.X, to_short(coord.Y + 1)};
             }
