@@ -7,8 +7,8 @@ void CommandLine::setColor(const short color) const {
 void CommandLine::setConInfo(CONSOLE_SCREEN_BUFFER_INFOEX& info) const {
     SetConsoleScreenBufferInfoEx(console_handle_out, &info);
 }
-void CommandLine::setScreenDims(COORD& dims) const {
     CONSOLE_SCREEN_BUFFER_INFOEX info = getConInfo();
+void CommandLine::setScreenDims(const COORD& dims) const {
 
     info.dwSize = dims;
     info.srWindow = {0, 0, dims.X, dims.Y};
@@ -20,7 +20,10 @@ void CommandLine::setScreenDims(COORD& dims) const {
     setConInfo(info);
 }
 
-void CommandLine::goTo(COORD& pos) const { SetConsoleCursorPosition(console_handle_out, pos); }
+void CommandLine::goTo(const COORD& pos) const {
+    SetConsoleCursorPosition(console_handle_out, pos);
+}
+
 
 CONSOLE_SCREEN_BUFFER_INFOEX CommandLine::getConInfo() const {
     CONSOLE_SCREEN_BUFFER_INFOEX console_info;
