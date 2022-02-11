@@ -26,6 +26,7 @@ vector<string> nsString::string_split(const string& source, const char delim, in
         if (token != nullptr) {
             if (maxTokens != 0)
                 output.emplace_back(token);
+
             else if (token_next != nullptr) {
                 const auto rest = string(token_next);
                 output.emplace_back(string(token) + (rest.empty() ? "" : delim + rest));

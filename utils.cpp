@@ -101,13 +101,15 @@ void nsUtils::rearrangeCoords(COORD& point1, COORD& point2) {
             point1.Y = point2.Y;
             point2.Y = cursor1_y;
         }
-    } else {
+    }
+    else {
         if (point1.Y <= point2.Y) {
             //Swap by OX
             const auto cursor1_x = point1.X;
             point1.X = point2.X;
             point2.X = cursor1_x;
-        } else {
+        }
+        else {
             //Swap places
             const COORD cursor1_temp = point1;
             point1 = point2;

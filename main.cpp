@@ -1,3 +1,5 @@
+// ReSharper disable CppClangTidyCppcoreguidelinesNarrowingConversions
+// ReSharper disable CppClangTidyBugproneNarrowingConversions
 #include <fstream>
 #include <iostream>
 #include "commandLine.hpp"
@@ -55,44 +57,38 @@ int main(const int arg_count, char** arg_list) {
     while (getline(layout, line_read)) {
         line_i++;
         vector<string> cells = string_split(line_read, '=', 2);
+        string cell0 = cells.at(0);
 
         if (cells.empty())
             continue;
 
         //Check syntax
-        if (
-            contains(
-                vector<string>{
-                    "screen_width", "screen_height", "screen_margin",
-                    "text"
-                }, cells.at(0))) {
+        if (contains(
+            vector<string>{
+                "screen_width", "screen_height", "screen_margin",
+                "text"
+            }, cell0)) {
             if (cells.size() != 2)
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
-        } else if (
-            !contains(
-                vector<string>{
-                    "cursor1", "cursor2",
-                    "cursor1_up", "cursor1_down", "cursor1_left", "cursor1_right",
-                    "up", "down", "left", "right",
-                    "cursor2_up", "cursor2_down", "cursor2_left", "cursor2_right",
-                    "up2", "down2", "left2", "right2",
-                    "color",
-                    "clear"
-                }, cells.at(0)))
+        }
+        else if (!contains(
+            vector<string>{
+                "cursor1", "cursor1_up", "cursor1_down", "cursor1_left", "cursor1_right", "up", "down", "left", "right",
+                "cursor2", "cursor2_up", "cursor2_down", "cursor2_left", "cursor2_right", "up2", "down2", "left2", "right2",
+                "color",
+                "clear"
+            }, cell0))
             error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 
 
         //Parse parameters
-        if (cells.at(0) == "screen_width")
+        if (cell0 == "screen_width")
             param_dims->X = to_short(cells.at(1), line_i);
-
-        else if (cells.at(0) == "screen_height")
+        else if (cell0 == "screen_height")
             param_dims->Y = to_short(cells.at(1), line_i);
-
-        else if (cells.at(0) == "screen_margin")
+        else if (cell0 == "screen_margin")
             param_margin = to_short(cells.at(1), line_i);
-
-        else if (cells.at(0) == "cursor1") {
+        else if (cell0 == "cursor1") {
             vector<string> values = string_split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
@@ -103,7 +99,8 @@ int main(const int arg_count, char** arg_list) {
                 to_short(values.at(0), line_i),
                 to_short(values.at(1), line_i)
             };
-        } else if (cells.at(0) == "cursor2") {
+        }
+        else if (cell0 == "cursor2") {
             vector<string> values = string_split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
@@ -114,54 +111,65 @@ int main(const int arg_count, char** arg_list) {
                 to_short(values.at(0), line_i),
                 to_short(values.at(1), line_i)
             };
-        } else if (cells.at(0) == "cursor1_up" || cells.at(0) == "up") {
+        }
+        else if (cell0 == "cursor1_up" || cell0 == "up") {
             cursor_changed = true;
             cursor1.Y -= cells.size() == 1 ?
                              1 :
                              to_short(cells.at(1), line_i);
-        } else if (cells.at(0) == "cursor1_down" || cells.at(0) == "down") {
-            cursor_changed = true;
-            cursor1.Y += cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
-        } else if (cells.at(0) == "cursor1_left" || cells.at(0) == "left") {
-            cursor_changed = true;
-            cursor1.X -= cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
-        } else if (cells.at(0) == "cursor1_right" || cells.at(0) == "right") {
-            cursor_changed = true;
-            cursor1.X += cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
-        } else if (cells.at(0) == "cursor2_up" || cells.at(0) == "up2") {
+        }
+        else if (cell0 == "cursor2_up" || cell0 == "up2") {
             cursor_changed = true;
             cursor2.Y -= cells.size() == 1 ?
                              1 :
                              to_short(cells.at(1), line_i);
-        } else if (cells.at(0) == "cursor2_down" || cells.at(0) == "down2") {
+        }
+        else if (cell0 == "cursor1_down" || cell0 == "down") {
+            cursor_changed = true;
+            cursor1.Y += cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        }
+        else if (cell0 == "cursor2_down" || cell0 == "down2") {
             cursor_changed = true;
             cursor2.Y += cells.size() == 1 ?
                              1 :
                              to_short(cells.at(1), line_i);
-        } else if (cells.at(0) == "cursor2_left" || cells.at(0) == "left2") {
+        }
+        else if (cell0 == "cursor1_left" || cell0 == "left") {
+            cursor_changed = true;
+            cursor1.X -= cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        }
+        else if (cell0 == "cursor2_left" || cell0 == "left2") {
             cursor_changed = true;
             cursor2.X -= cells.size() == 1 ?
                              1 :
                              to_short(cells.at(1), line_i);
-        } else if (cells.at(0) == "cursor2_right" || cells.at(0) == "right2") {
+        }
+        else if (cell0 == "cursor1_right" || cell0 == "right") {
+            cursor_changed = true;
+            cursor1.X += cells.size() == 1 ?
+                             1 :
+                             to_short(cells.at(1), line_i);
+        }
+        else if (cell0 == "cursor2_right" || cell0 == "right2") {
             cursor_changed = true;
             cursor2.X += cells.size() == 1 ?
                              1 :
                              to_short(cells.at(1), line_i);
-        } else if (cells.at(0) == "color") {
+        }
+        else if (cell0 == "color") {
             if (cells.size() > 1) {
                 color_stream << cells.at(1);
                 color_stream >> std::hex >> color_last;
                 color_stream.clear();
-            } else
+            }
+            else
                 color_last = CommandLine::COLOR_DEFAULT;
-        } else if (cells.at(0) == "text") {
+        }
+        else if (cell0 == "text") {
             if (cursor_changed) {
                 cursor_changed = false;
                 param_actions.emplace_back(Block{
@@ -182,7 +190,8 @@ int main(const int arg_count, char** arg_list) {
                         color_last,
                         cells.at(1)
                     });
-        } else if (cells.at(0) == "clear") {
+        }
+        else if (cell0 == "clear") {
             rearrangeCoords(cursor1, cursor2);
 
             int lines = 0, length = 0;
@@ -198,14 +207,16 @@ int main(const int arg_count, char** arg_list) {
                     },
                     {}
                 });
-            } else if (cells.at(1) == "screen") {
+            }
+            else if (cells.at(1) == "screen") {
                 lines = param_dims->Y + param_margin * 2;
                 length = param_dims->X + param_margin * 2 * 2;
                 param_actions.emplace_back(Block{
                     COORD{1, 1},
                     {}
                 });
-            } else
+            }
+            else
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 
             auto text = string(length, ' ');
@@ -234,7 +245,8 @@ int main(const int arg_count, char** arg_list) {
         //Double margin for X-axis
         param_dims->X = windowDims->X - param_margin * 2 * 2;
         param_dims->Y = windowDims->Y - param_margin * 2;
-    } else {
+    }
+    else {
         param_dims->X += param_margin * 2 * 2;
         param_dims->Y += param_margin * 2;
 
