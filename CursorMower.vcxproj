@@ -230,8 +230,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="commandLine.hpp" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="string.hpp" />
     <ClInclude Include="utils.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="cursorMower.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

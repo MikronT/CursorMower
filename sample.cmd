@@ -15,7 +15,7 @@ set program_version=Beta v4.2
 set arg_targetDir=%1
 if "!arg_targetDir!" == "" set arg_targetDir=Release
 
-set module_cursor=!arg_targetDir!\CursorMower.exe
+set module_cursor=!arg_targetDir!\cursorMower.exe
 
 
 
