@@ -6,7 +6,7 @@ using std::cerr, std::endl;
 
 
 int nsUtils::help() {
-    std::cout << "CursorMower v0.4.3 -> github.com/MikronT/CursorMower"
+    std::cout << "CursorMower v0.4.3 -> https://github.com/MikronT/CursorMower"
             << endl
             << endl << "Usage"
             << endl << "  cursorMower \"file\""
