@@ -6,8 +6,8 @@ A C++ based tool that intends to provide fast and convenient command line interf
 
 Version: **0.4.3**
 
-*Developed for Windows 10*
-*Not tested on any other versions yet*
+- *Developed for Windows 10*
+- *Not tested on any other versions yet*
 
 ---
 
@@ -15,8 +15,7 @@ Version: **0.4.3**
 
 ### Layout file syntax
 
-This tool uses layout files to render the screen
-The syntax is very simple
+This tool uses layout files to render the screen. The syntax is very simple
 
 Notes
 
