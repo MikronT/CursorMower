@@ -1,12 +1,11 @@
 ﻿#include "string.hpp"
 
-using namespace nsString;
-
 
 int nsString::string_getSize(const string& of) { return string_getSize(of.c_str()); }
 int nsString::string_getSize(const char* of) {
     auto size = 0;
-    while (*of) size += (*of++ & 0xc0) != 0x80;
+    while (*of)
+        size += (*of++ & 0xc0) != 0x80;
     return size;
 }
 
@@ -27,6 +26,7 @@ vector<string> nsString::string_split(const string& source, const char delim, in
         if (token != nullptr) {
             if (maxTokens != 0)
                 output.emplace_back(token);
+
             else if (token_next != nullptr) {
                 const auto rest = string(token_next);
                 output.emplace_back(string(token) + (rest.empty() ? "" : delim + rest));
@@ -35,7 +35,9 @@ vector<string> nsString::string_split(const string& source, const char delim, in
         }
 
         token = strtok_s(nullptr, &delim, &token_next);
+
     } while (token != nullptr && maxTokens != 0);
+
     return output;
 }
 #pragma optimize("", on)
