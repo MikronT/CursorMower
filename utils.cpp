@@ -11,7 +11,6 @@ int nsUtils::help() {
             << endl << "Usage"
             << endl << "  cursorMower \"file\""
             << endl
-            << endl
             << endl << "Layout file syntax"
             << endl << "  Window configuration"
             << endl << "    > console_width={columns}"
@@ -36,13 +35,12 @@ int nsUtils::help() {
             << endl << "    > text={literally any text}"
             << endl << "        Set what should be printed"
             << endl
-            << endl
             << endl << "Returns"
-            << endl << "  0 | All is OK"
+            << endl << "  0 | Everything is OK"
             << endl << "  " << ERROR_ARGS_COUNT << " | Not enough/too many arguments (no file specified)"
-            << endl << "  " << ERROR_FILE << " | Error reading a file (file not found or is inaccessible)"
-            << endl << "  " << ERROR_SYNTAX << " | Illegal line syntax (the syntax is wrong, check cursor /help)"
-            << endl << "  " << ERROR_OUT_OF_BOUNDS << " | Out of screen buffer bounds (text or coords exceed window dims)"
+            << endl << "  " << ERROR_FILE << " | Error reading a file (file not found or not accessible)"
+            << endl << "  " << ERROR_SYNTAX << " | Illegal line syntax (check /help)"
+            << endl << "  " << ERROR_OUT_OF_BOUNDS << " | Out of screen buffer bounds (text or coords exceed window frame dimensions)"
             << endl << "  5 | Help message is shown"
             << endl;
     return 5;
