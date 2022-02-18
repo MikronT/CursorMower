@@ -300,13 +300,13 @@ set /p input=
 
 ---
 
-## Returns
+## Error levels
 
-| Error level | Explanation                                                                |
-|:-----------:| -------------------------------------------------------------------------- |
-|      0      | All is OK                                                                  |
-|      1      | Not enough/too many arguments (no file specified)                          |
-|      2      | Error reading a file (file not found or is inaccessible)                   |
-|      3      | Illegal line syntax (the syntax is wrong, check `cursor /help`)            |
-|      4      | Out of screen buffer bounds (text or coordinates exceed window dimensions) |
-|      5      | Help message is shown                                                      |
+| Error level | Explanation                                                                 |
+|:-----------:| --------------------------------------------------------------------------- |
+|      0      | Everything is OK                                                            |
+|      1      | Not enough/too many arguments (no file specified)                           |
+|      2      | Error reading a file (file not found or not accessible)                     |
+|      3      | Illegal line syntax (check docs or use `/help`)                             |
+|      4      | Out of screen buffer bounds (text or coords exceed window frame dimensions) |
+|      5      | Help message is shown                                                       |

@@ -35,11 +35,11 @@ int nsUtils::help() {
             << endl << "    > text={literally any text}"
             << endl << "        Set what should be printed"
             << endl
-            << endl << "Returns"
+            << endl << "Error levels"
             << endl << "  0 | Everything is OK"
             << endl << "  " << ERROR_ARGS_COUNT << " | Not enough/too many arguments (no file specified)"
             << endl << "  " << ERROR_FILE << " | Error reading a file (file not found or not accessible)"
-            << endl << "  " << ERROR_SYNTAX << " | Illegal line syntax (check /help)"
+            << endl << "  " << ERROR_SYNTAX << " | Illegal line syntax (check docs or use /help)"
             << endl << "  " << ERROR_OUT_OF_BOUNDS << " | Out of screen buffer bounds (text or coords exceed window frame dimensions)"
             << endl << "  5 | Help message is shown"
             << endl;
