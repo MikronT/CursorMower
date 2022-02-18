@@ -64,9 +64,9 @@ goto :loop
 
 :prepareLayout_main
   (
-    echo.screen_width=120
-    echo.screen_height=40
-    echo.screen_margin=1
+    echo.console_width=120
+    echo.console_height=40
+    echo.console_margin=1
     echo.clear=screen
 
 
@@ -175,9 +175,9 @@ exit /b
 
 :prepareLayout_info
   (
-    echo.screen_width=120
-    echo.screen_height=40
-    echo.screen_margin=1
+    echo.console_width=120
+    echo.console_height=40
+    echo.console_margin=1
 
     echo.cursor1=0 39
     rem Wrong movements are omitted
@@ -191,9 +191,9 @@ exit /b
 
 :prepareLayout_input
   (
-    echo.screen_width=120
-    echo.screen_height=40
-    echo.screen_margin=1
+    echo.console_width=120
+    echo.console_height=40
+    echo.console_margin=1
 
     echo.cursor1=49 26
     echo.color=70

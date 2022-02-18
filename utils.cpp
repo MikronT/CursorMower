@@ -19,6 +19,8 @@ int nsUtils::help() {
             << endl << "        Set command line window dimensions"
             << endl << "    > console_margin={lines}"
             << endl << "        Set window margins"
+            << endl << "    > console_color={0-f} {000000-ffffff}"
+            << endl << "        Remap any of 16 available colors"
             << endl << "  UI building"
             << endl << "    > cursor{1/2}={x} {y}"
             << endl << "        Set the point to move cursor 1 or 2 to"
