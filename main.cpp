@@ -36,6 +36,7 @@ int main(const int arg_count, char** arg_list) {
     const string arg_file = arg_list[1];
     auto param_dims = cmd->getScreenDims();
     short param_margin = 0;
+    map<char, string> param_colors;
     vector<Block> param_actions;
 
     std::stringstream color_stream;
@@ -75,6 +76,7 @@ int main(const int arg_count, char** arg_list) {
         else if (contains(
             vector<string>{
                 //2-argument options
+                "console_color",
                 "cursor1", "cursor2"
             }, cell0)) {
             if (cells.size() != 3)
@@ -101,6 +103,14 @@ int main(const int arg_count, char** arg_list) {
         else if (cell0 == "console_margin")
             param_margin = to_short(cells.at(1), line_i);
 
+        else if (cell0 == "console_color") {
+            vector<string> values = string_split(cells.at(1), ' ', 2);
+
+            if (values.size() < 2)
+                error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
+
+            param_colors.emplace(values.at(0).at(0), values.at(1));
+        }
         else if (cell0 == "cursor1") {
             vector<string> values = string_split(cells.at(1), ' ', 2);
 
@@ -265,6 +275,10 @@ int main(const int arg_count, char** arg_list) {
 
         cmd->setScreenDims(*param_dims);
     }
+
+
+    //Apply color remapping
+    cmd->remapColors(param_colors);
 
 
     //Write text to screen
