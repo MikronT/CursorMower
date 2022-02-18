@@ -8,7 +8,7 @@ pushd "%~dp0"
 
 
 set program_name=CursorMower
-set program_version=Beta v4.2
+set program_version=v0.5.0
 
 
 
