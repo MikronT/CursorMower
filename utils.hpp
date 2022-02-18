@@ -14,7 +14,7 @@ namespace nsUtils {
             ERROR_OUT_OF_BOUNDS = 4;
 
     int help();
-    void error(int error, const string& msg);
+    [[noreturn]] void error(int error, const string& msg);
 
 
     short to_short(int number);
