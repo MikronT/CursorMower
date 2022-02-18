@@ -66,20 +66,12 @@ int main(const int arg_count, char** arg_list) {
         //Check syntax
         if (contains(
             vector<string>{
-                //1-argument options
-                "console_width", "console_height", "console_margin",
+                //Options with required argument
+                "console_width", "console_height", "console_margin", "console_color",
+                "cursor1", "cursor2",
                 "text"
             }, cell0)) {
             if (cells.size() != 2)
-                error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
-        }
-        else if (contains(
-            vector<string>{
-                //2-argument options
-                "console_color",
-                "cursor1", "cursor2"
-            }, cell0)) {
-            if (cells.size() != 3)
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
         }
         else if (!contains(
