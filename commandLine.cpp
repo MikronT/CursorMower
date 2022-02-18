@@ -1,3 +1,4 @@
+#include <thread>
 #include "commandLine.hpp"
 
 
@@ -17,6 +18,35 @@ void CommandLine::setScreenDims(const COORD& dims) const {
     //Do it again to make command line do what it should
     info = getConInfo();
     info->srWindow = {0, 0, dims.X, dims.Y};
+    setConInfo(*info);
+}
+void CommandLine::remapColors(const map<char, string>& colorMap) const {
+    const auto dims = getScreenDims();
+    const auto info = getConInfo();
+
+    std::stringstream stream;
+
+    for (auto& [key, color] : colorMap) {
+        short red, green, blue;
+
+        stream << std::hex << color.substr(0, 2);
+        stream >> red;
+        stream << std::hex << color.substr(2, 2);
+        stream >> green;
+        stream << std::hex << color.substr(4, 2);
+        stream >> blue;
+
+        if ('0' <= key && key <= '9')
+            info->ColorTable[key - 48] = RGB(red, green, blue);
+        else if ('A' <= key && key <= 'F')
+            info->ColorTable[key - 49] = RGB(red, green, blue);
+        else if ('a' <= key && key <= 'f')
+            info->ColorTable[key - 81] = RGB(red, green, blue);
+    }
+    setConInfo(*info);
+
+    info->srWindow = {0, 0, dims->X, dims->Y};
+    std::this_thread::sleep_for(std::chrono::milliseconds(3));
     setConInfo(*info);
 }
 

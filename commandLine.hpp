@@ -1,8 +1,10 @@
 #pragma once
+#include <map>
 #include <memory>
+#include <string>
 #include <Windows.h>
 
-using std::make_unique, std::unique_ptr;
+using std::make_unique, std::map, std::string, std::unique_ptr;
 
 
 class CommandLine {
@@ -23,6 +25,7 @@ public:
     void setColor(short color = 7) const;
     void setConInfo(CONSOLE_SCREEN_BUFFER_INFOEX& info) const;
     void setScreenDims(const COORD& dims) const;
+    void remapColors(const map<char, string>& colorMap) const;
 
     void goTo(const COORD& pos) const;
 
