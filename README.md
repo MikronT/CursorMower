@@ -13,6 +13,8 @@ Version: **0.5.0**
 
 ## Usage
 
+Detailed explanation of the program usage with examples
+
 ### Layout file syntax
 
 This tool uses layout files to render the screen. The syntax is very simple
@@ -27,15 +29,15 @@ Notes
 Should be placed at the beginning of the layout file
 
 ```ini
-screen_width={columns}
-screen_height={lines}
+console_width={columns}
+console_height={lines}
 ```
 
 Example
 
 ```ini
-screen_width=120
-screen_height=40
+console_width=120
+console_height=40
 ```
 
 Notes
@@ -47,7 +49,7 @@ Notes
 #### Set window margins
 
 ```ini
-screen_margin={lines}
+console_margin={lines}
 ```
 
 Example
@@ -55,9 +57,9 @@ Example
 The window width and height will be automatically extended by the margin but all the coordinates will work in the coordinate system of the old window: (1;1) will point to (3;3) automatically
 
 ```ini
-screen_width=120
-screen_height=40
-screen_margin=1
+console_width=120
+console_height=40
+console_margin=1
 ```
 
 Notes
@@ -164,6 +166,19 @@ Uses the same syntax as the default `color` command does to change some color
 color={0-f}{0-f}
 ```
 
+Here's #CommandPrompt default color reference
+
+| Code | Color  | Code | Color        |
+|:----:| ------ |:----:| ------------ |
+|  0   | Black  |  8   | Gray         |
+|  1   | Blue   |  9   | Light Blue   |
+|  2   | Green  |  A   | Light Green  |
+|  3   | Aqua   |  B   | Light Aqua   |
+|  4   | Red    |  C   | Light Red    |
+|  5   | Purple |  D   | Light Purple |
+|  6   | Yellow |  E   | Light Yellow |
+|  7   | White  |  F   | Bright White |
+
 The only difference is that you change color attributes only for the text you print instead of the whole window
 
 ```ini
@@ -184,6 +199,43 @@ color=70
 clear
 ```
 
+To extend coloring variety of #CommandPrompt you can remap any of 16 predefined colors with the following command. The general syntax is below
+
+```ini
+console_color={0-f} {000000-ffffff}
+```
+
+The first parameter is a built-in color code and the second is the color you want to remap to. Here's an example to better understand it
+
+```ini
+; Remap black to red
+console_color=0 ff0000
+
+; Remap white to gray
+console_color=f aaaaaa
+```
+
+And more advanced example (remap all the colors): set [Aurora](https://github.com/mbadolato/iTerm2-Color-Schemes#aurora) theme
+
+```ini
+console_color=0 23262e
+console_color=1 0321d7
+console_color=2 8fd46d
+console_color=3 03d6b8
+console_color=4 f0266f
+console_color=5 ee5d43
+console_color=6 ffe66d
+console_color=7 ffca28
+console_color=8 292e38
+console_color=9 03d6b8
+console_color=a 8fd46d
+console_color=b 03d6b8
+console_color=c f92672
+console_color=d ee5d43
+console_color=e ffe66d
+console_color=f c74ded
+```
+
 #### Print the text
 
 Lets you set what should be printed
@@ -200,7 +252,7 @@ cursor1=5 5
 text=Line 1
 text=This line is below
 down
-text=An empty line was printed above
+text=A blank line was printed above
 ```
 
 `down` lets you skip 1 line not to move the cursor by hand (a shorter form of `cursor1_down=1`)
@@ -223,9 +275,9 @@ You can write the file by yourself but if you want more access to the layout (to
 set program_name=CursorMower
 
 (
-    echo.screen_width=120
-    echo.screen_height=40
-    echo.screen_margin=1
+    echo.console_width=120
+    echo.console_height=40
+    echo.console_margin=1
 
     echo.color=0b
     echo.cursor1=49 17
