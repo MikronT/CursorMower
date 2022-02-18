@@ -67,6 +67,22 @@ goto :loop
     echo.console_width=120
     echo.console_height=40
     echo.console_margin=1
+    echo.console_color=0 23262e
+    echo.console_color=1 0321d7
+    echo.console_color=2 8fd46d
+    echo.console_color=3 03d6b8
+    echo.console_color=4 f0266f
+    echo.console_color=5 ee5d43
+    echo.console_color=6 ffe66d
+    echo.console_color=7 ffca28
+    echo.console_color=8 292e38
+    echo.console_color=9 03d6b8
+    echo.console_color=a 8fd46d
+    echo.console_color=b 03d6b8
+    echo.console_color=c f92672
+    echo.console_color=d ee5d43
+    echo.console_color=e ffe66d
+    echo.console_color=f c74ded
     echo.clear=screen
 
 
