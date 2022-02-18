@@ -65,7 +65,7 @@ int main(const int arg_count, char** arg_list) {
         //Check syntax
         if (contains(
             vector<string>{
-                "screen_width", "screen_height", "screen_margin",
+                "console_width", "console_height", "console_margin",
                 "text"
             }, cell0)) {
             if (cells.size() != 2)
@@ -82,11 +82,11 @@ int main(const int arg_count, char** arg_list) {
 
 
         //Parse parameters
-        if (cell0 == "screen_width")
+        if (cell0 == "console_width")
             param_dims->X = to_short(cells.at(1), line_i);
-        else if (cell0 == "screen_height")
+        else if (cell0 == "console_height")
             param_dims->Y = to_short(cells.at(1), line_i);
-        else if (cell0 == "screen_margin")
+        else if (cell0 == "console_margin")
             param_margin = to_short(cells.at(1), line_i);
         else if (cell0 == "cursor1") {
             vector<string> values = string_split(cells.at(1), ' ', 2);

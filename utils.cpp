@@ -14,10 +14,10 @@ int nsUtils::help() {
             << endl
             << endl << "Layout file syntax"
             << endl << "  Window configuration"
-            << endl << "    > screen_width={columns}"
-            << endl << "    > screen_height={lines}"
+            << endl << "    > console_width={columns}"
+            << endl << "    > console_height={lines}"
             << endl << "        To set command line window dimensions"
-            << endl << "    > screen_margin={lines}"
+            << endl << "    > console_margin={lines}"
             << endl << "        To set window margins"
             << endl << "  UI building"
             << endl << "    > cursor{1/2}={x} {y}"
@@ -31,7 +31,7 @@ int nsUtils::help() {
             << endl << "    > clear[=screen]"
             << endl << "        To clear area"
             << endl << "    > color[={0-f}{0-f}]"
-            << endl << "        To change color"
+            << endl << "        To change colors"
             << endl << "    > text={any text with spaces}"
             << endl << "        To set what should be printed"
             << endl
