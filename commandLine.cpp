@@ -31,17 +31,20 @@ void CommandLine::remapColors(const map<char, string>& colorMap) const {
 
         stream << std::hex << color.substr(0, 2);
         stream >> red;
+        stream.clear();
         stream << std::hex << color.substr(2, 2);
         stream >> green;
+        stream.clear();
         stream << std::hex << color.substr(4, 2);
         stream >> blue;
+        stream.clear();
 
         if ('0' <= key && key <= '9')
             info->ColorTable[key - 48] = RGB(red, green, blue);
         else if ('A' <= key && key <= 'F')
-            info->ColorTable[key - 49] = RGB(red, green, blue);
+            info->ColorTable[key - 55] = RGB(red, green, blue);
         else if ('a' <= key && key <= 'f')
-            info->ColorTable[key - 81] = RGB(red, green, blue);
+            info->ColorTable[key - 87] = RGB(red, green, blue);
     }
     setConInfo(*info);
 
