@@ -65,16 +65,26 @@ int main(const int arg_count, char** arg_list) {
         //Check syntax
         if (contains(
             vector<string>{
+                //1-argument options
                 "console_width", "console_height", "console_margin",
                 "text"
             }, cell0)) {
             if (cells.size() != 2)
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
         }
+        else if (contains(
+            vector<string>{
+                //2-argument options
+                "cursor1", "cursor2"
+            }, cell0)) {
+            if (cells.size() != 3)
+                error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
+        }
         else if (!contains(
             vector<string>{
-                "cursor1", "cursor1_up", "cursor1_down", "cursor1_left", "cursor1_right", "up", "down", "left", "right",
-                "cursor2", "cursor2_up", "cursor2_down", "cursor2_left", "cursor2_right", "up2", "down2", "left2", "right2",
+                //Options with optional arguments
+                "cursor1_up", "cursor1_down", "cursor1_left", "cursor1_right", "up", "down", "left", "right",
+                "cursor2_up", "cursor2_down", "cursor2_left", "cursor2_right", "up2", "down2", "left2", "right2",
                 "color",
                 "clear"
             }, cell0))
@@ -84,10 +94,13 @@ int main(const int arg_count, char** arg_list) {
         //Parse parameters
         if (cell0 == "console_width")
             param_dims->X = to_short(cells.at(1), line_i);
+
         else if (cell0 == "console_height")
             param_dims->Y = to_short(cells.at(1), line_i);
+
         else if (cell0 == "console_margin")
             param_margin = to_short(cells.at(1), line_i);
+
         else if (cell0 == "cursor1") {
             vector<string> values = string_split(cells.at(1), ' ', 2);
 
