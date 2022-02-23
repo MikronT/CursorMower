@@ -6,7 +6,7 @@ using std::cerr, std::endl;
 
 
 int nsUtils::help() {
-    std::cout << "CursorMower v0.5.0 -> https://github.com/MikronT/CursorMower"
+    std::cout << "CursorMower v0.5.1 -> https://github.com/MikronT/CursorMower"
             << endl
             << endl << "Usage"
             << endl << "  cursorMower \"file\""
@@ -37,9 +37,9 @@ int nsUtils::help() {
             << endl
             << endl << "Error levels"
             << endl << "  0 | Everything is OK"
-            << endl << "  " << ERROR_ARGS_COUNT << " | Not enough/too many arguments (no file specified)"
-            << endl << "  " << ERROR_FILE << " | Error reading a file (file not found or not accessible)"
-            << endl << "  " << ERROR_SYNTAX << " | Illegal line syntax (check docs or use /help)"
+            << endl << "  " << ERROR_ARGS_COUNT    << " | Not enough/too many arguments (no file specified)"
+            << endl << "  " << ERROR_FILE          << " | Error reading a file (file not found or not accessible)"
+            << endl << "  " << ERROR_SYNTAX        << " | Illegal line syntax (check docs or use /help)"
             << endl << "  " << ERROR_OUT_OF_BOUNDS << " | Out of screen buffer bounds (text or coords exceed window frame dimensions)"
             << endl << "  5 | Help message is shown"
             << endl;
