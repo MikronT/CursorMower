@@ -101,7 +101,24 @@ int main(const int arg_count, char** arg_list) {
             if (values.size() < 2)
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 
-            param_colors.emplace(values.at(0).at(0), values.at(1));
+            // ReSharper disable once CppTooWideScopeInitStatement
+            string key = values.at(0), v = values.at(1);
+                 if (key == "0" || key == "black")         param_colors.emplace(0, v);
+            else if (key == "1" || key == "blue")          param_colors.emplace(1, v);
+            else if (key == "2" || key == "green")         param_colors.emplace(2, v);
+            else if (key == "3" || key == "cyan")          param_colors.emplace(3, v);
+            else if (key == "4" || key == "red")           param_colors.emplace(4, v);
+            else if (key == "5" || key == "purple")        param_colors.emplace(5, v);
+            else if (key == "6" || key == "yellow")        param_colors.emplace(6, v);
+            else if (key == "7" || key == "white")         param_colors.emplace(7, v);
+            else if (key == "8" || key == "bright-black")  param_colors.emplace(8, v);
+            else if (key == "9" || key == "bright-blue")   param_colors.emplace(9, v);
+            else if (key == "a" || key == "bright-green")  param_colors.emplace(10, v);
+            else if (key == "b" || key == "bright-cyan")   param_colors.emplace(11, v);
+            else if (key == "c" || key == "bright-red")    param_colors.emplace(12, v);
+            else if (key == "d" || key == "bright-purple") param_colors.emplace(13, v);
+            else if (key == "e" || key == "bright-yellow") param_colors.emplace(14, v);
+            else if (key == "f" || key == "bright-white")  param_colors.emplace(15, v);
         }
         else if (cell0 == "cursor1") {
             vector<string> values = string_split(cells.at(1), ' ', 2);
