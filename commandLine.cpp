@@ -6,18 +6,15 @@ void CommandLine::setColor(const short color) const {
     SetConsoleTextAttribute(console_handle_out, color);
 }
 void CommandLine::setConInfo(CONSOLE_SCREEN_BUFFER_INFOEX& info) const {
+    info.srWindow.Bottom++;
     SetConsoleScreenBufferInfoEx(console_handle_out, &info);
 }
 void CommandLine::setScreenDims(const COORD& dims) const {
-    auto info = getConInfo();
+    const auto info = getConInfo();
 
     info->dwSize = dims;
     info->srWindow = {0, 0, dims.X, dims.Y};
-    setConInfo(*info);
 
-    //Do it again to make command line do what it should
-    info = getConInfo();
-    info->srWindow = {0, 0, dims.X, dims.Y};
     setConInfo(*info);
 }
 void CommandLine::remapColors(const map<int, string>& colorMap) const {
@@ -41,10 +38,7 @@ void CommandLine::remapColors(const map<int, string>& colorMap) const {
 
         info->ColorTable[key] = RGB(red, green, blue);
     }
-    setConInfo(*info);
 
-    info->srWindow = {0, 0, dims->X, dims->Y};
-    std::this_thread::sleep_for(std::chrono::milliseconds(3));
     setConInfo(*info);
 }
 
