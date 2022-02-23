@@ -36,7 +36,7 @@ int main(const int arg_count, char** arg_list) {
     const string arg_file = arg_list[1];
     auto param_dims = cmd->getScreenDims();
     short param_margin = 0;
-    map<char, string> param_colors;
+    map<int, string> param_colors;
     vector<Block> param_actions;
 
     std::stringstream color_stream;

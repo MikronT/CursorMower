@@ -20,7 +20,7 @@ void CommandLine::setScreenDims(const COORD& dims) const {
     info->srWindow = {0, 0, dims.X, dims.Y};
     setConInfo(*info);
 }
-void CommandLine::remapColors(const map<char, string>& colorMap) const {
+void CommandLine::remapColors(const map<int, string>& colorMap) const {
     const auto dims = getScreenDims();
     const auto info = getConInfo();
 
@@ -39,12 +39,7 @@ void CommandLine::remapColors(const map<char, string>& colorMap) const {
         stream >> blue;
         stream.clear();
 
-        if ('0' <= key && key <= '9')
-            info->ColorTable[key - 48] = RGB(red, green, blue);
-        else if ('A' <= key && key <= 'F')
-            info->ColorTable[key - 55] = RGB(red, green, blue);
-        else if ('a' <= key && key <= 'f')
-            info->ColorTable[key - 87] = RGB(red, green, blue);
+        info->ColorTable[key] = RGB(red, green, blue);
     }
     setConInfo(*info);
 
