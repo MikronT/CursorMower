@@ -37,6 +37,7 @@ int main(const int arg_count, char** arg_list) {
     auto param_dims = cmd->getScreenDims();
     short param_margin = 0;
     map<int, string> param_colors;
+    bool param_colors_changed = false;
     vector<Block> param_actions;
 
     std::stringstream color_stream;
@@ -103,6 +104,7 @@ int main(const int arg_count, char** arg_list) {
 
             // ReSharper disable once CppTooWideScopeInitStatement
             string key = values.at(0), v = values.at(1);
+            param_colors_changed = true;
                  if (key == "0" || key == "black")         param_colors.emplace(0, v);
             else if (key == "1" || key == "blue")          param_colors.emplace(1, v);
             else if (key == "2" || key == "green")         param_colors.emplace(2, v);
@@ -287,7 +289,8 @@ int main(const int arg_count, char** arg_list) {
 
 
     //Apply color remapping
-    cmd->remapColors(param_colors);
+    if (param_colors_changed)
+        cmd->remapColors(param_colors);
 
 
     //Write text to screen
