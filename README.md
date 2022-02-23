@@ -202,7 +202,8 @@ clear
 To extend coloring variety of #CommandPrompt you can remap any of 16 predefined colors with the following command. The general syntax is below
 
 ```ini
-console_color={0-f} {000000-ffffff}
+console_color={0-f}   {000000-ffffff}
+console_color={color} {000000-ffffff}
 ```
 
 The first parameter is a built-in color code and the second is the color you want to remap to. Here's an example to better understand it
@@ -234,6 +235,27 @@ console_color=c f92672
 console_color=d ee5d43
 console_color=e ffe66d
 console_color=f c74ded
+```
+
+Or the same example using color names instead
+
+```ini
+console_color=black         23262e
+console_color=blue          0321d7
+console_color=green         8fd46d
+console_color=cyan          03d6b8
+console_color=red           f0266f
+console_color=purple        ee5d43
+console_color=yellow        ffe66d
+console_color=white         ffca28
+console_color=bright-black  292e38
+console_color=bright-blue   03d6b8
+console_color=bright-green  8fd46d
+console_color=bright-cyan   03d6b8
+console_color=bright-red    f92672
+console_color=bright-purple ee5d43
+console_color=bright-yellow ffe66d
+console_color=bright-white  c74ded
 ```
 
 #### Print the text

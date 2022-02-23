@@ -8,7 +8,6 @@ pushd "%~dp0"
 
 
 set program_name=CursorMower
-set program_version=v0.5.0
 
 
 
@@ -177,7 +176,7 @@ goto :loop
     echo.text=!arg_targetDir!
 
     echo.cursor1=49 17
-    echo.text=%program_name% %program_version%
+    echo.text=%program_name%
     echo.down
     echo.text=1  Check debug build
     echo.text=2  Check min-size build
