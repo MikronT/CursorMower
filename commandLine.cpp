@@ -13,6 +13,7 @@ void CommandLine::setScreenDims(const COORD& dims) const {
     const auto info = getConInfo();
 
     info->dwSize = dims;
+    info->dwMaximumWindowSize = dims;
     info->srWindow = {0, 0, dims.X, dims.Y};
 
     setConInfo(*info);
