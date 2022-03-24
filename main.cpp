@@ -69,8 +69,7 @@ int main(const int arg_count, char** arg_list) {
             vector<string>{
                 //Options with required argument
                 "console_width", "console_height", "console_margin", "console_color",
-                "cursor1", "cursor2",
-                "text"
+                "cursor1", "cursor2"
             }, cell0)) {
             if (cells.size() != 2)
                 error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
@@ -81,7 +80,7 @@ int main(const int arg_count, char** arg_list) {
                 "cursor1_up", "cursor1_down", "cursor1_left", "cursor1_right", "up", "down", "left", "right",
                 "cursor2_up", "cursor2_down", "cursor2_left", "cursor2_right", "up2", "down2", "left2", "right2",
                 "color",
-                "clear"
+                "text", "clear"
             }, cell0))
             error(ERROR_SYNTAX, to_string(line_i) + ": " + line_read);
 
@@ -222,7 +221,9 @@ int main(const int arg_count, char** arg_list) {
                     .lines
                     .emplace_back(Line{
                         color_last,
-                        cells.at(1)
+                        cells.size() == 1 ?
+                            "" : //Print no text (just move cursor)
+                            cells.at(1)
                     });
         }
         else if (cell0 == "clear") {
