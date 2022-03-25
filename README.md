@@ -1,10 +1,10 @@
 # CursorMower
 
-*Render Batch Faster & Smarter*
+*Render CLI Faster*
 
 A C++ based tool that intends to provide fast and convenient command line interface building experience
 
-Version: **0.5.2**
+Version: **0.5.3**
 
 - *Developed for Windows 10*
 - *Not tested on any other versions yet*
