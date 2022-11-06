@@ -4,7 +4,7 @@
 #include <iostream>
 #include "commandLine.hpp"
 #include "string.hpp"
-#include "utils.hpp"
+#include "util.hpp"
 
 using std::to_wstring, std::wcout;
 using nsString::string_cut, nsString::string_split;

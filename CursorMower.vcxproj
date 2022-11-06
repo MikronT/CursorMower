@@ -226,13 +226,13 @@
     <ClCompile Include="commandLine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="string.cpp" />
-    <ClCompile Include="utils.cpp" />
+    <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="commandLine.hpp" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="string.hpp" />
-    <ClInclude Include="utils.hpp" />
+    <ClInclude Include="util.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="cursorMower.rc" />
