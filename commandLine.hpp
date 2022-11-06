@@ -8,6 +8,7 @@ using std::make_unique, std::map, std::unique_ptr, std::wstring;
 class CommandLine {
     HANDLE console_handle_out;
 public:
+    static constexpr int LINE_SIZE = 8192;
     static constexpr short COLOR_DEFAULT = 7;
 
 
@@ -29,4 +30,7 @@ public:
 
     [[nodiscard]] unique_ptr<CONSOLE_SCREEN_BUFFER_INFOEX> getConInfo() const;
     [[nodiscard]] unique_ptr<COORD> getScreenDims() const;
+
+
+    [[nodiscard]] static wstring getEnvVar(const wstring& name);
 };

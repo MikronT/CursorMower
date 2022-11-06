@@ -1,5 +1,4 @@
-﻿#include <string>
-#include "xString.hpp"
+﻿#include "xString.hpp"
 
 
 #pragma optimize("", off)

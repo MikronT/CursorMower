@@ -63,3 +63,10 @@ unique_ptr<COORD> CommandLine::getScreenDims() const {
     );
     return output;
 }
+
+
+wstring CommandLine::getEnvVar(const wstring& name) {
+    const auto buffer = make_unique<wchar_t[]>(LINE_SIZE);
+    GetEnvironmentVariableW(name.data(), buffer.get(), LINE_SIZE);
+    return buffer.get();
+}

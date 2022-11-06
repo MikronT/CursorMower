@@ -1,7 +1,8 @@
 ﻿#pragma once
+#include <string>
 #include <vector>
 
-using std::vector, std::wostringstream, std::wstring;
+using std::vector, std::wstring;
 
 
 namespace xString {
