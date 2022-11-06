@@ -1,6 +1,4 @@
 ﻿#pragma once
-#include <iomanip>
-#include <sstream>
 #include <vector>
 
 using std::vector, std::wostringstream, std::wstring;

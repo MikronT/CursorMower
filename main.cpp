@@ -1,7 +1,8 @@
 // ReSharper disable CppClangTidyCppcoreguidelinesNarrowingConversions
 // ReSharper disable CppClangTidyBugproneNarrowingConversions
 #include <fstream>
-#include <iostream>
+#include <sstream>
+#include <string>
 #include "commandLine.hpp"
 #include "util.hpp"
 #include "xString.hpp"

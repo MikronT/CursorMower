@@ -2,7 +2,7 @@
 #include <vector>
 #include <Windows.h>
 
-using std::endl, std::vector, std::wcerr, std::wstring;
+using std::vector, std::wstring;
 
 
 namespace nsUtils {
