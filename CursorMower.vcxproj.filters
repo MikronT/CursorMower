@@ -18,7 +18,7 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="string.cpp">
+    <ClCompile Include="xString.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="commandLine.cpp">
@@ -29,7 +29,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="string.hpp">
+    <ClInclude Include="xString.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="commandLine.hpp">

@@ -3,11 +3,10 @@
 #include <fstream>
 #include <iostream>
 #include "commandLine.hpp"
-#include "string.hpp"
+#include "xString.hpp"
 #include "util.hpp"
 
-using std::to_wstring, std::wcout;
-using nsString::string_cut, nsString::string_split;
+using std::to_wstring;
 using namespace nsUtils;
 
 
@@ -61,7 +60,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
 
     while (std::getline(layout, line_read)) {
         line_i++;
-        vector<wstring> cells = string_split(line_read, '=', 2);
+        vector<wstring> cells = xString::split(line_read, '=', 2);
         wstring cell0 = cells.at(0);
 
         if (cells.empty())
@@ -99,7 +98,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             param_margin = to_short(cells.at(1), line_i);
 
         else if (cell0 == L"console_color") {
-            vector<wstring> values = string_split(cells.at(1), ' ', 2);
+            vector<wstring> values = xString::split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
                 error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
@@ -125,7 +124,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             else if (key == L"f" || key == L"bright-white")  param_colors.emplace(15, v);
         }
         else if (cell0 == L"cursor1") {
-            vector<wstring> values = string_split(cells.at(1), ' ', 2);
+            vector<wstring> values = xString::split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
                 error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
@@ -137,7 +136,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             };
         }
         else if (cell0 == L"cursor2") {
-            vector<wstring> values = string_split(cells.at(1), ' ', 2);
+            vector<wstring> values = xString::split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
                 error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
@@ -320,7 +319,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
 
                 cmd->goTo(coord);
                 cmd->setColor(color);
-                wcout << string_cut(text, param_dims->X - coord.X);
+                std::wcout << xString::cut(text, param_dims->X - coord.X);
 
                 coord = {coord.X, to_short(coord.Y + 1)};
             }

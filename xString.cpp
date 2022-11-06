@@ -1,19 +1,8 @@
-﻿#include "string.hpp"
+﻿#include "xString.hpp"
 
 
-int nsString::string_getSize(const wstring& of) { return string_getSize(of.c_str()); }
-int nsString::string_getSize(const wchar_t* of) {
-    auto size = 0;
-    while (*of)
-        size += (*of++ & 0xc0) != 0x80;
-    return size;
-}
-
-vector<wstring> nsString::string_split(vector<char>& source, const wchar_t delim, const int maxTokens) {
-    return string_split(wstring(source.begin(), source.end()), delim, maxTokens);
-}
 #pragma optimize("", off)
-vector<wstring> nsString::string_split(const wstring& source, const wchar_t delim, int maxTokens) {
+vector<wstring> xString::split(const wstring& source, const wchar_t delim, int maxTokens) {
     vector<wstring> output;
     auto input(source);
 
