@@ -3,8 +3,8 @@
 #include <fstream>
 #include <iostream>
 #include "commandLine.hpp"
-#include "xString.hpp"
 #include "util.hpp"
+#include "xString.hpp"
 
 using std::to_wstring;
 using namespace nsUtils;

@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <iostream>
 #include <sstream>
-#include <Windows.h>
 #include "util.hpp"
 
 

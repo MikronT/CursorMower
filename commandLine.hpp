@@ -1,7 +1,5 @@
 #pragma once
 #include <map>
-#include <memory>
-#include <string>
 #include <Windows.h>
 
 using std::make_unique, std::map, std::unique_ptr, std::wstring;
