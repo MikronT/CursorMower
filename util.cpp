@@ -5,55 +5,62 @@
 
 
 int nsUtils::help() {
-    std::wcout << L"CursorMower v0.5.3 -> https://github.com/MikronT/CursorMower"
-       << endl
-       << endl << L"Usage"
-       << endl << L"  cursorMower \"file\""
-       << endl
-       << endl << L"Layout file syntax"
-       << endl << L"  Window configuration"
-       << endl << L"    > console_width={columns}"
-       << endl << L"    > console_height={lines}"
-       << endl << L"        Set command line window dimensions"
-       << endl << L"    > console_margin={lines}"
-       << endl << L"        Set window margins"
-       << endl << L"    > console_color={0-f}   {000000-ffffff}"
-       << endl << L"    > console_color={color} {000000-ffffff}"
-       << endl << L"        Remap any of 16 available colors"
-       << endl << L"  UI building"
-       << endl << L"    > cursor{1/2}={x} {y}"
-       << endl << L"        Set the point to move cursor 1 or 2 to"
-       << endl << L"    > cursor{1/2}_up[={lines}]"
-       << endl << L"    > cursor{1/2}_down[={lines}]"
-       << endl << L"    > cursor{1/2}_left[={columns}]"
-       << endl << L"    > cursor{1/2}_right[={columns}]"
-       << endl << L"        Move any cursor relatively"
-       << endl << L"    > clear[=screen]"
-       << endl << L"        Clear an area"
-       << endl << L"    > color[={0-f}{0-f}]"
-       << endl << L"        Change colors"
-       << endl << L"    > text={literally any text}"
-       << endl << L"        Set what should be printed"
-       << endl
-       << endl << L"Error levels"
-       << endl << L"  0 | Everything is OK"
-       << endl << L"  " << ERROR_ARGS_COUNT    << L" | Not enough/too many arguments (no file specified)"
-       << endl << L"  " << ERROR_FILE          << L" | Error reading a file (file not found or not accessible)"
-       << endl << L"  " << ERROR_SYNTAX        << L" | Illegal line syntax (check docs or use /help)"
-       << endl << L"  " << ERROR_OUT_OF_BOUNDS << L" | Out of screen buffer bounds (text or coords exceed window frame dimensions)"
-       << endl << L"  5 | Help message is shown"
-       << endl;
+    wprintf(LR"(
+CursorMower v0.5.3 -> https://github.com/MikronT/CursorMower
+
+Usage
+  cursorMower "file"
+
+Layout file syntax
+  Window configuration
+    > console_width={columns}
+    > console_height={lines}
+        Set command line window dimensions
+    > console_margin={lines}
+        Set window margins
+    > console_color={0-f}   {000000-ffffff}
+    > console_color={color} {000000-ffffff}
+        Remap any of 16 available colors
+  UI building
+    > cursor{1/2}={x} {y}
+        Set the point to move cursor 1 or 2 to
+    > cursor{1/2}_up[={lines}]
+    > cursor{1/2}_down[={lines}]
+    > cursor{1/2}_left[={columns}]
+    > cursor{1/2}_right[={columns}]
+        Move any cursor relatively
+    > clear[=screen]
+        Clear an area
+    > color[={0-f}{0-f}]
+        Change colors
+    > text={literally any text}
+        Set what should be printed
+
+Error levels
+  0 | Everything is OK
+  %d | Not enough/too many arguments (no file specified)
+  %d | Error reading a file(file not found or not accessible)
+  %d | Illegal line syntax(check docs or use / help)
+  %d | Out of screen buffer bounds(text or coords exceed window frame dimensions)
+  5 | Help message is shown
+)", ERROR_ARGS_COUNT, ERROR_FILE, ERROR_SYNTAX, ERROR_OUT_OF_BOUNDS);
     return 5;
 }
 void nsUtils::error(const int error, const wstring& msg) {
     switch (error) {
-        case ERROR_ARGS_COUNT:    wcerr << L"Wrong number of arguments:"; break;
-        case ERROR_FILE:          wcerr << L"Error reading the file";     break;
-        case ERROR_SYNTAX:        wcerr << L"Illegal formatting at line"; break;
-        case ERROR_OUT_OF_BOUNDS: wcerr << L"Argument out of bounds:";    break;
+        case ERROR_ARGS_COUNT:
+            wprintf(L"Wrong number of arguments: %s\n", msg.data());
+            break;
+        case ERROR_FILE:
+            wprintf(L"Error reading the file\n");
+            break;
+        case ERROR_SYNTAX:
+            wprintf(L"Illegal formatting at line %s\n", msg.data());
+            break;
+        case ERROR_OUT_OF_BOUNDS:
+            wprintf(L"Argument out of bounds: %s\n", msg.data());
+            break;
     }
-
-    wcerr << L" " << msg << endl;
     std::quick_exit(error);
 }
 
