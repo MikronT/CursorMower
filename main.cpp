@@ -319,7 +319,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
 
                 cmd->goTo(coord);
                 cmd->setColor(color);
-                std::wcout << xString::cut(text, param_dims->X - coord.X);
+                wprintf(L"%s", text.substr(0, param_dims->X - coord.X).data());
 
                 coord = {coord.X, to_short(coord.Y + 1)};
             }
