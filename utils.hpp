@@ -3,7 +3,7 @@
 #include <vector>
 #include <Windows.h>
 
-using std::string, std::vector;
+using std::vector, std::wstring;
 
 
 namespace nsUtils {
@@ -14,11 +14,11 @@ namespace nsUtils {
             ERROR_OUT_OF_BOUNDS = 4;
 
     int help();
-    [[noreturn]] void error(int error, const string& msg);
+    [[noreturn]] void error(int error, const wstring& msg);
 
 
     short to_short(int number);
-    short to_short(const string& text, int fromLine);
+    short to_short(const wstring& text, int fromLine);
 
 
     template <typename T> [[nodiscard]] bool contains(const vector<T>& vector, T entry) {

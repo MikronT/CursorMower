@@ -20,11 +20,11 @@ void CommandLine::setScreenDims(const COORD& dims) const {
 
     setConInfo(*info);
 }
-void CommandLine::remapColors(const map<int, string>& colorMap) const {
+void CommandLine::remapColors(const map<int, wstring>& colorMap) const {
     const auto dims = getScreenDims();
     const auto info = getConInfo();
 
-    std::stringstream stream;
+    std::wstringstream stream;
 
     for (auto& [key, color] : colorMap) {
         short red, green, blue;

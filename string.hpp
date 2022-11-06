@@ -4,12 +4,12 @@
 #include <string>
 #include <vector>
 
-using std::ostringstream, std::string, std::vector, std::wstring;
+using std::vector, std::wstring;
 
 
 namespace nsString {
-    template <typename T> [[nodiscard]] string string_cut(T what, const int to) {
-        ostringstream format;
+    template <typename T> [[nodiscard]] wstring string_cut(T what, const int to) {
+        std::wostringstream format;
         format << std::setprecision(2) << what;
         auto output = format.str();
 
@@ -24,9 +24,9 @@ namespace nsString {
         return output;
     }
 
-    [[nodiscard]] int string_getSize(const string& of);
-    [[nodiscard]] int string_getSize(const char* of);
+    [[nodiscard]] int string_getSize(const wstring& of);
+    [[nodiscard]] int string_getSize(const wchar_t* of);
 
-    [[nodiscard]] vector<string> string_split(vector<char>& source, char delim, int maxTokens = -1);
-    [[nodiscard]] vector<string> string_split(const string& source, char delim, int maxTokens = -1);
+    [[nodiscard]] vector<wstring> string_split(vector<char>& source, wchar_t delim, int maxTokens = -1);
+    [[nodiscard]] vector<wstring> string_split(const wstring& source, wchar_t delim, int maxTokens = -1);
 }

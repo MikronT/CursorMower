@@ -1,73 +1,68 @@
 #include <algorithm>
 #include <iostream>
+#include <sstream>
+#include <Windows.h>
 #include "utils.hpp"
 
-using std::cerr, std::endl;
+using std::endl, std::wcerr, std::wcout;
 
 
 int nsUtils::help() {
-    std::cout << "CursorMower v0.5.3 -> https://github.com/MikronT/CursorMower"
+    wcout << L"CursorMower v0.5.3 -> https://github.com/MikronT/CursorMower"
             << endl
-            << endl << "Usage"
-            << endl << "  cursorMower \"file\""
+            << endl << L"Usage"
+            << endl << L"  cursorMower \"file\""
             << endl
-            << endl << "Layout file syntax"
-            << endl << "  Window configuration"
-            << endl << "    > console_width={columns}"
-            << endl << "    > console_height={lines}"
-            << endl << "        Set command line window dimensions"
-            << endl << "    > console_margin={lines}"
-            << endl << "        Set window margins"
-            << endl << "    > console_color={0-f}   {000000-ffffff}"
-            << endl << "    > console_color={color} {000000-ffffff}"
-            << endl << "        Remap any of 16 available colors"
-            << endl << "  UI building"
-            << endl << "    > cursor{1/2}={x} {y}"
-            << endl << "        Set the point to move cursor 1 or 2 to"
-            << endl << "    > cursor{1/2}_up[={lines}]"
-            << endl << "    > cursor{1/2}_down[={lines}]"
-            << endl << "    > cursor{1/2}_left[={columns}]"
-            << endl << "    > cursor{1/2}_right[={columns}]"
-            << endl << "        Move any cursor relatively"
-            << endl << "    > clear[=screen]"
-            << endl << "        Clear an area"
-            << endl << "    > color[={0-f}{0-f}]"
-            << endl << "        Change colors"
-            << endl << "    > text={literally any text}"
-            << endl << "        Set what should be printed"
+            << endl << L"Layout file syntax"
+            << endl << L"  Window configuration"
+            << endl << L"    > console_width={columns}"
+            << endl << L"    > console_height={lines}"
+            << endl << L"        Set command line window dimensions"
+            << endl << L"    > console_margin={lines}"
+            << endl << L"        Set window margins"
+            << endl << L"    > console_color={0-f}   {000000-ffffff}"
+            << endl << L"    > console_color={color} {000000-ffffff}"
+            << endl << L"        Remap any of 16 available colors"
+            << endl << L"  UI building"
+            << endl << L"    > cursor{1/2}={x} {y}"
+            << endl << L"        Set the point to move cursor 1 or 2 to"
+            << endl << L"    > cursor{1/2}_up[={lines}]"
+            << endl << L"    > cursor{1/2}_down[={lines}]"
+            << endl << L"    > cursor{1/2}_left[={columns}]"
+            << endl << L"    > cursor{1/2}_right[={columns}]"
+            << endl << L"        Move any cursor relatively"
+            << endl << L"    > clear[=screen]"
+            << endl << L"        Clear an area"
+            << endl << L"    > color[={0-f}{0-f}]"
+            << endl << L"        Change colors"
+            << endl << L"    > text={literally any text}"
+            << endl << L"        Set what should be printed"
             << endl
-            << endl << "Error levels"
-            << endl << "  0 | Everything is OK"
-            << endl << "  " << ERROR_ARGS_COUNT    << " | Not enough/too many arguments (no file specified)"
-            << endl << "  " << ERROR_FILE          << " | Error reading a file (file not found or not accessible)"
-            << endl << "  " << ERROR_SYNTAX        << " | Illegal line syntax (check docs or use /help)"
-            << endl << "  " << ERROR_OUT_OF_BOUNDS << " | Out of screen buffer bounds (text or coords exceed window frame dimensions)"
-            << endl << "  5 | Help message is shown"
+            << endl << L"Error levels"
+            << endl << L"  0 | Everything is OK"
+            << endl << L"  " << ERROR_ARGS_COUNT    << L" | Not enough/too many arguments (no file specified)"
+            << endl << L"  " << ERROR_FILE          << L" | Error reading a file (file not found or not accessible)"
+            << endl << L"  " << ERROR_SYNTAX        << L" | Illegal line syntax (check docs or use /help)"
+            << endl << L"  " << ERROR_OUT_OF_BOUNDS << L" | Out of screen buffer bounds (text or coords exceed window frame dimensions)"
+            << endl << L"  5 | Help message is shown"
             << endl;
     return 5;
 }
-void nsUtils::error(const int error, const string& msg) {
+void nsUtils::error(const int error, const wstring& msg) {
     switch (error) {
-    case ERROR_ARGS_COUNT:
-        cerr << "Wrong number of arguments: " << msg << endl;
-        break;
-    case ERROR_FILE:
-        cerr << "Error reading the file " << msg << endl;
-        break;
-    case ERROR_SYNTAX:
-        cerr << "Illegal formatting at line " << msg << endl;
-        break;
-    case ERROR_OUT_OF_BOUNDS:
-        cerr << "Argument out of bounds: " << msg << endl;
-        break;
+        case ERROR_ARGS_COUNT:    wcerr << L"Wrong number of arguments:"; break;
+        case ERROR_FILE:          wcerr << L"Error reading the file";     break;
+        case ERROR_SYNTAX:        wcerr << L"Illegal formatting at line"; break;
+        case ERROR_OUT_OF_BOUNDS: wcerr << L"Argument out of bounds:";    break;
     }
+    wcerr << L" " << msg << endl;
     std::quick_exit(error);
 }
 
 short nsUtils::to_short(const int number) { return static_cast<short>(number); }
-short nsUtils::to_short(const string& text, const int fromLine) {
+short nsUtils::to_short(const wstring& text, const int fromLine) {
     if (!std::ranges::all_of(text, isdigit))
-        error(ERROR_SYNTAX, std::to_string(fromLine));
+        error(ERROR_SYNTAX, std::to_wstring(fromLine));
 
     return static_cast<short>(stoi(text));
 }
