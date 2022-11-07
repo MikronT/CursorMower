@@ -5,7 +5,7 @@
 
 int nsUtils::help() {
     wprintf(LR"(
-CursorMower v0.5.5 -> https://github.com/MikronT/CursorMower
+CursorMower v0.5.6 -> https://github.com/MikronT/CursorMower
 
 Usage
   cursorMower "file"
