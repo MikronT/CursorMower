@@ -81,7 +81,7 @@ wstring CommandLine::expandEnvironmentVariables(const wstring& in) {
             percent1 = i; //First appearance of %
 
             //Save everything before the char to the stream
-            out << in.substr(offset, i);
+            out << in.substr(offset, i - offset);
 
             offset = i + 1;
         }
