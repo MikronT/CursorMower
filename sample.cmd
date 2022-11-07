@@ -166,21 +166,33 @@ goto :loop
     )
 
 
+    rem Draw a box
+    echo.cursor1=10 6
+    echo.cursor2=60 12
+    echo.color=70
+    echo.clear
+
     rem Write some text
+    echo.right=2
+    echo.down
+    echo.text=Build
+    echo.down
+    echo.text=Layout write-time expansion: !arg_targetDir!
+    echo.text=Render-time expansion:       %%arg_targetDir%%
+
+    rem Draw a box
     echo.cursor1=40 15
     echo.cursor2=80 28
     echo.color=70
     echo.clear
 
-    echo.cursor1=40 15
-    echo.text=!arg_targetDir!
-
-    echo.cursor1=49 17
+    rem Write some text
+    echo.cursor1=46 17
     echo.text=%program_name%
     echo.down
-    echo.text=1  Check debug build
-    echo.text=2  Check min-size build
-    echo.text=3  Check release build
+    echo.text=1  Check debug збірку
+    echo.text=2  Перевірити min-size build
+    echo.text=3  Check релізний build
     echo.down
     echo.text=0  Exit
   )>"layout.conf"
@@ -210,7 +222,7 @@ exit /b
     echo.console_height=40
     echo.console_margin=1
 
-    echo.cursor1=49 26
+    echo.cursor1=46 26
     echo.color=70
     echo.text=^> 
   )>"layout.conf"

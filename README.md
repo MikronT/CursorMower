@@ -43,7 +43,7 @@ console_height=40
 Notes
 
 - Current command line window dimensions are used as default dimensions
-- Each of them can be the one only for the whole layout file (otherwise previous parameter is omitted)
+- Each of them should be one per the whole layout file (otherwise previous parameter is omitted)
 - You can change only one of them if you need
 
 #### Set window margins
@@ -258,16 +258,16 @@ console_color=bright-yellow ffe66d
 console_color=bright-white  c74ded
 ```
 
-#### Print the text
+#### Print text
 
-Lets you set what should be printed
+To print some text just use command `text=` and then any text following it
 
 ```ini
 cursor1={x} {y}
 text={any text with spaces, Unicode characters, etc.}
 ```
 
-If you want to write text line by line, you can use the following syntax
+If you want to write text line by line, you can use the following syntax (`down` is just a shorter form for `cursor1_down=1`)
 
 ```ini
 cursor1=5 5
@@ -277,7 +277,14 @@ down
 text=A blank line was printed above
 ```
 
-`down` lets you skip 1 line not to move the cursor by hand (a shorter form of `cursor1_down=1`)
+You can also use variables and expand them in runtime to make your layout files dynamic
+
+```batch
+rem Expands during render-time
+text=%userName%
+```
+
+However, some dynamic variables like `%date%`, `%time%` are not supported yet
 
 ### Run
 
@@ -291,7 +298,9 @@ And you will see the result
 
 ### Example
 
-You can write the file by yourself but if you want more access to the layout (to make it more dynamic), you can generate the one on the go. All the Batch features are available inside the brackets
+You can write layout files by yourself but you can also generate it dynamically to get better access to the layout. Here you can access your own variables and expand them during both write-time and render-time
+
+All the Batch features are available inside the brackets
 
 ```batch
 set program_name=CursorMower
@@ -309,6 +318,11 @@ set program_name=CursorMower
     echo.text=2  Check release build
     echo.down
     echo.text=0  Exit
+    echo.down=2
+    rem Write some var value
+    echo.text=Static variable:  %date%
+    rem Write some var name
+    echo.text=Dynamic variable: %%program_name%%
 
     rem Move the cursor for user input
     echo.cursor1=52 24
@@ -324,11 +338,11 @@ set /p input=
 
 ## Error levels
 
-| Error level | Explanation                                                                 |
-|:-----------:| --------------------------------------------------------------------------- |
-|      0      | Everything is OK                                                            |
-|      1      | Not enough/too many arguments (no file specified)                           |
-|      2      | Error reading a file (file not found or not accessible)                     |
-|      3      | Illegal line syntax (check docs or use `/help`)                             |
-|      4      | Out of screen buffer bounds (text or coords exceed window frame dimensions) |
-|      5      | Help message is shown                                                       |
+| Level | Explanation                                                                 |
+|:-----:| --------------------------------------------------------------------------- |
+|   0   | Everything is OK                                                            |
+|   1   | Not enough/too many arguments (no file specified)                           |
+|   2   | Error reading a file (file not found or not accessible)                     |
+|   3   | Illegal line syntax (check docs or use `/help`)                             |
+|   4   | Out of screen buffer bounds (text or coords exceed window frame dimensions) |
+|   5   | Help message is shown                                                       |
