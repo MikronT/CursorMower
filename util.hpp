@@ -21,7 +21,7 @@ namespace nsUtils {
 
 
     template <typename T> [[nodiscard]] bool contains(const vector<T>& vector, T entry) {
-        return std::find(vector.begin(), vector.end(), entry) != vector.end();
+        return std::ranges::find(vector, entry) != vector.end();
     }
 
 

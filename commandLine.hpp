@@ -33,4 +33,5 @@ public:
 
 
     [[nodiscard]] static wstring getEnvVar(const wstring& name);
+    [[nodiscard]] static wstring expandEnvironmentVariables(const wstring& in);
 };

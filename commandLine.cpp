@@ -70,3 +70,32 @@ wstring CommandLine::getEnvVar(const wstring& name) {
     GetEnvironmentVariableW(name.data(), buffer.get(), LINE_SIZE);
     return buffer.get();
 }
+wstring CommandLine::expandEnvironmentVariables(const wstring& in) {
+    std::wostringstream out;
+
+    size_t offset = 0, i, percent1 = 44170;
+
+    while ((i = in.find('%', offset)) != wstring::npos) {
+        //Look for the 1st appearance of %
+        if (percent1 == 44170) {
+            percent1 = i; //First appearance of %
+
+            //Save everything before the char to the stream
+            out << in.substr(offset, i);
+
+            offset = i + 1;
+        }
+        else {
+            const size_t percent2 = i; //Second appearance of %
+            offset = i + 1;
+
+            wstring variable = in.substr(percent1 + 1, percent2 - percent1 - 1);
+            out << getEnvVar(variable);
+
+            percent1 = 44170;
+        }
+    }
+
+    out << in.substr(offset, in.size());
+    return out.str();
+}

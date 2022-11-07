@@ -319,7 +319,16 @@ int wmain(const int arg_count, wchar_t** arg_list) {
 
                 cmd->goTo(coord);
                 cmd->setColor(color);
-                wprintf(L"%s", text.substr(0, param_dims->X - coord.X).data());
+
+                {
+                    //Expand environment variables
+                    auto out = CommandLine::expandEnvironmentVariables(text);
+
+                    //Trim the text to screen size
+                    out = out.substr(0, param_dims->X - coord.X);
+
+                    wprintf(L"%s", out.data());
+                }
 
                 coord = {coord.X, to_short(coord.Y + 1)};
             }
