@@ -89,7 +89,7 @@ wstring CommandLine::expandEnvironmentVariables(const wstring& in) {
             const size_t percent2 = i; //Second appearance of %
             offset = i + 1;
 
-            wstring variable = in.substr(percent1 + 1, percent2 - percent1 - 1);
+            auto variable = in.substr(percent1 + 1, percent2 - percent1 - 1);
             out << getEnvVar(variable);
 
             percent1 = 44170;

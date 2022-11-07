@@ -325,7 +325,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                     auto out = CommandLine::expandEnvironmentVariables(text);
 
                     //Trim the text to screen size
-                    out = out.substr(0, param_dims->X - coord.X);
+                    out = xString::cut(out, param_dims->X - coord.X);
 
                     wprintf(L"%s", out.data());
                 }
