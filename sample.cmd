@@ -8,21 +8,12 @@ pushd "%~dp0"
 
 
 set program_name=CursorMower
+set program_name_pun=КурсороКосарка
 
 
 
 set arg_targetDir=%1
 if "!arg_targetDir!" == "" set arg_targetDir=Release
-
-set module_cursor=!arg_targetDir!\cursorMower.exe
-
-
-
-if not exist "%module_cursor%" (
-  echo.^(i^) CursorMower module not found
-  echo.    Compile the project at first
-  exit /b
-)
 
 
 
@@ -31,6 +22,15 @@ if not exist "%module_cursor%" (
 
 
 :loop
+  set module_cursor=!arg_targetDir!\CursorMower.exe
+
+  if not exist "%module_cursor%" (
+    echo.^(i^) CursorMower module not found
+    echo.    Compile the project at first
+    exit /b
+  )
+
+
   call :prepareLayout_main
 
   set counter=13
@@ -50,9 +50,6 @@ if not exist "%module_cursor%" (
   ) else if "!input!" == "1" ( set arg_targetDir=Debug
   ) else if "!input!" == "2" ( set arg_targetDir=MinSizeRelease
   ) else if "!input!" == "3"   set arg_targetDir=Release
-
-
-  set module_cursor=!arg_targetDir!\CursorMower.exe
 goto :loop
 
 
@@ -188,7 +185,7 @@ goto :loop
 
     rem Write some text
     echo.cursor1=46 17
-    echo.text=%program_name%
+    echo.text=%program_name% %%program_name_pun%%
     echo.down
     echo.text=1  Check debug збірку
     echo.text=2  Перевірити min-size build
