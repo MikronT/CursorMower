@@ -149,51 +149,35 @@ int wmain(const int arg_count, wchar_t** arg_list) {
         }
         else if (cell0 == L"cursor1_up" || cell0 == L"up") {
             cursor_changed = true;
-            cursor1.Y -= cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
+            cursor1.Y -= getCoordArgument(cells, line_i);
         }
         else if (cell0 == L"cursor2_up" || cell0 == L"up2") {
             cursor_changed = true;
-            cursor2.Y -= cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
+            cursor2.Y -= getCoordArgument(cells, line_i);
         }
         else if (cell0 == L"cursor1_down" || cell0 == L"down") {
             cursor_changed = true;
-            cursor1.Y += cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
+            cursor1.Y += getCoordArgument(cells, line_i);
         }
         else if (cell0 == L"cursor2_down" || cell0 == L"down2") {
             cursor_changed = true;
-            cursor2.Y += cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
+            cursor2.Y += getCoordArgument(cells, line_i);
         }
         else if (cell0 == L"cursor1_left" || cell0 == L"left") {
             cursor_changed = true;
-            cursor1.X -= cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
+            cursor1.X -= getCoordArgument(cells, line_i);
         }
         else if (cell0 == L"cursor2_left" || cell0 == L"left2") {
             cursor_changed = true;
-            cursor2.X -= cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
+            cursor2.X -= getCoordArgument(cells, line_i);
         }
         else if (cell0 == L"cursor1_right" || cell0 == L"right") {
             cursor_changed = true;
-            cursor1.X += cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
+            cursor1.X += getCoordArgument(cells, line_i);
         }
         else if (cell0 == L"cursor2_right" || cell0 == L"right2") {
             cursor_changed = true;
-            cursor2.X += cells.size() == 1 ?
-                             1 :
-                             to_short(cells.at(1), line_i);
+            cursor2.X += getCoordArgument(cells, line_i);
         }
         else if (cell0 == L"color") {
             if (cells.size() > 1) {

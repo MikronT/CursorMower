@@ -71,6 +71,11 @@ short nsUtils::to_short(const wstring& text, const int fromLine) {
     return static_cast<short>(stoi(text));
 }
 
+SHORT nsUtils::getCoordArgument(const vector<wstring>& cells, const int line_i) {
+    return cells.size() == 1 ?
+               1 :
+               to_short(cells.at(1), line_i);
+}
 void nsUtils::normallizeCoords(const COORD& dims, COORD& point1, COORD& point2) {
     if (point1.X < 1)
         point1.X = 1;
