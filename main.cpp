@@ -217,6 +217,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
 
             int lines = 0, length = 0;
 
+            //Create an empty block
             if (cells.size() == 1) {
                 lines = abs(cursor2.Y - cursor1.Y);
                 length = abs(cursor2.X - cursor1.X);
@@ -240,6 +241,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             else
                 error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
 
+            //Then add space
             auto text = wstring(length, ' ');
 
             for (int i = 0; i < lines; i++)

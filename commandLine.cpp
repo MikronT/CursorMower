@@ -1,4 +1,5 @@
 #include <sstream>
+#include <utf8.h>
 #include "commandLine.hpp"
 
 
@@ -68,7 +69,11 @@ unique_ptr<COORD> CommandLine::getScreenDims() const {
 wstring CommandLine::getEnvVar(const wstring& name) {
     const auto buffer = make_unique<wchar_t[]>(LINE_SIZE);
     GetEnvironmentVariableW(name.data(), buffer.get(), LINE_SIZE);
-    return buffer.get();
+
+    auto expanded = wstring(buffer.get());
+    wstring out;
+    utf8::utf16to8(expanded.begin(), expanded.end(), std::back_inserter(out));
+    return out;
 }
 wstring CommandLine::expandEnvironmentVariables(const wstring& in) {
     std::wostringstream out;
