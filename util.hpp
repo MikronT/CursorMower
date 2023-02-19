@@ -25,7 +25,7 @@ namespace nsUtils {
     }
 
 
-    SHORT getCoordArgument(const vector<wstring>& cells, const int line_i);
+    short getCoordArgument(const vector<wstring>& cells, int line_i);
     void normallizeCoords(const COORD& dims, COORD& point1, COORD& point2);
     void rearrangeCoords(COORD& point1, COORD& point2);
 };
