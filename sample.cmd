@@ -10,10 +10,8 @@ pushd "%~dp0"
 set program_name=CursorMower
 set program_name_pun=КурсороКосарка
 
-
-
-set arg_targetDir=%1
-if "!arg_targetDir!" == "" set arg_targetDir=Release
+set targetDir=%1
+if "!targetDir!" == "" set targetDir=.
 
 
 
@@ -22,34 +20,36 @@ if "!arg_targetDir!" == "" set arg_targetDir=Release
 
 
 :loop
-  set module_cursor=!arg_targetDir!\CursorMower.exe
-
-  if not exist "%module_cursor%" (
+  if not exist "!targetDir!\cursorMower.exe" (
     echo.^(i^) CursorMower module not found
-    echo.    Compile the project at first
+    echo.    Ensure the binary is in the same location as the sample
+    pause
     exit /b
   )
+  pushd "!targetDir!"
 
 
   call :prepareLayout_main
 
-  set counter=13
-  for /f "delims=" %%i in ('type "layout.conf" 2^>nul') do set /a counter+=1
+  set _operations=13
+  for /f "delims=" %%i in ('type "layout.conf" 2^>nul') do set /a _operations+=1
 
-  %module_cursor% "layout.conf"
+  cursorMower "layout.conf"
 
-  call :prepareLayout_info !counter!
-  %module_cursor% "layout.conf"
+  call :prepareLayout_info !_operations!
+  cursorMower "layout.conf"
+
 
   call :prepareLayout_input
-  %module_cursor% "layout.conf"
+  cursorMower "layout.conf"
   set /p input=
 
-
          if "!input!" == "0" ( exit /b
-  ) else if "!input!" == "1" ( set arg_targetDir=Debug
-  ) else if "!input!" == "2" ( set arg_targetDir=MinSizeRelease
-  ) else if "!input!" == "3"   set arg_targetDir=Release
+  ) else if "!input!" == "1" ( set targetDir=Debug
+  ) else if "!input!" == "2" ( set targetDir=MinSizeRelease
+  ) else if "!input!" == "3"   set targetDir=Release
+
+  popd
 goto :loop
 
 
@@ -174,8 +174,11 @@ goto :loop
     echo.down
     echo.text=Build
     echo.down
-    echo.text=Layout write-time expansion: !arg_targetDir!
-    echo.text=Render-time expansion:       %%arg_targetDir%%
+
+    set displayDir=!targetDir!
+    if "!displayDir!" == "." set displayDir=Current
+    echo.text=Layout write-time expansion: !displayDir!
+    echo.text=Render-time expansion:       %%displayDir%%
 
     rem Draw a box
     echo.cursor1=40 15
