@@ -1,8 +1,7 @@
 #pragma once
 #include <map>
+#include <memory>
 #include <Windows.h>
-
-using std::make_unique, std::map, std::unique_ptr, std::wstring;
 
 
 class CommandLine {
@@ -24,14 +23,14 @@ public:
     void setColor(short color = 7) const;
     void setConInfo(CONSOLE_SCREEN_BUFFER_INFOEX& info) const;
     void setScreenDims(const COORD& dims) const;
-    void remapColors(const map<int, wstring>& colorMap) const;
+    void remapColors(const std::map<int, std::string>& colorMap) const;
 
     void goTo(const COORD& pos) const;
 
-    [[nodiscard]] unique_ptr<CONSOLE_SCREEN_BUFFER_INFOEX> getConInfo() const;
-    [[nodiscard]] unique_ptr<COORD> getScreenDims() const;
+    [[nodiscard]] std::unique_ptr<CONSOLE_SCREEN_BUFFER_INFOEX> getConInfo() const;
+    [[nodiscard]] std::unique_ptr<COORD> getScreenDims() const;
 
 
-    [[nodiscard]] static wstring getEnvVar(const wstring& name);
-    [[nodiscard]] static wstring expandEnvironmentVariables(const wstring& in);
+    [[nodiscard]] static std::string getEnvVar(const std::string& name);
+    [[nodiscard]] static std::string expandEnvironmentVariables(const std::string& in);
 };

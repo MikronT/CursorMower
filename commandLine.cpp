@@ -1,6 +1,11 @@
+#include <ios>
 #include <sstream>
-#include <utf8.h>
+#include <string>
 #include "commandLine.hpp"
+#include "xString.hpp"
+
+using std::make_unique, std::unique_ptr;
+using std::hex, std::map, std::ostringstream, std::string, std::stringstream, std::to_string, std::wstring;
 
 
 void CommandLine::setColor(const short color) const {
@@ -19,22 +24,22 @@ void CommandLine::setScreenDims(const COORD& dims) const {
 
     setConInfo(*info);
 }
-void CommandLine::remapColors(const map<int, wstring>& colorMap) const {
+void CommandLine::remapColors(const map<int, string>& colorMap) const {
     const auto dims = getScreenDims();
     const auto info = getConInfo();
 
-    std::wstringstream stream;
+    stringstream stream;
 
     for (auto& [key, color] : colorMap) {
         short red, green, blue;
 
-        stream << std::hex << color.substr(0, 2);
+        stream << hex << color.substr(0, 2);
         stream >> red;
         stream.clear();
-        stream << std::hex << color.substr(2, 2);
+        stream << hex << color.substr(2, 2);
         stream >> green;
         stream.clear();
-        stream << std::hex << color.substr(4, 2);
+        stream << hex << color.substr(4, 2);
         stream >> blue;
         stream.clear();
 
@@ -66,21 +71,22 @@ unique_ptr<COORD> CommandLine::getScreenDims() const {
 }
 
 
-wstring CommandLine::getEnvVar(const wstring& name) {
+string CommandLine::getEnvVar(const string& name) {
     const auto buffer = make_unique<wchar_t[]>(LINE_SIZE);
-    GetEnvironmentVariableW(name.data(), buffer.get(), LINE_SIZE);
+    GetEnvironmentVariableW(
+        xString::toWide(name).data(),
+        buffer.get(),
+        LINE_SIZE);
 
-    auto expanded = wstring(buffer.get());
-    wstring out;
-    utf8::utf16to8(expanded.begin(), expanded.end(), std::back_inserter(out));
+    string out = xString::fromWide(buffer.get());
     return out;
 }
-wstring CommandLine::expandEnvironmentVariables(const wstring& in) {
-    std::wostringstream out;
+string CommandLine::expandEnvironmentVariables(const string& in) {
+    ostringstream out;
 
     size_t offset = 0, i, percent1 = 44170;
 
-    while ((i = in.find('%', offset)) != wstring::npos) {
+    while ((i = in.find('%', offset)) != string::npos) {
         //Look for the 1st appearance of %
         if (percent1 == 44170) {
             percent1 = i; //First appearance of %

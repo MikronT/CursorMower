@@ -2,9 +2,11 @@
 #include <sstream>
 #include "util.hpp"
 
+using std::quick_exit, std::string, std::to_string, std::vector;
 
-int nsUtils::help() {
-    wprintf(LR"(
+
+int util::help() {
+    printf(R"(
 CursorMower v0.5.6 -> https://github.com/MikronT/CursorMower
 
 Usage
@@ -42,41 +44,44 @@ Error levels
   %d | Illegal line syntax(check docs or use / help)
   %d | Out of screen buffer bounds(text or coords exceed window frame dimensions)
   5 | Help message is shown
-)", ERROR_ARGS_COUNT, ERROR_FILE, ERROR_SYNTAX, ERROR_OUT_OF_BOUNDS);
+)", ERROR_TYPE::WRONG_ARGS_NUMBER,
+           ERROR_TYPE::FILE_READ_ERROR,
+           ERROR_TYPE::BAD_SYNTAX,
+           ERROR_TYPE::ARG_OUT_OF_BOUNDS);
     return 5;
 }
-void nsUtils::error(const int error, const wstring& msg) {
+void util::error(const ERROR_TYPE error, const string& msg) {
     switch (error) {
-        case ERROR_ARGS_COUNT:
-            wprintf(L"Wrong number of arguments: %s\n", msg.data());
+        case ERROR_TYPE::WRONG_ARGS_NUMBER:
+            printf("Wrong number of arguments: %s\n", msg.data());
             break;
-        case ERROR_FILE:
-            wprintf(L"Error reading the file\n");
+        case ERROR_TYPE::FILE_READ_ERROR:
+            printf("Error reading the file\n");
             break;
-        case ERROR_SYNTAX:
-            wprintf(L"Illegal formatting at line %s\n", msg.data());
+        case ERROR_TYPE::BAD_SYNTAX:
+            printf("Illegal formatting at line %s\n", msg.data());
             break;
-        case ERROR_OUT_OF_BOUNDS:
-            wprintf(L"Argument out of bounds: %s\n", msg.data());
+        case ERROR_TYPE::ARG_OUT_OF_BOUNDS:
+            printf("Argument out of bounds: %s\n", msg.data());
             break;
     }
-    std::quick_exit(error);
+    quick_exit(static_cast<int>(error));
 }
 
-short nsUtils::to_short(const int number) { return static_cast<short>(number); }
-short nsUtils::to_short(const wstring& text, const int fromLine) {
+short util::to_short(const int number) { return static_cast<short>(number); }
+short util::to_short(const string& text, const int fromLine) {
     if (!std::ranges::all_of(text, isdigit))
-        error(ERROR_SYNTAX, std::to_wstring(fromLine));
+        error(ERROR_TYPE::BAD_SYNTAX, to_string(fromLine));
 
     return static_cast<short>(stoi(text));
 }
 
-short nsUtils::getCoordArgument(const vector<wstring>& cells, const int line_i) {
-    return cells.size() == 1 ?
-               1 :
-               to_short(cells.at(1), line_i);  // NOLINT(bugprone-narrowing-conversions)
+short util::getCoordArgument(const vector<string>& cells, const int line_i) {
+    if (cells.size() == 1)
+        return 1;
+    return to_short(cells.at(1), line_i);
 }
-void nsUtils::normallizeCoords(const COORD& dims, COORD& point1, COORD& point2) {
+void util::normallizeCoords(const COORD& dims, COORD& point1, COORD& point2) {
     if (point1.X < 1)
         point1.X = 1;
     if (point1.Y < 1)
@@ -97,7 +102,7 @@ void nsUtils::normallizeCoords(const COORD& dims, COORD& point1, COORD& point2) 
     if (point2.Y > dims.Y)
         point2.Y = dims.Y;
 }
-void nsUtils::rearrangeCoords(COORD& point1, COORD& point2) {
+void util::rearrangeCoords(COORD& point1, COORD& point2) {
     if (point1.X <= point2.X) {
         if (point1.Y > point2.Y) {
             //Swap by OY

@@ -3,12 +3,14 @@
 #include <sstream>
 #include <vector>
 
-using std::vector, std::wostringstream, std::wstring;
-
 
 namespace xString {
-    template <typename T> [[nodiscard]] wstring cut(T what, const size_t to) {
-        wostringstream format;
+    std::string fromWide(const std::wstring& text);
+    std::wstring toWide(const std::string& text);
+
+
+    template <typename T> [[nodiscard]] std::string cut(T what, const size_t to) {
+        std::ostringstream format;
         format << std::setprecision(2) << what;
         const auto output = format.str();
 
@@ -23,5 +25,5 @@ namespace xString {
         return output;
     }
 
-    [[nodiscard]] vector<wstring> split(const wstring& source, wchar_t delim, int maxTokens = -1);
+    [[nodiscard]] std::vector<std::string> split(const std::string& source, char delim, int maxTokens = -1);
 }

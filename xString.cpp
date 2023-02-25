@@ -1,13 +1,28 @@
-﻿#include "xString.hpp"
+﻿#include <utf8.h>
+#include "xString.hpp"
+
+using std::string, std::vector, std::wstring;
+
+
+string xString::fromWide(const wstring& text) {
+    string out;
+    utf8::utf16to8(text.begin(), text.end(), back_inserter(out));
+    return out;
+}
+wstring xString::toWide(const string& text) {
+    wstring out;
+    utf8::utf8to16(text.begin(), text.end(), back_inserter(out));
+    return out;
+}
 
 
 #pragma optimize("", off)
-vector<wstring> xString::split(const wstring& source, const wchar_t delim, int maxTokens) {
-    vector<wstring> output;
+vector<string> xString::split(const string& source, const char delim, int maxTokens) {
+    vector<string> output;
     auto input(source);
 
-    wchar_t* token_next = {};
-    auto* token = wcstok_s(input.data(), &delim, &token_next);
+    char* token_next = {};
+    auto* token = strtok_s(input.data(), &delim, &token_next);
 
     do {
         maxTokens--;
@@ -17,13 +32,16 @@ vector<wstring> xString::split(const wstring& source, const wchar_t delim, int m
                 output.emplace_back(token);
 
             else if (token_next != nullptr) {
-                const auto rest = wstring(token_next);
-                output.emplace_back(wstring(token) + (rest.empty() ? L"" : delim + rest));
+                const auto rest = string(token_next);
+                output.emplace_back(string(token) +
+                    (rest.empty() ?
+                         "" :
+                         delim + rest));
                 return output;
             }
         }
 
-        token = wcstok_s(nullptr, &delim, &token_next);
+        token = strtok_s(nullptr, &delim, &token_next);
 
     } while (token != nullptr && maxTokens != 0);
 

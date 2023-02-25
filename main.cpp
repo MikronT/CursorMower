@@ -1,18 +1,23 @@
 // ReSharper disable CppClangTidyCppcoreguidelinesNarrowingConversions
 // ReSharper disable CppClangTidyBugproneNarrowingConversions
 #include <fstream>
+#include <map>
 #include <sstream>
+#include <vector>
+#include <Windows.h>
 #include "commandLine.hpp"
 #include "util.hpp"
 #include "xString.hpp"
 
-using std::to_wstring;
-using namespace nsUtils;
+using std::make_unique;
+using std::ifstream;
+using std::map, std::string, std::stringstream, std::to_string, std::vector, std::wstring;
+using util::getCoordArgument, util::to_short;
 
 
 struct Line {
     short color;
-    wstring text;
+    string text;
 };
 
 struct Block {
@@ -21,28 +26,28 @@ struct Block {
 };
 
 
-const auto COLON = L": ";
+const auto COLON = ": ";
 
 
 int wmain(const int arg_count, wchar_t** arg_list) {
     if (arg_count == 1 ||
         arg_count == 2 && wstring(arg_list[1]) == L"/help")
-        return help();
+        return util::help();
 
     if (arg_count != 2)
-        error(ERROR_ARGS_COUNT, to_wstring(arg_count - 1));
+        util::error(ERROR_TYPE::WRONG_ARGS_NUMBER, to_string(arg_count - 1));
 
 
     auto cmd = make_unique<CommandLine>();
 
-    const wstring arg_file = arg_list[1];
+    string arg_file = xString::fromWide(arg_list[1]);
     auto param_dims = cmd->getScreenDims();
     short param_margin = 0;
-    map<int, wstring> param_colors;
+    map<int, string> param_colors;
     bool param_colors_changed = false;
     vector<Block> param_actions;
 
-    std::wstringstream color_stream;
+    stringstream color_stream;
     short color_last = CommandLine::COLOR_DEFAULT;
     auto cursor1 = COORD{1, 1},
          cursor2 = COORD{1, 1};
@@ -50,84 +55,84 @@ int wmain(const int arg_count, wchar_t** arg_list) {
 
 
     //Parse input from the file
-    std::wifstream layout;
+    ifstream layout;
     layout.open(arg_file);
     if (!layout.is_open())
-        error(ERROR_FILE, arg_file);
+        util::error(ERROR_TYPE::FILE_READ_ERROR, arg_file);
 
-    wstring line_read;
+    string line_read;
     int line_i = 0;
 
-    while (std::getline(layout, line_read)) {
+    while (getline(layout, line_read)) {
         line_i++;
-        vector<wstring> cells = xString::split(line_read, '=', 2);
-        wstring cell0 = cells.at(0);
+        vector<string> cells = xString::split(line_read, '=', 2);
+        string cell0 = cells.at(0);
 
         if (cells.empty())
             continue;
 
         //Check syntax
-        if (contains(
-            vector<wstring>{
+        if (util::contains(
+            vector<string>{
                 //Options with required argument
-                L"console_width", L"console_height", L"console_margin", L"console_color",
-                L"cursor1", L"cursor2"
+                "console_width", "console_height", "console_margin", "console_color",
+                "cursor1", "cursor2"
             }, cell0)) {
             if (cells.size() != 2)
-                error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
+                util::error(ERROR_TYPE::BAD_SYNTAX, to_string(line_i) + COLON + line_read);
         }
-        else if (!contains(
-            vector<wstring>{
+        else if (!util::contains(
+            vector<string>{
                 //Options with optional arguments
-                L"cursor1_up", L"cursor1_down", L"cursor1_left", L"cursor1_right", L"up", L"down", L"left", L"right",
-                L"cursor2_up", L"cursor2_down", L"cursor2_left", L"cursor2_right", L"up2", L"down2", L"left2", L"right2",
-                L"color",
-                L"text", L"clear"
+                "cursor1_up", "cursor1_down", "cursor1_left", "cursor1_right", "up", "down", "left", "right",
+                "cursor2_up", "cursor2_down", "cursor2_left", "cursor2_right", "up2", "down2", "left2", "right2",
+                "color",
+                "text", "clear"
             }, cell0))
-            error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
+            util::error(ERROR_TYPE::BAD_SYNTAX, to_string(line_i) + COLON + line_read);
 
 
         //Parse parameters
-        if (cell0 == L"console_width")
+        if (cell0 == "console_width")
             param_dims->X = to_short(cells.at(1), line_i);
 
-        else if (cell0 == L"console_height")
+        else if (cell0 == "console_height")
             param_dims->Y = to_short(cells.at(1), line_i);
 
-        else if (cell0 == L"console_margin")
+        else if (cell0 == "console_margin")
             param_margin = to_short(cells.at(1), line_i);
 
-        else if (cell0 == L"console_color") {
-            vector<wstring> values = xString::split(cells.at(1), ' ', 2);
+        else if (cell0 == "console_color") {
+            vector<string> values = xString::split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
-                error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
+                util::error(ERROR_TYPE::BAD_SYNTAX, to_string(line_i) + COLON + line_read);
 
             // ReSharper disable once CppTooWideScopeInitStatement
-            wstring key = values.at(0), v = values.at(1);
+            string key = values.at(0), v = values.at(1);
             param_colors_changed = true;
-                 if (key == L"0" || key == L"black")         param_colors.emplace(0, v);
-            else if (key == L"1" || key == L"blue")          param_colors.emplace(1, v);
-            else if (key == L"2" || key == L"green")         param_colors.emplace(2, v);
-            else if (key == L"3" || key == L"cyan")          param_colors.emplace(3, v);
-            else if (key == L"4" || key == L"red")           param_colors.emplace(4, v);
-            else if (key == L"5" || key == L"purple")        param_colors.emplace(5, v);
-            else if (key == L"6" || key == L"yellow")        param_colors.emplace(6, v);
-            else if (key == L"7" || key == L"white")         param_colors.emplace(7, v);
-            else if (key == L"8" || key == L"bright-black")  param_colors.emplace(8, v);
-            else if (key == L"9" || key == L"bright-blue")   param_colors.emplace(9, v);
-            else if (key == L"a" || key == L"bright-green")  param_colors.emplace(10, v);
-            else if (key == L"b" || key == L"bright-cyan")   param_colors.emplace(11, v);
-            else if (key == L"c" || key == L"bright-red")    param_colors.emplace(12, v);
-            else if (key == L"d" || key == L"bright-purple") param_colors.emplace(13, v);
-            else if (key == L"e" || key == L"bright-yellow") param_colors.emplace(14, v);
-            else if (key == L"f" || key == L"bright-white")  param_colors.emplace(15, v);
+                 if (key == "0" || key == "black")         param_colors.emplace(0, v);
+            else if (key == "1" || key == "blue")          param_colors.emplace(1, v);
+            else if (key == "2" || key == "green")         param_colors.emplace(2, v);
+            else if (key == "3" || key == "cyan")          param_colors.emplace(3, v);
+            else if (key == "4" || key == "red")           param_colors.emplace(4, v);
+            else if (key == "5" || key == "purple")        param_colors.emplace(5, v);
+            else if (key == "6" || key == "yellow")        param_colors.emplace(6, v);
+            else if (key == "7" || key == "white")         param_colors.emplace(7, v);
+            else if (key == "8" || key == "bright-black")  param_colors.emplace(8, v);
+            else if (key == "9" || key == "bright-blue")   param_colors.emplace(9, v);
+            else if (key == "a" || key == "bright-green")  param_colors.emplace(10, v);
+            else if (key == "b" || key == "bright-cyan")   param_colors.emplace(11, v);
+            else if (key == "c" || key == "bright-red")    param_colors.emplace(12, v);
+            else if (key == "d" || key == "bright-purple") param_colors.emplace(13, v);
+            else if (key == "e" || key == "bright-yellow") param_colors.emplace(14, v);
+            else if (key == "f" || key == "bright-white")  param_colors.emplace(15, v);
         }
-        else if (cell0 == L"cursor1") {
-            vector<wstring> values = xString::split(cells.at(1), ' ', 2);
+        else if (cell0 == "cursor1") {
+            vector<string> values = xString::split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
-                error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
+                util::error(ERROR_TYPE::BAD_SYNTAX, to_string(line_i) + COLON + line_read);
 
             cursor_changed = true;
             cursor1 = COORD{
@@ -135,11 +140,11 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                 to_short(values.at(1), line_i)
             };
         }
-        else if (cell0 == L"cursor2") {
-            vector<wstring> values = xString::split(cells.at(1), ' ', 2);
+        else if (cell0 == "cursor2") {
+            vector<string> values = xString::split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
-                error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
+                util::error(ERROR_TYPE::BAD_SYNTAX, to_string(line_i) + COLON + line_read);
 
             cursor_changed = true;
             cursor2 = COORD{
@@ -147,39 +152,39 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                 to_short(values.at(1), line_i)
             };
         }
-        else if (cell0 == L"cursor1_up" || cell0 == L"up") {
+        else if (cell0 == "cursor1_up" || cell0 == "up") {
             cursor_changed = true;
             cursor1.Y -= getCoordArgument(cells, line_i);
         }
-        else if (cell0 == L"cursor2_up" || cell0 == L"up2") {
+        else if (cell0 == "cursor2_up" || cell0 == "up2") {
             cursor_changed = true;
             cursor2.Y -= getCoordArgument(cells, line_i);
         }
-        else if (cell0 == L"cursor1_down" || cell0 == L"down") {
+        else if (cell0 == "cursor1_down" || cell0 == "down") {
             cursor_changed = true;
             cursor1.Y += getCoordArgument(cells, line_i);
         }
-        else if (cell0 == L"cursor2_down" || cell0 == L"down2") {
+        else if (cell0 == "cursor2_down" || cell0 == "down2") {
             cursor_changed = true;
             cursor2.Y += getCoordArgument(cells, line_i);
         }
-        else if (cell0 == L"cursor1_left" || cell0 == L"left") {
+        else if (cell0 == "cursor1_left" || cell0 == "left") {
             cursor_changed = true;
             cursor1.X -= getCoordArgument(cells, line_i);
         }
-        else if (cell0 == L"cursor2_left" || cell0 == L"left2") {
+        else if (cell0 == "cursor2_left" || cell0 == "left2") {
             cursor_changed = true;
             cursor2.X -= getCoordArgument(cells, line_i);
         }
-        else if (cell0 == L"cursor1_right" || cell0 == L"right") {
+        else if (cell0 == "cursor1_right" || cell0 == "right") {
             cursor_changed = true;
             cursor1.X += getCoordArgument(cells, line_i);
         }
-        else if (cell0 == L"cursor2_right" || cell0 == L"right2") {
+        else if (cell0 == "cursor2_right" || cell0 == "right2") {
             cursor_changed = true;
             cursor2.X += getCoordArgument(cells, line_i);
         }
-        else if (cell0 == L"color") {
+        else if (cell0 == "color") {
             if (cells.size() > 1) {
                 color_stream << cells.at(1);
                 color_stream >> std::hex >> color_last;
@@ -188,7 +193,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             else
                 color_last = CommandLine::COLOR_DEFAULT;
         }
-        else if (cell0 == L"text") {
+        else if (cell0 == "text") {
             if (cursor_changed) {
                 cursor_changed = false;
                 param_actions.emplace_back(Block{
@@ -208,12 +213,12 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                     .emplace_back(Line{
                         color_last,
                         cells.size() == 1 ?
-                            L"" : //Print no text (just move cursor)
+                            "" : //Print no text (just move cursor)
                             cells.at(1)
                     });
         }
-        else if (cell0 == L"clear") {
-            rearrangeCoords(cursor1, cursor2);
+        else if (cell0 == "clear") {
+            util::rearrangeCoords(cursor1, cursor2);
 
             int lines = 0, length = 0;
 
@@ -230,7 +235,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                     {}
                 });
             }
-            else if (cells.at(1) == L"screen") {
+            else if (cells.at(1) == "screen") {
                 lines = param_dims->Y + param_margin * 2;
                 length = param_dims->X + param_margin * 2 * 2;
                 param_actions.emplace_back(Block{
@@ -239,10 +244,10 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                 });
             }
             else
-                error(ERROR_SYNTAX, to_wstring(line_i) + COLON + line_read);
+                util::error(ERROR_TYPE::BAD_SYNTAX, to_string(line_i) + COLON + line_read);
 
-            //Then add space
-            auto text = wstring(length, ' ');
+            //Then add some space
+            auto text = string(length, ' ');
 
             for (int i = 0; i < lines; i++)
                 param_actions
@@ -255,7 +260,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
         }
 
         if (cursor_changed)
-            normallizeCoords(*param_dims, cursor1, cursor2);
+            util::normallizeCoords(*param_dims, cursor1, cursor2);
     }
 
     layout.close();
@@ -296,12 +301,12 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             for (auto& [color, text] : lines) {
                 if (coord.X < 0 || coord.X >= param_dims->X ||
                     coord.Y < 0 || coord.Y >= param_dims->Y)
-                    error(ERROR_OUT_OF_BOUNDS,
-                          to_wstring(coord.X) + L";" +
-                          to_wstring(coord.Y) +
-                          L" with bounds of " +
-                          to_wstring(param_dims->X) + L":" +
-                          to_wstring(param_dims->Y));
+                    util::error(ERROR_TYPE::ARG_OUT_OF_BOUNDS,
+                                to_string(coord.X) + "; " +
+                                to_string(coord.Y) +
+                                " with bounds of " +
+                                to_string(param_dims->X) + ":" +
+                                to_string(param_dims->Y));
 
                 cmd->goTo(coord);
                 cmd->setColor(color);
@@ -313,7 +318,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                     //Trim the text to screen size
                     out = xString::cut(out, param_dims->X - coord.X);
 
-                    wprintf(L"%s", out.data());
+                    printf("%s", out.data());
                 }
 
                 coord = {coord.X, to_short(coord.Y + 1)};
