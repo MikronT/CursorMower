@@ -2,12 +2,14 @@
 
 *Render CLI Faster*
 
-A C++ based tool that intends to provide fast and convenient command line interface building experience
+A C++ based tool that intends to provide fast and convenient command line interface building experience on Windows 10
 
-Version: **0.5.6**
+Version: **0.5.7**
 
-- *Developed for Windows 10*
-- *Not tested on any other versions yet*
+## Dependencies
+
+- UTF8-CPP
+    [Website](https://utfcpp.sourceforge.net)
 
 ---
 
@@ -166,7 +168,7 @@ Uses the same syntax as the default `color` command does to change some color
 color={0-f}{0-f}
 ```
 
-Here's #CommandPrompt default color reference
+Here's the Command Prompt default color reference
 
 | Code | Color  | Code | Color        |
 |:----:| ------ |:----:| ------------ |
@@ -199,7 +201,7 @@ color=70
 clear
 ```
 
-To extend coloring variety of #CommandPrompt you can remap any of 16 predefined colors with the following command. The general syntax is below
+To extend coloring variety of Command Prompt you can remap any of 16 predefined colors with the following command. The general syntax is below
 
 ```ini
 console_color={0-f}   {000000-ffffff}

@@ -7,7 +7,7 @@ using std::quick_exit, std::string, std::to_string, std::vector;
 
 int util::help() {
     printf(R"(
-CursorMower v0.5.6 -> https://github.com/MikronT/CursorMower
+CursorMower v0.5.7 -> https://github.com/MikronT/CursorMower
 
 Usage
   cursorMower "file"
