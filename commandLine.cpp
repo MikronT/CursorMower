@@ -86,7 +86,9 @@ string CommandLine::expandEnvironmentVariables(const string& in) {
 
     size_t offset = 0, i, percent1 = 44170;
 
+    auto expanded = false;
     while ((i = in.find('%', offset)) != string::npos) {
+        expanded = true;
         //Look for the 1st appearance of %
         if (percent1 == 44170) {
             percent1 = i; //First appearance of %
@@ -108,5 +110,7 @@ string CommandLine::expandEnvironmentVariables(const string& in) {
     }
 
     out << in.substr(offset, in.size());
+    if (expanded)
+        return expandEnvironmentVariables(out.str());
     return out.str();
 }

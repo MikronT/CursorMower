@@ -175,8 +175,10 @@ goto :loop
     echo.text=Build
     echo.down
 
-    set displayDir=!targetDir!
+    rem Put a variable into another variable to test recursive runtime variable expansion
+    set displayDir=dir=%%targetDir%%
     if "!displayDir!" == "." set displayDir=Current
+
     echo.text=Layout write-time expansion: !displayDir!
     echo.text=Render-time expansion:       %%displayDir%%
 
