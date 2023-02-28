@@ -26,6 +26,78 @@ struct Block {
 };
 
 
+const string OPTION_CONSOLE_WIDTH = "console_width";
+const string OPTION_CONSOLE_HEIGHT = "console_height";
+const string OPTION_CONSOLE_MARGIN = "console_margin";
+const string OPTION_CONSOLE_COLOR = "console_color";
+
+const string OPTION_CURSOR1 = "cursor1";
+const string OPTION_CURSOR2 = "cursor2";
+const string OPTION_CURSOR1_DOWN = "cursor1_down";
+const string OPTION_CURSOR2_DOWN = "cursor2_down";
+const string OPTION_CURSOR1_DOWN_SHORT = "down";
+const string OPTION_CURSOR2_DOWN_SHORT = "down2";
+const string OPTION_CURSOR1_LEFT = "cursor1_left";
+const string OPTION_CURSOR2_LEFT = "cursor2_left";
+const string OPTION_CURSOR1_LEFT_SHORT = "left";
+const string OPTION_CURSOR2_LEFT_SHORT = "left2";
+const string OPTION_CURSOR1_RIGHT = "cursor1_right";
+const string OPTION_CURSOR2_RIGHT = "cursor2_right";
+const string OPTION_CURSOR1_RIGHT_SHORT = "right";
+const string OPTION_CURSOR2_RIGHT_SHORT = "right2";
+const string OPTION_CURSOR1_UP = "cursor1_up";
+const string OPTION_CURSOR2_UP = "cursor2_up";
+const string OPTION_CURSOR1_UP_SHORT = "up";
+const string OPTION_CURSOR2_UP_SHORT = "up2";
+
+const string OPTION_COLOR = "color";
+
+const string OPTION_CLEAR = "clear";
+const string OPTION_CLEAR_SCREEN = "screen";
+const string OPTION_TEXT = "text";
+
+//Option groups
+const vector OPTIONS_CURSOR1_DOWN{OPTION_CURSOR1_DOWN, OPTION_CURSOR1_DOWN_SHORT};
+const vector OPTIONS_CURSOR2_DOWN{OPTION_CURSOR2_DOWN, OPTION_CURSOR2_DOWN_SHORT};
+const vector OPTIONS_CURSOR1_LEFT{OPTION_CURSOR1_LEFT, OPTION_CURSOR1_LEFT_SHORT};
+const vector OPTIONS_CURSOR2_LEFT{OPTION_CURSOR2_LEFT, OPTION_CURSOR2_LEFT_SHORT};
+const vector OPTIONS_CURSOR1_RIGHT{OPTION_CURSOR1_RIGHT, OPTION_CURSOR1_RIGHT_SHORT};
+const vector OPTIONS_CURSOR2_RIGHT{OPTION_CURSOR2_RIGHT, OPTION_CURSOR2_RIGHT_SHORT};
+const vector OPTIONS_CURSOR1_UP{OPTION_CURSOR1_UP, OPTION_CURSOR1_UP_SHORT};
+const vector OPTIONS_CURSOR2_UP{OPTION_CURSOR2_UP, OPTION_CURSOR2_UP_SHORT};
+//Options requiring an argument
+const vector OPTIONS_ARG_REQUIRED{
+    OPTION_CONSOLE_WIDTH,
+    OPTION_CONSOLE_HEIGHT,
+    OPTION_CONSOLE_MARGIN,
+    OPTION_CONSOLE_COLOR,
+    OPTION_CURSOR1,
+    OPTION_CURSOR2
+};
+//Options with an optional argument
+const vector OPTIONS_ARG_OPTIONAL{
+    OPTION_CURSOR1_DOWN,
+    OPTION_CURSOR2_DOWN,
+    OPTION_CURSOR1_DOWN_SHORT,
+    OPTION_CURSOR2_DOWN_SHORT,
+    OPTION_CURSOR1_LEFT,
+    OPTION_CURSOR2_LEFT,
+    OPTION_CURSOR1_LEFT_SHORT,
+    OPTION_CURSOR2_LEFT_SHORT,
+    OPTION_CURSOR1_RIGHT,
+    OPTION_CURSOR2_RIGHT,
+    OPTION_CURSOR1_RIGHT_SHORT,
+    OPTION_CURSOR2_RIGHT_SHORT,
+    OPTION_CURSOR1_UP,
+    OPTION_CURSOR2_UP,
+    OPTION_CURSOR1_UP_SHORT,
+    OPTION_CURSOR2_UP_SHORT,
+    OPTION_COLOR,
+    OPTION_CLEAR,
+    OPTION_TEXT
+};
+
+
 const auto COLON = ": ";
 
 
@@ -72,37 +144,25 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             continue;
 
         //Check syntax
-        if (util::contains(
-            vector<string>{
-                //Options with required argument
-                "console_width", "console_height", "console_margin", "console_color",
-                "cursor1", "cursor2"
-            }, cell0)) {
+        if (util::contains(OPTIONS_ARG_REQUIRED, cell0)) {
             if (cells.size() != 2)
                 util::error(ERROR_TYPE::BAD_SYNTAX, to_string(line_i) + COLON + line_read);
         }
-        else if (!util::contains(
-            vector<string>{
-                //Options with optional arguments
-                "cursor1_up", "cursor1_down", "cursor1_left", "cursor1_right", "up", "down", "left", "right",
-                "cursor2_up", "cursor2_down", "cursor2_left", "cursor2_right", "up2", "down2", "left2", "right2",
-                "color",
-                "text", "clear"
-            }, cell0))
+        else if (!util::contains(OPTIONS_ARG_OPTIONAL, cell0))
             util::error(ERROR_TYPE::BAD_SYNTAX, to_string(line_i) + COLON + line_read);
 
 
         //Parse parameters
-        if (cell0 == "console_width")
+        if (cell0 == OPTION_CONSOLE_WIDTH)
             param_dims->X = to_short(cells.at(1), line_i);
 
-        else if (cell0 == "console_height")
+        else if (cell0 == OPTION_CONSOLE_HEIGHT)
             param_dims->Y = to_short(cells.at(1), line_i);
 
-        else if (cell0 == "console_margin")
+        else if (cell0 == OPTION_CONSOLE_MARGIN)
             param_margin = to_short(cells.at(1), line_i);
 
-        else if (cell0 == "console_color") {
+        else if (cell0 == OPTION_CONSOLE_COLOR) {
             vector<string> values = xString::split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
@@ -128,7 +188,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             else if (key == "e" || key == "bright-yellow") param_colors.emplace(14, v);
             else if (key == "f" || key == "bright-white")  param_colors.emplace(15, v);
         }
-        else if (cell0 == "cursor1") {
+        else if (cell0 == OPTION_CURSOR1) {
             vector<string> values = xString::split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
@@ -140,7 +200,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                 to_short(values.at(1), line_i)
             };
         }
-        else if (cell0 == "cursor2") {
+        else if (cell0 == OPTION_CURSOR2) {
             vector<string> values = xString::split(cells.at(1), ' ', 2);
 
             if (values.size() < 2)
@@ -152,39 +212,39 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                 to_short(values.at(1), line_i)
             };
         }
-        else if (cell0 == "cursor1_up" || cell0 == "up") {
+        else if (util::contains(OPTIONS_CURSOR1_UP, cell0)) {
             cursor_changed = true;
             cursor1.Y -= getCoordArgument(cells, line_i);
         }
-        else if (cell0 == "cursor2_up" || cell0 == "up2") {
+        else if (util::contains(OPTIONS_CURSOR2_UP, cell0)) {
             cursor_changed = true;
             cursor2.Y -= getCoordArgument(cells, line_i);
         }
-        else if (cell0 == "cursor1_down" || cell0 == "down") {
+        else if (util::contains(OPTIONS_CURSOR1_DOWN, cell0)) {
             cursor_changed = true;
             cursor1.Y += getCoordArgument(cells, line_i);
         }
-        else if (cell0 == "cursor2_down" || cell0 == "down2") {
+        else if (util::contains(OPTIONS_CURSOR2_DOWN, cell0)) {
             cursor_changed = true;
             cursor2.Y += getCoordArgument(cells, line_i);
         }
-        else if (cell0 == "cursor1_left" || cell0 == "left") {
+        else if (util::contains(OPTIONS_CURSOR1_LEFT, cell0)) {
             cursor_changed = true;
             cursor1.X -= getCoordArgument(cells, line_i);
         }
-        else if (cell0 == "cursor2_left" || cell0 == "left2") {
+        else if (util::contains(OPTIONS_CURSOR2_LEFT, cell0)) {
             cursor_changed = true;
             cursor2.X -= getCoordArgument(cells, line_i);
         }
-        else if (cell0 == "cursor1_right" || cell0 == "right") {
+        else if (util::contains(OPTIONS_CURSOR1_RIGHT, cell0)) {
             cursor_changed = true;
             cursor1.X += getCoordArgument(cells, line_i);
         }
-        else if (cell0 == "cursor2_right" || cell0 == "right2") {
+        else if (util::contains(OPTIONS_CURSOR2_RIGHT, cell0)) {
             cursor_changed = true;
             cursor2.X += getCoordArgument(cells, line_i);
         }
-        else if (cell0 == "color") {
+        else if (cell0 == OPTION_COLOR) {
             if (cells.size() > 1) {
                 color_stream << cells.at(1);
                 color_stream >> std::hex >> color_last;
@@ -193,7 +253,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             else
                 color_last = CommandLine::COLOR_DEFAULT;
         }
-        else if (cell0 == "text") {
+        else if (cell0 == OPTION_TEXT) {
             if (cursor_changed) {
                 cursor_changed = false;
                 param_actions.emplace_back(Block{
@@ -217,7 +277,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                             cells.at(1)
                     });
         }
-        else if (cell0 == "clear") {
+        else if (cell0 == OPTION_CLEAR) {
             util::rearrangeCoords(cursor1, cursor2);
 
             int lines = 0, length = 0;
@@ -235,7 +295,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                     {}
                 });
             }
-            else if (cells.at(1) == "screen") {
+            else if (cells.at(1) == OPTION_CLEAR_SCREEN) {
                 lines = param_dims->Y + param_margin * 2;
                 length = param_dims->X + param_margin * 2 * 2;
                 param_actions.emplace_back(Block{
