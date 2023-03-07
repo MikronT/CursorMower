@@ -5,7 +5,7 @@ using std::quick_exit, std::string, std::to_string;
 
 int util::help() {
     printf(R"(
-CursorMower v0.5.7 -> https://github.com/MikronT/CursorMower
+CursorMower v0.6.0 -> https://github.com/MikronT/CursorMower
 
 Usage
   cursorMower "file"
@@ -42,7 +42,8 @@ Error levels
   %d | Illegal line syntax(check docs or use / help)
   %d | Out of screen buffer bounds(text or coords exceed window frame dimensions)
   5 | Help message is shown
-)", ERROR_TYPE::WRONG_ARGS_NUMBER,
+)",
+           ERROR_TYPE::WRONG_ARGS_NUMBER,
            ERROR_TYPE::FILE_READ_ERROR,
            ERROR_TYPE::BAD_SYNTAX,
            ERROR_TYPE::ARG_OUT_OF_BOUNDS);

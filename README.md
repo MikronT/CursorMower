@@ -4,7 +4,7 @@
 
 A C++ based tool that intends to provide fast and convenient command line interface building experience on Windows 10
 
-Version: **0.5.7**
+Version: **0.6.0**
 
 ## Dependencies
 
