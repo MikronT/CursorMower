@@ -16,33 +16,33 @@ Layout file syntax
     > console_height={lines}
         Set command line window dimensions
     > console_margin={lines}
-        Set window margins
+        Set inner window margin
     > console_color={0-f}   {000000-ffffff}
     > console_color={color} {000000-ffffff}
         Remap any of 16 available colors
   UI building
     > cursor{1/2}={x} {y}
-        Set the point to move cursor 1 or 2 to
+        Specify the point to move cursor 1 or 2 to
     > cursor{1/2}_up[={lines}]
     > cursor{1/2}_down[={lines}]
     > cursor{1/2}_left[={columns}]
     > cursor{1/2}_right[={columns}]
         Move any cursor relatively
-    > clear[=screen]
-        Clear an area
     > color[={0-f}{0-f}]
-        Change colors
+        Change pen color
+    > clear[=screen]
+        Draw a rectangle or clear screen
     > text={literally any text}
-        Set what should be printed
+        Set what to print
     > caret
         Where to put the caret for input
 
 Error levels
-  0 | Everything is OK
-  %d | Not enough/too many arguments (no file specified)
-  %d | Error reading a file(file not found or not accessible)
-  %d | Illegal line syntax(check docs or use / help)
-  %d | Out of screen buffer bounds(text or coords exceed window frame dimensions)
+  0 | Everything is fine
+  %d | Wrong number of command line arguments (or file specified)
+  %d | Error reading the file (file not found or not accessible)
+  %d | Illegal line syntax (check docs or use /help)
+  %d | Out of screen buffer bounds (text or coords exceed window frame dimensions)
   5 | Help message is shown
 )",
            ERROR_TYPE::WRONG_ARGS_NUMBER,
