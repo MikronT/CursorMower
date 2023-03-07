@@ -18,7 +18,13 @@ vector<Drawable> Rect::draw() {
     return vector{Drawable{at, lines}};
 }
 
-vector<Drawable> Paragraph::draw() { return vector{Drawable{at, lines}}; }
+vector<Drawable> Paragraph::draw() {
+    //Add empty line to ensure paragraph has lines
+    if (lines.empty())
+        writeLine("");
+
+    return vector{Drawable{at, lines}};
+}
 
 vector<Drawable> Container::draw() {
     vector<Drawable> out;
@@ -84,30 +90,26 @@ void Window::show(Container& container) {
         pos.X--;
         pos.Y--;
 
-        if (lines.empty()) {
-            cmd.goTo(pos);
-            continue;
-        }
-
         const auto maxWidth = width + container.getMargin() * 4;
-        for (const auto& [color, text] : lines) {
-            //Expand environment variables
-            auto out = CommandLine::expandEnvironmentVariables(text);
-            //Trim the text to screen size
-            out = xString::cut(out, maxWidth - pos.X);
+        for (const auto& [color, text] : lines)
+            if (text.empty()) {
+                //Move to some position manually
+                cmd.setColor(color);
+                cmd.goTo(pos);
+            }
+            else {
+                //Expand environment variables
+                auto out = CommandLine::expandEnvironmentVariables(text);
+                //Trim the text to screen size
+                out = xString::cut(out, maxWidth - pos.X);
 
-            //Then actually print text
-            cmd.write(out, color, pos);
+                //Then actually print text
+                cmd.write(out, color, pos);
 
-            //Move the cursor down to print next line
-            pos.Y++;
-        }
+                //Move the cursor down to print next line
+                pos.Y++;
+            }
     }
-
-    //Manually set last color
-    /*const auto lastDrawable = drawnContainer.size() - 1;
-    const auto& lines = drawnContainer.at(lastDrawable).lines;
-    cmd.setColor(lines.at(lines.size() - 1).color);*/
 
     //Reenable cursor
     cmd.setCursorVisibility(true);

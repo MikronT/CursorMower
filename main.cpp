@@ -171,7 +171,11 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             cursor1->down()
                    .resetMovedStatus();
         }
-        else if (key == OPTION_CARET) container->put(make_shared<Paragraph>(*cursor1));
+        else if (key == OPTION_CARET) {
+            const auto caret = make_shared<Paragraph>(*cursor1);
+            caret->setPenColor(lastColor);
+            container->put(caret);
+        }
     }
 
     window->show(*container);
