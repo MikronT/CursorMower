@@ -36,34 +36,6 @@ public:
     virtual std::vector<Drawable> draw() = 0;
 };
 
-class Paragraph final : public IDrawable {
-    Point at;
-    Line current;
-    std::vector<Line> lines;
-public:
-    Paragraph() = default;
-    explicit Paragraph(const Point& value) :
-        at(value) {}
-    Paragraph(const Paragraph& that) = default;
-    Paragraph(Paragraph&& that) noexcept = default;
-    Paragraph& operator=(const Paragraph& that) = default;
-    Paragraph& operator=(Paragraph&& that) noexcept = default;
-    ~Paragraph() override = default;
-
-
-    Paragraph& setPenColor(const short value) {
-        current.color = value;
-        return *this;
-    }
-    Paragraph& writeLine(const std::string& text) {
-        current.text = text;
-        lines.emplace_back(current);
-        return *this;
-    }
-
-    std::vector<Drawable> draw() override;
-};
-
 class Container final : public IDrawable {
     short margin = 0;
     std::vector<std::shared_ptr<IDrawable>> elements;
@@ -173,6 +145,36 @@ public:
     void show(Container& container);
 };
 
+
+class Paragraph final : public IDrawable {
+    Point at;
+    Line current;
+    std::vector<Line> lines;
+public:
+    Paragraph() = default;
+    explicit Paragraph(const Point& at) :
+        at(at) {}
+    explicit Paragraph(Cursor& at) :
+        at(at.dropPoint()) {}
+    Paragraph(const Paragraph& that) = default;
+    Paragraph(Paragraph&& that) noexcept = default;
+    Paragraph& operator=(const Paragraph& that) = default;
+    Paragraph& operator=(Paragraph&& that) noexcept = default;
+    ~Paragraph() override = default;
+
+
+    Paragraph& setPenColor(const short value) {
+        current.color = value;
+        return *this;
+    }
+    Paragraph& writeLine(const std::string& text) {
+        current.text = text;
+        lines.emplace_back(current);
+        return *this;
+    }
+
+    std::vector<Drawable> draw() override;
+};
 
 class Rect final : public IDrawable {
     Point at;

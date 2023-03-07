@@ -38,10 +38,10 @@ const string OPTION_CURSOR1_UP_SHORT = "up";
 const string OPTION_CURSOR2_UP_SHORT = "up2";
 
 const string OPTION_COLOR = "color";
-
 const string OPTION_CLEAR = "clear";
 const string OPTION_CLEAR_SCREEN = "screen";
 const string OPTION_TEXT = "text";
+const string OPTION_CARET = "caret";
 
 //Option groups
 const vector OPTIONS_CURSOR1_DOWN{OPTION_CURSOR1_DOWN, OPTION_CURSOR1_DOWN_SHORT};
@@ -81,7 +81,8 @@ const vector OPTIONS_WITHOUT_ARGS{
     OPTION_CURSOR2_UP_SHORT,
     OPTION_COLOR,
     OPTION_CLEAR,
-    OPTION_TEXT
+    OPTION_TEXT,
+    OPTION_CARET
 };
 
 
@@ -142,20 +143,6 @@ int wmain(const int arg_count, wchar_t** arg_list) {
         else if (contains(OPTIONS_CURSOR2_RIGHT, key)) cursor2->right(parser->getShort(1));
         else if (contains(OPTIONS_CURSOR2_UP, key)) cursor2->up(parser->getShort(1));
         else if (key == OPTION_COLOR) lastColor = parser->getHexColor(CommandLine::COLOR_DEFAULT);
-        else if (key == OPTION_TEXT) {
-            if (cursor1->hasMoved()) {
-                lastText = make_shared<Paragraph>(cursor1->dropPoint());
-                container->put(lastText);
-            }
-
-            //Empty line returned by getString is allowed intentionally
-            lastText->setPenColor(lastColor)
-                    .writeLine(parser->getString());
-
-            //Move cursor down with the next paragraph for later use
-            cursor1->down()
-                   .resetMovedStatus();
-        }
         else if (key == OPTION_CLEAR) {
             shared_ptr<Rect> rect;
 
@@ -170,6 +157,21 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             rect->setFillColor(lastColor);
             container->put(rect);
         }
+        else if (key == OPTION_TEXT) {
+            if (cursor1->hasMoved()) {
+                lastText = make_shared<Paragraph>(*cursor1);
+                container->put(lastText);
+            }
+
+            //Empty line returned by getString is allowed intentionally
+            lastText->setPenColor(lastColor)
+                    .writeLine(parser->getString());
+
+            //Move cursor down with the next paragraph for later use
+            cursor1->down()
+                   .resetMovedStatus();
+        }
+        else if (key == OPTION_CARET) container->put(make_shared<Paragraph>(*cursor1));
     }
 
     window->show(*container);

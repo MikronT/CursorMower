@@ -227,5 +227,8 @@ exit /b
     echo.cursor1=46 26
     echo.color=70
     echo.text=^> 
+    echo.up
+    echo.right=2
+    echo.caret
   )>"layout.conf"
 exit /b

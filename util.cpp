@@ -34,6 +34,8 @@ Layout file syntax
         Change colors
     > text={literally any text}
         Set what should be printed
+    > caret
+        Where to put the caret for input
 
 Error levels
   0 | Everything is OK
