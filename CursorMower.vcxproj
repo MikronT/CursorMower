@@ -243,12 +243,16 @@
   <ItemGroup>
     <ClCompile Include="commandLine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="parser.cpp" />
+    <ClCompile Include="ui.cpp" />
     <ClCompile Include="xString.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="commandLine.hpp" />
+    <ClInclude Include="parser.hpp" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="ui.hpp" />
     <ClInclude Include="xString.hpp" />
     <ClInclude Include="util.hpp" />
   </ItemGroup>

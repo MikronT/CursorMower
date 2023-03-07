@@ -1,8 +1,6 @@
-#include <algorithm>
-#include <sstream>
 #include "util.hpp"
 
-using std::quick_exit, std::string, std::to_string, std::vector;
+using std::quick_exit, std::string, std::to_string;
 
 
 int util::help() {
@@ -50,6 +48,7 @@ Error levels
            ERROR_TYPE::ARG_OUT_OF_BOUNDS);
     return 5;
 }
+
 void util::error(const ERROR_TYPE error, const string& msg) {
     switch (error) {
         case ERROR_TYPE::WRONG_ARGS_NUMBER:
@@ -67,62 +66,7 @@ void util::error(const ERROR_TYPE error, const string& msg) {
     }
     quick_exit(static_cast<int>(error));
 }
-
-short util::to_short(const int number) { return static_cast<short>(number); }
-short util::to_short(const string& text, const int fromLine) {
-    if (!std::ranges::all_of(text, isdigit))
-        error(ERROR_TYPE::BAD_SYNTAX, to_string(fromLine));
-
-    return static_cast<short>(stoi(text));
-}
-
-short util::getCoordArgument(const vector<string>& cells, const int line_i) {
-    if (cells.size() == 1)
-        return 1;
-    return to_short(cells.at(1), line_i);
-}
-void util::normallizeCoords(const COORD& dims, COORD& point1, COORD& point2) {
-    if (point1.X < 1)
-        point1.X = 1;
-    if (point1.Y < 1)
-        point1.Y = 1;
-
-    if (point2.X < 1)
-        point2.X = 1;
-    if (point2.Y < 1)
-        point2.Y = 1;
-
-    if (point1.X > dims.X)
-        point1.X = dims.X;
-    if (point1.Y > dims.Y)
-        point1.Y = dims.Y;
-
-    if (point2.X > dims.X)
-        point2.X = dims.X;
-    if (point2.Y > dims.Y)
-        point2.Y = dims.Y;
-}
-void util::rearrangeCoords(COORD& point1, COORD& point2) {
-    if (point1.X <= point2.X) {
-        if (point1.Y > point2.Y) {
-            //Swap by OY
-            const auto cursor1_y = point1.Y;
-            point1.Y = point2.Y;
-            point2.Y = cursor1_y;
-        }
-    }
-    else {
-        if (point1.Y <= point2.Y) {
-            //Swap by OX
-            const auto cursor1_x = point1.X;
-            point1.X = point2.X;
-            point2.X = cursor1_x;
-        }
-        else {
-            //Swap places
-            const COORD cursor1_temp = point1;
-            point1 = point2;
-            point2 = cursor1_temp;
-        }
-    }
+void util::syntaxError(const Parser& parser) {
+    error(ERROR_TYPE::BAD_SYNTAX,
+          to_string(parser.getLineNumber()) + ": " + parser.getLine());
 }

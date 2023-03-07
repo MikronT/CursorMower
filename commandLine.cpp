@@ -1,6 +1,5 @@
 #include <ios>
 #include <sstream>
-#include <string>
 #include "commandLine.hpp"
 #include "xString.hpp"
 
@@ -10,6 +9,14 @@ using std::hex, std::map, std::ostringstream, std::string, std::stringstream, st
 
 void CommandLine::setColor(const short color) const {
     SetConsoleTextAttribute(console_handle_out, color);
+}
+void CommandLine::setCursorVisibility(const bool value) const {
+    const auto info = make_unique<CONSOLE_CURSOR_INFO>();
+    GetConsoleCursorInfo(console_handle_out, info.get());
+
+    info->bVisible = value;
+
+    SetConsoleCursorInfo(console_handle_out, info.get());
 }
 void CommandLine::setConInfo(CONSOLE_SCREEN_BUFFER_INFOEX& info) const {
     info.srWindow.Bottom++;
@@ -51,6 +58,31 @@ void CommandLine::remapColors(const map<int, string>& colorMap) const {
 
 void CommandLine::goTo(const COORD& pos) const {
     SetConsoleCursorPosition(console_handle_out, pos);
+}
+void CommandLine::write(const string& text, const short color, const COORD& pos) const {
+    const wstring out = xString::toWide(text);
+
+    const auto bufferSize = static_cast<short>(out.size());
+    auto buffer = make_unique<CHAR_INFO[]>(bufferSize);
+
+    for (int i = 0; i < bufferSize; ++i) {
+        buffer[i].Char.UnicodeChar = out.at(i);
+        buffer[i].Attributes = color;
+    }
+
+    auto writeArea = SMALL_RECT{
+        pos.X,
+        pos.Y,
+        static_cast<short>(pos.X + bufferSize),
+        static_cast<short>(pos.Y + 1)
+    };
+
+    WriteConsoleOutputW(
+        console_handle_out,
+        buffer.get(),
+        COORD{bufferSize, 1},
+        COORD{0, 0},
+        &writeArea);
 }
 
 unique_ptr<CONSOLE_SCREEN_BUFFER_INFOEX> CommandLine::getConInfo() const {
