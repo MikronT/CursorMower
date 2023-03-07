@@ -6,12 +6,15 @@ setlocal EnableExtensions EnableDelayedExpansion
 pushd "%~dp0"
 
 
-
 set program_name=CursorMower
 set program_name_pun=КурсороКосарка
 
 set targetDir=%1
 if "!targetDir!" == "" set targetDir=.
+
+
+title %program_name% Sample
+cls
 
 
 
@@ -31,7 +34,7 @@ if "!targetDir!" == "" set targetDir=.
 
   call :prepareLayout_main
 
-  set _operations=13
+  set _operations=15
   for /f "delims=" %%i in ('type "layout.conf" 2^>nul') do set /a _operations+=1
 
   cursorMower "layout.conf"
@@ -208,9 +211,7 @@ exit /b
     echo.console_height=40
     echo.console_margin=1
 
-    echo.cursor1=0 39
-    rem Wrong movements are omitted
-    echo.left=300
+    echo.cursor1=1 39
     echo.right=6
     echo.text=Layout rendered with %1 operations^^^! That's a lot^^^!
   )>"layout.conf"
