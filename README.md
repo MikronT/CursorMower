@@ -1,39 +1,43 @@
 # CursorMower
 
-*Render CLI Faster*
-
-A C++ based tool that intends to provide fast and convenient command line interface building experience on Windows 10
-
-Version: **0.6.0**
+A command line tool to help you build beautiful user interfaces for your Windows Batch files
 
 ## Dependencies
 
-- UTF8-CPP
+- UTF8-CPP\
     [Website](https://utfcpp.sourceforge.net)
 
----
+## Layout File Syntax
 
-## Usage
+*Detailed explanation with examples*
 
-Detailed explanation of the program usage with examples
+The tool uses special layout files of its own format to render the screen. Basically, the syntax can be explained as a simple option-parameters map
 
-### Layout file syntax
+```ini
+{option}
+{option}={parameter}
+{option}={parameter} {parameter}
+```
 
-This tool uses layout files to render the screen. The syntax is very simple
+> **Warning**
+>
+> Before you proceed
+>
+> - Zero-point of the coordinate system is `1;1` located in the top left corner of the console window and goes to the point `{width};{height}` in the bottom right corner
+> - Most options have default actions assigned to them so most parameters are optional (exceptions below)
 
-Notes
+### Window Dimensions
 
-- Coordinates are starting from (1,1) at the top left corner and go to the window dimensions
-- All the parameters are optional (exceptions below)
-
-#### Set window dimensions
-
-Should be placed at the beginning of the layout file
+To set window dimensions use `console_width` and `console_height` at the beginning of the file
 
 ```ini
 console_width={columns}
 console_height={lines}
 ```
+
+> **Note**
+>
+> You can use these options only once per file
 
 Example
 
@@ -42,21 +46,23 @@ console_width=120
 console_height=40
 ```
 
-Notes
+> **Note**
+>
+> When a command line appears, its window dimensions are used by default so you can change only one if you need or don't apply any of them at all
 
-- Current command line window dimensions are used as default dimensions
-- Each of them should be one per the whole layout file (otherwise previous parameter is omitted)
-- You can change only one of them if you need
+### Inner Margin
 
-#### Set window margins
+You can set the inner window margin for your content not to touch the window border. The size of the window is increased automatically for the coordinates to stay unchanged. The default value is `0`
 
 ```ini
 console_margin={lines}
 ```
 
-Example
+> **Note**
+>
+> You can use this option only once per file
 
-The window width and height will be automatically extended by the margin but all the coordinates will work in the coordinate system of the old window: (1;1) will point to (3;3) automatically
+Example: point `1;1` with margin `1` becomes `3;2` automatically (1 line = 2 columns)
 
 ```ini
 console_width=120
@@ -64,42 +70,37 @@ console_height=40
 console_margin=1
 ```
 
-Notes
+### Cursor
 
-- Margins are applied to all the coordinates automatically
-- Margins from left and right sides are applied automatically by multiplying the value specified by 2 (because 1 line = 2 columns) to make an accurate box
-- There are no default margins
-- Can be the one only for the whole layout file (otherwise previous parameter is omitted)
-- Margins are applied via extending the window size
-
-#### Move the cursor
+The cursor option allows you to point out to a specific cell what you can use later to print some text or draw a rectangle. You can set it by specifying exact position
 
 ```ini
 cursor1={x} {y}
 cursor2={x} {y}
 ```
 
-`cursor1` is the main cursor. All the inline elements are printed at these coordinates
+There're 2 cursors available to use
 
-`cursor2` is required to draw block elements
+- `cursor1` is the main cursor. You can use it to print inline elements
+- `cursor2` is the secondary required to draw rectangles
 
-Examples below
-
-You can also move every cursor relatively not to calculate the coordinates by hand
+You can also move each cursor relatively
 
 ```ini
+; Move cursor1
 cursor1_up={lines}
 cursor1_down={lines}
 cursor1_left={columns}
 cursor1_right={columns}
 
+; Move cursor2
 cursor2_up={lines}
 cursor2_down={lines}
 cursor2_left={columns}
 cursor2_right={columns}
 ```
 
-There is a shorter syntax if you want
+Or use much shorter aliases
 
 ```ini
 ; Move cursor1
@@ -115,7 +116,7 @@ left2={columns}
 right2={columns}
 ```
 
-To move a cursor by 1 step you can omit specifying values
+Also, if you need to move a cursor by 1, you don't need to specify the value explicitly
 
 ```ini
 ; Move cursor1
@@ -135,8 +136,7 @@ Example
 
 ```ini
 ; These short commands
-up
-up
+up=2
 left
 
 ; Are equivalent to the following long ones
@@ -144,31 +144,59 @@ cursor1_up=2
 cursor1_left=1
 ```
 
-#### Clear screen
+### Text
 
-The following parameter clears the whole screen
-
-```ini
-clear=screen
-```
-
-Can be used without parameters to clear a specific area
+To print some text just use `text` and then literally anything as follows
 
 ```ini
-cursor1=40 15
-cursor2=60 27
-clear
+cursor1={x} {y}
+text={any text with spaces, Unicode characters, environment variables, etc.}
 ```
 
-#### Set colors
+> **Note**
+>
+> Every `text` also invokes `down` command to print text line by line
 
-Uses the same syntax as the default `color` command does to change some color
+Example
+
+```ini
+cursor1=5 2
+text=Line 1
+text=This line is below
+down
+text=A blank line was printed above
+```
+
+Output
+
+```
+
+     Line 1
+     This line is below
+
+     A blank line was printed above
+```
+
+You can also use variables and expand them during runtime to make your layout files dynamic
+
+```batch
+rem Expands in render-time
+text=%userName%
+text=%computerName%
+text=%path%
+```
+
+However, dynamic variables like `%cd%`, `%date%`, `%time%`, `%random%` are not supported
+
+### Colors
+
+To make your text look prettier, you can use the `color` option with the same syntax as the default `color` command
 
 ```ini
 color={0-f}{0-f}
 ```
 
-Here's the Command Prompt default color reference
+Here's the default Command Prompt color reference
 
 | Code | Color  | Code | Color        |
 |:----:| ------ |:----:| ------------ |
@@ -181,25 +209,21 @@ Here's the Command Prompt default color reference
 |  6   | Yellow |  E   | Light Yellow |
 |  7   | White  |  F   | Bright White |
 
-The only difference is that you change color attributes only for the text you print instead of the whole window
+> **Note**
+>
+> If you the `color` option without parameters, the default color will be restored
+
+The important difference from the builtin `color` command is that you change color attributes only for the text you print instead of the whole window
 
 ```ini
 color=0b
 text=Hello
 
-cursor1_right=1
 color
 text=is written with a different color
 ```
 
-You can also combine this command with `clear` to draw empty rectangular areas
-
-```ini
-cursor1=40 15
-cursor2=80 27
-color=70
-clear
-```
+### Color Schemes
 
 To extend coloring variety of Command Prompt you can remap any of 16 predefined colors with the following command. The general syntax is below
 
@@ -260,91 +284,88 @@ console_color=bright-yellow ffe66d
 console_color=bright-white  c74ded
 ```
 
-#### Print text
+### Rectangle
 
-To print some text just use command `text=` and then any text following it
-
-```ini
-cursor1={x} {y}
-text={any text with spaces, Unicode characters, etc.}
-```
-
-If you want to write text line by line, you can use the following syntax (`down` is just a shorter form for `cursor1_down=1`)
+This option allows you to draw rectangular boxes
 
 ```ini
-cursor1=5 5
-text=Line 1
-text=This line is below
-down
-text=A blank line was printed above
+cursor1=40 15
+cursor2=80 27
+color=70
+clear
 ```
 
-You can also use variables and expand them in runtime to make your layout files dynamic
+The option accepts the parameter `screen` to clear the whole screen much like the `cls` command does. Cursor options are omitted
 
-```batch
-rem Expands during render-time
-text=%userName%
+```ini
+; White theme
+color=f0
+clear=screen
 ```
 
-However, some dynamic variables like `%date%`, `%time%` are not supported yet
+### Caret
 
-### Run
+At the end of the file, you probably want to move the caret to a specific point to accept user input. You can use the `caret` option for this purpose
 
-To process the layout file written execute the following
+> **Note**
+>
+> You can use this option only once per file
+
+Example
+
+```
+text=$> 
+up
+right=3
+caret
+```
+
+Output
+
+```
+text=$> _
+```
+
+## Run
+
+To process the layout file written just execute the following command
 
 ```batch
 cursorMower "file"
 ```
 
-And you will see the result
+Then you'll see the result (or some type of error)
 
-### Example
-
-You can write layout files by yourself but you can also generate it dynamically to get better access to the layout. Here you can access your own variables and expand them during both write-time and render-time
-
-All the Batch features are available inside the brackets
-
-```batch
-set program_name=CursorMower
-
-(
-    echo.console_width=120
-    echo.console_height=40
-    echo.console_margin=1
-
-    echo.color=0b
-    echo.cursor1=49 17
-    echo.text=%program_name%
-    echo.cursor1=54 19
-    echo.text=1  Check debug build
-    echo.text=2  Check release build
-    echo.down
-    echo.text=0  Exit
-    echo.down=2
-    rem Write some var value
-    echo.text=Static variable:  %date%
-    rem Write some var name
-    echo.text=Dynamic variable: %%program_name%%
-
-    rem Move the cursor for user input
-    echo.cursor1=52 24
-    echo.text=^> 
-)>"layout.tmp"
-
-cursorMower "layout.tmp"
-
-set /p input=
-```
-
----
-
-## Error levels
+### Error Levels
 
 | Level | Explanation                                                                 |
 |:-----:| --------------------------------------------------------------------------- |
-|   0   | Everything is OK                                                            |
-|   1   | Not enough/too many arguments (no file specified)                           |
-|   2   | Error reading a file (file not found or not accessible)                     |
+|   0   | Everything is fine                                                          |
+|   1   | Wrong number of command line arguments (or file specified)                  |
+|   2   | Error reading the file (file not found or not accessible)                   |
 |   3   | Illegal line syntax (check docs or use `/help`)                             |
 |   4   | Out of screen buffer bounds (text or coords exceed window frame dimensions) |
 |   5   | Help message is shown                                                       |
+
+## Examples
+
+You can write layout files by yourself but you can also generate them dynamically. You can also see how you can access your own variables and expand them during both write-time and render-time there. Use all the power of Batch available to you
+
+There are 2 examples under the [demo](demo) directory available to test. Both expect the `cursorMower.exe` executable to be put in the same folder
+
+```
+Parent Dir
+ ├─ cursorMower.exe
+ ├─ example.cmd
+ └─ sample.cmd
+```
+
+The `example.cmd` demonstrates some simple menu and a popup. Those are built dynamically and cached not to rewrite the same file over and over again
+
+![Example execution output](image/example.png)
+
+The `sample.cmd` is much more about building a little more complex layout mostly to test rendering performance and UTF8 support
+
+![Sample execution output](image/sample.png)
+
+That's all, have fun!
