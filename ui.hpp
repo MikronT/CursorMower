@@ -100,6 +100,17 @@ class Window {
     std::map<int, std::string> colormap;
     bool dimsUpdated = false,
          colormapUpdated = false;
+
+    static void normallizeCoord(const COORD& dims, COORD& pos) {
+        if (pos.X < 1) pos.X = 1;
+        else if (pos.X > dims.X) pos.X = dims.X;
+
+        if (pos.Y < 1) pos.Y = 1;
+        else if (pos.Y > dims.Y) pos.Y = dims.Y;
+
+        pos.X--;
+        pos.Y--;
+    }
 public:
     explicit Window(const CommandLine& cmd) :
         cmd(cmd) {

@@ -74,23 +74,23 @@ void Window::show(Container& container) {
         colormapUpdated = false;
         cmd.remapColors(colormap);
     }
+
+    const COORD screenDims{
+        static_cast<short>(width + container.getMargin() * 4),
+        static_cast<short>(height + container.getMargin() * 2)
+    };
     if (dimsUpdated) {
         dimsUpdated = false;
-        cmd.setScreenDims(COORD{
-            static_cast<short>(width + container.getMargin() * 4),
-            static_cast<short>(height + container.getMargin() * 2)
-        });
+        cmd.setScreenDims(screenDims);
     }
 
     const auto drawnContainer = container.draw();
 
     for (const auto& [at, lines] : drawnContainer) {
         auto pos = at.getCoord();
-        //Normallize coords
-        pos.X--;
-        pos.Y--;
+        //Fix out of bounds and do a shift to (0;0)
+        normallizeCoord(screenDims, pos);
 
-        const auto maxWidth = width + container.getMargin() * 4;
         for (const auto& [color, text] : lines)
             if (text.empty()) {
                 //Move to some position manually
@@ -101,7 +101,7 @@ void Window::show(Container& container) {
                 //Expand environment variables
                 auto out = CommandLine::expandEnvironmentVariables(text);
                 //Trim the text to screen size
-                out = xString::cut(out, maxWidth - pos.X);
+                out = xString::cut(out, screenDims.X - pos.X);
 
                 //Then actually print text
                 cmd.write(out, color, pos);

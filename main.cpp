@@ -1,5 +1,3 @@
-// ReSharper disable CppClangTidyCppcoreguidelinesNarrowingConversions
-// ReSharper disable CppClangTidyBugproneNarrowingConversions
 #include <memory>
 #include <vector>
 #include "commandLine.hpp"
