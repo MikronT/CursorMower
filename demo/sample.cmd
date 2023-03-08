@@ -1,19 +1,21 @@
 @echo off
 chcp 65001>nul
-
 setlocal EnableExtensions EnableDelayedExpansion
 
 pushd "%~dp0"
+if not exist "cache" md "cache"
 
 
-set program_name=CursorMower
-set program_name_pun=КурсороКосарка
+set programName=CursorMower
+set programName_joke=КурсороКосарка
 
-set targetDir=%1
-if "!targetDir!" == "" set targetDir=.
+set cursorMower=%1
+if "!cursorMower!" == "" set cursorMower=cursorMower.exe
+
+set layout=cache\layout_loop
 
 
-title %program_name% Sample
+title %programName% Sample
 cls
 
 
@@ -23,36 +25,37 @@ cls
 
 
 :loop
-  if not exist "!targetDir!\cursorMower.exe" (
-    echo.^(i^) CursorMower module not found
-    echo.    Ensure the binary is in the same location as the sample
+  if not exist "!cursorMower!" (
+    echo.^(i^) CursorMower executable wasn't found
+    echo.    Ensure the binary is near the sample
+    echo.
+    echo.    Current dir: %cd%
+    echo.    Module path: !cursorMower!
     pause
     exit /b
   )
-  pushd "!targetDir!"
 
 
   call :prepareLayout_main
 
   set _operations=15
-  for /f "delims=" %%i in ('type "layout.conf" 2^>nul') do set /a _operations+=1
+  for /f "delims=" %%i in ('type "%layout%" 2^>nul') do set /a _operations+=1
 
-  cursorMower "layout.conf"
+  %cursorMower% "%layout%"
+
 
   call :prepareLayout_info !_operations!
-  cursorMower "layout.conf"
+  %cursorMower% "%layout%"
 
 
   call :prepareLayout_input
-  cursorMower "layout.conf"
+  %cursorMower% "%layout%"
   set /p input=
 
          if "!input!" == "0" ( exit /b
-  ) else if "!input!" == "1" ( set targetDir=Debug
-  ) else if "!input!" == "2" ( set targetDir=MinSizeRelease
-  ) else if "!input!" == "3"   set targetDir=Release
-
-  popd
+  ) else if "!input!" == "1" ( set cursorMower=..\Debug\cursorMower.exe
+  ) else if "!input!" == "2" ( set cursorMower=..\MinSizeRelease\cursorMower.exe
+  ) else if "!input!" == "3"   set cursorMower=..\Release\cursorMower.exe
 goto :loop
 
 
@@ -168,7 +171,7 @@ goto :loop
 
     rem Draw a box
     echo.cursor1=10 6
-    echo.cursor2=60 12
+    echo.cursor2=76 12
     echo.color=70
     echo.clear
 
@@ -179,11 +182,11 @@ goto :loop
     echo.down
 
     rem Put a variable into another variable to test recursive runtime variable expansion
-    set displayDir=dir=%%targetDir%%
-    if "!displayDir!" == "." set displayDir=Current
+    set cursorMower_path=%%cursorMower%%
+    if "!cursorMower_path!" == "." set cursorMower_path=Current
 
-    echo.text=Layout write-time expansion: !displayDir!
-    echo.text=Render-time expansion:       %%displayDir%%
+    echo.text=Layout write-time expansion: !cursorMower_path!
+    echo.text=Render-time expansion:       %%cursorMower_path%%
 
     rem Draw a box
     echo.cursor1=40 15
@@ -191,16 +194,16 @@ goto :loop
     echo.color=70
     echo.clear
 
-    rem Write some text
+    rem Create your interface
     echo.cursor1=46 17
-    echo.text=%program_name% %%program_name_pun%%
+    echo.text=%programName% %%programName_joke%%
     echo.down
     echo.text=1  Check debug збірку
     echo.text=2  Перевірити min-size build
     echo.text=3  Check релізний build
     echo.down
     echo.text=0  Exit
-  )>"layout.conf"
+  )>"%layout%"
 exit /b
 
 
@@ -214,7 +217,7 @@ exit /b
     echo.cursor1=1 39
     echo.right=6
     echo.text=Layout rendered with %1 operations^^^! That's a lot^^^!
-  )>"layout.conf"
+  )>"%layout%"
 exit /b
 
 
@@ -225,11 +228,14 @@ exit /b
     echo.console_height=40
     echo.console_margin=1
 
+    rem Prepare user input
     echo.cursor1=46 26
     echo.color=70
+    rem Don't forget to escape certain characters
     echo.text=^> 
+    rem Set the caret position
     echo.up
     echo.right=2
     echo.caret
-  )>"layout.conf"
+  )>"%layout%"
 exit /b

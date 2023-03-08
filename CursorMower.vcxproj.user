@@ -1,32 +1,32 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommandArguments>/c "$(SolutionDir)sample.cmd Debug"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>/c "$(SolutionDir)demo\sample.cmd ..\Debug\cursorMower.exe"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(winDir)\System32\cmd.exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommandArguments>/c "$(SolutionDir)sample.cmd Release"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>/c "$(SolutionDir)demo\sample.cmd ..\Release\cursorMower.exe"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(winDir)\System32\cmd.exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRelease|Win32'">
-    <LocalDebuggerCommandArguments>/c "$(SolutionDir)sample.cmd MinSizeRelease"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>/c "$(SolutionDir)demo\sample.cmd ..\MinSizeRelease\cursorMower.exe"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(winDir)\System32\cmd.exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LocalDebuggerCommandArguments>/c "$(SolutionDir)sample.cmd Debug"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>/c "$(SolutionDir)demo\sample.cmd ..\Debug\cursorMower.exe"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(winDir)\System32\cmd.exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>/c "$(SolutionDir)sample.cmd Release"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>/c "$(SolutionDir)demo\sample.cmd ..\Release\cursorMower.exe"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(winDir)\System32\cmd.exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRelease|x64'">
-    <LocalDebuggerCommandArguments>/c "$(SolutionDir)sample.cmd MinSizeRelease"</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>/c "$(SolutionDir)demo\sample.cmd ..\MinSizeRelease\cursorMower.exe"</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommand>$(winDir)\System32\cmd.exe</LocalDebuggerCommand>
   </PropertyGroup>
