@@ -115,6 +115,7 @@ int wmain(const int arg_count, wchar_t** arg_list) {
     parser->setSingleKeys(OPTIONS_WITHOUT_ARGS);
     parser->setParamKeys(OPTIONS_WITH_ARGS);
 
+    string lastKey;
     while (parser->readNextLine()) {
         const auto key = parser->getKey();
 
@@ -158,7 +159,8 @@ int wmain(const int arg_count, wchar_t** arg_list) {
             container->put(rect);
         }
         else if (key == OPTION_TEXT) {
-            if (cursor1->hasMoved()) {
+            //Create new paragraph once per block of lines
+            if (lastKey != OPTION_TEXT) {
                 lastText = make_shared<Paragraph>(*cursor1);
                 container->put(lastText);
             }
@@ -168,14 +170,16 @@ int wmain(const int arg_count, wchar_t** arg_list) {
                     .writeLine(parser->getString());
 
             //Move cursor down with the next paragraph for later use
-            cursor1->down()
-                   .resetMovedStatus();
+            cursor1->down();
         }
         else if (key == OPTION_CARET) {
             const auto caret = make_shared<Paragraph>(*cursor1);
             caret->setPenColor(lastColor);
             container->put(caret);
         }
+
+        //Save last option key
+        lastKey = key;
     }
 
     window->show(*container);

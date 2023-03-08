@@ -64,46 +64,33 @@ public:
 
 
 class Cursor : Point {
-    bool moved = true;
 public:
     Cursor& toX(const int value) {
         x = static_cast<short>(value);
-        moved = true;
         return *this;
     }
     Cursor& toY(const int value) {
         y = static_cast<short>(value);
-        moved = true;
         return *this;
     }
     Cursor& down(const int steps = 1) {
         y = static_cast<short>(y + steps);
-        moved = true;
         return *this;
     }
     Cursor& left(const int steps = 1) {
         x = static_cast<short>(x - steps);
-        moved = true;
         return *this;
     }
     Cursor& right(const int steps = 1) {
         x = static_cast<short>(x + steps);
-        moved = true;
         return *this;
     }
     Cursor& up(const int steps = 1) {
         y = static_cast<short>(y - steps);
-        moved = true;
         return *this;
     }
 
-    void resetMovedStatus() { moved = false; }
-    [[nodiscard]] bool hasMoved() const { return moved; }
-
-    [[nodiscard]] Point dropPoint() {
-        resetMovedStatus();
-        return Point(x, y);
-    }
+    [[nodiscard]] Point dropPoint() const { return Point(x, y); }
 };
 
 class Window {
@@ -154,7 +141,7 @@ public:
     Paragraph() = default;
     explicit Paragraph(const Point& at) :
         at(at) {}
-    explicit Paragraph(Cursor& at) :
+    explicit Paragraph(const Cursor& at) :
         at(at.dropPoint()) {}
     Paragraph(const Paragraph& that) = default;
     Paragraph(Paragraph&& that) noexcept = default;
@@ -188,12 +175,12 @@ public:
         width(window.getWidth()),
         height(window.getHeight()),
         margin(container.getMargin()),
-        fillScreen(true) { }
+        fillScreen(true) {}
     explicit Rect(const Point& at, const Point& to) :
         at(at),
         width(to.x),
         height(to.y) {}
-    explicit Rect(Cursor& at, Cursor& to) :
+    explicit Rect(const Cursor& at, const Cursor& to) :
         at(at.dropPoint()) {
         const auto [w, h] = to.dropPoint();
         width = static_cast<short>(w - this->at.x);
